@@ -4,6 +4,13 @@
   <img src="public/images/kmc-logo-full.png" alt="KMC Logo" width="300">
 </p>
 
+<p align="center">
+  <a href="https://github.com/Bgusss/simadu-kmc/actions"><img src="https://github.com/Bgusss/simadu-kmc/workflows/Laravel%20Tests/badge.svg" alt="Build Status"></a>
+  <a href="https://github.com/Bgusss/simadu-kmc/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel" alt="Laravel 13"></a>
+  <a href="https://php.net"><img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php" alt="PHP 8.3"></a>
+</p>
+
 Sistem informasi berbasis web untuk mengelola aduan masyarakat dari berbagai channel (Facebook, Instagram, WhatsApp) dengan klasifikasi otomatis menggunakan AI dan sistem ticketing terintegrasi.
 
 ## 🎯 Fitur Utama
@@ -211,9 +218,29 @@ Proyek ini merupakan Tugas Akhir (TA) untuk program D3 Teknologi Informasi, Poli
 **Metodologi**: Agile Development  
 **Tahun**: 2026
 
+## 🤝 Contributing
+
+Kami menerima kontribusi dari siapa saja! Silakan baca [CONTRIBUTING.md](CONTRIBUTING.md) untuk panduan lengkap.
+
+### Quick Start untuk Kontributor
+
+1. Fork repository ini
+2. Buat branch baru (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'feat: add amazing feature'`)
+4. Push ke branch (`git push origin feature/amazing-feature`)
+5. Buat Pull Request
+
 ## 📄 License
 
-Proyek ini bersifat privat dan dikembangkan untuk keperluan akademik. Tidak diperbolehkan untuk didistribusikan atau digunakan tanpa izin.
+Proyek ini dilisensikan di bawah [MIT License](LICENSE) - lihat file LICENSE untuk detail.
+
+## 📋 Changelog
+
+Lihat [CHANGELOG.md](CHANGELOG.md) untuk riwayat perubahan lengkap.
+
+## 🔒 Security
+
+Jika menemukan security vulnerability, silakan baca [SECURITY.md](SECURITY.md) untuk panduan pelaporan yang aman.
 
 ## 🙏 Acknowledgments
 
