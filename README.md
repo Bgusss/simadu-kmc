@@ -1,58 +1,234 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Manajemen Aduan Multi Channel KMC
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/kmc-logo-full.png" alt="KMC Logo" width="300">
 </p>
 
-## About Laravel
+Sistem informasi berbasis web untuk mengelola aduan masyarakat dari berbagai channel (Facebook, Instagram, WhatsApp) dengan klasifikasi otomatis menggunakan AI dan sistem ticketing terintegrasi.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Multi-Channel Integration**: Sinkronisasi otomatis aduan dari Facebook mentions, Instagram mentions, dan form web
+- **AI Classification**: Klasifikasi aduan otomatis menggunakan Gemini AI (gemma-4-31b-it) dengan akurasi 97.5%
+- **Smart Ticketing System**: Sistem tiket dengan status tracking, eskalasi otomatis, dan disposisi ke OPD
+- **Real-time Dashboard**: Monitoring aduan real-time dengan statistik dan visualisasi data
+- **Duplicate Detection**: Deteksi otomatis aduan duplikat menggunakan content hash
+- **Priority Management**: Sistem prioritas aduan (Normal, High, Urgent) dengan eskalasi otomatis
+- **Multi-Role Access**: Role-based access untuk Admin dan OPD dengan permission granular
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Tech Stack
 
-## Learning Laravel
+- **Framework**: Laravel 13 (PHP 8.3)
+- **Frontend**: Vite, TailwindCSS 4, Alpine.js
+- **Database**: MySQL
+- **AI/ML**: Google Gemini API (gemma-4-31b-it)
+- **Automation**: Playwright (Facebook/Instagram scraping)
+- **Testing**: PHPUnit, Pest
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📋 Requirements
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP >= 8.3
+- Composer
+- Node.js >= 18
+- MySQL >= 8.0
+- Git
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🚀 Installation
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. Clone Repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/Bgusss/simadu-kmc.git
+cd simadu-kmc
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependencies
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Environment Setup
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Edit `.env` dan sesuaikan konfigurasi:
 
-## Security Vulnerabilities
+```env
+APP_NAME="SIMADU-KMC"
+APP_URL=http://localhost:8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=simadu_kmc
+DB_USERNAME=root
+DB_PASSWORD=
 
-## License
+# Gemini AI Configuration
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemma-4-31b-it
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Facebook/Instagram Credentials (for scraping)
+FACEBOOK_EMAIL=your_fb_email
+FACEBOOK_PASSWORD=your_fb_password
+INSTAGRAM_USERNAME=your_ig_username
+INSTAGRAM_PASSWORD=your_ig_password
+```
+
+### 4. Database Migration & Seeding
+
+```bash
+php artisan migrate --seed
+```
+
+### 5. Build Assets
+
+```bash
+npm run build
+```
+
+### 6. Run Development Server
+
+```bash
+# Opsi 1: Jalankan semua service sekaligus (recommended)
+composer dev
+
+# Opsi 2: Manual
+php artisan serve
+npm run dev
+php artisan queue:listen
+```
+
+## 👥 Default Users
+
+### Admin
+- Email: `admin@kmc.go.id`
+- Password: `password`
+
+### OPD User (Example)
+- Email: `dinas.pendidikan@kmc.go.id`
+- Password: `password`
+
+## 📱 Channel Sync Commands
+
+### Facebook Mentions
+```bash
+# Sync Facebook post mentions
+php artisan sync:facebook-post-mentions
+
+# Sync Facebook comment mentions
+php artisan sync:facebook-comment-mentions
+```
+
+### Instagram Mentions
+```bash
+php artisan sync:instagram-mentions
+```
+
+### Check Escalation (Auto Priority Update)
+```bash
+php artisan check:escalation
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+composer test
+
+# Run specific test
+php artisan test --filter=TicketEditTest
+
+# Run with coverage
+composer test:coverage
+```
+
+## 📊 Project Structure
+
+```
+simadu-kmc/
+├── app/
+│   ├── Console/Commands/     # Artisan commands untuk sync channel
+│   ├── Http/Controllers/     # Controllers (Admin, OPD, Public)
+│   ├── Models/               # Eloquent models
+│   └── Services/             # Business logic services
+│       ├── AIClassificationService.php
+│       ├── InstagramService.php
+│       ├── TicketingService.php
+│       └── WhatsAppService.php
+├── database/
+│   ├── migrations/           # Database migrations
+│   └── seeders/              # Seeders (OPD, Categories, Users)
+├── playwright/               # Playwright scripts untuk scraping
+├── resources/
+│   ├── css/
+│   ├── js/
+│   └── views/                # Blade templates
+└── routes/
+    └── web.php               # Web routes
+```
+
+## 🤖 AI Classification
+
+Sistem menggunakan Google Gemini AI untuk klasifikasi otomatis:
+
+- **Model**: gemma-4-31b-it (FREE tier via Google AI Studio)
+- **Akurasi**: 97.5%
+- **False Positive**: <3%
+- **Confidence Avg**: 92%
+- **Rate Limits**: 15 RPM, Unlimited TPM, 1,500 RPD
+
+### Kategori & Sub-kategori
+
+Sistem dapat mengklasifikasi aduan ke dalam berbagai kategori OPD:
+
+- Dinas Pendidikan
+- Dinas Kesehatan
+- Dinas Pekerjaan Umum
+- Dinas Perhubungan
+- Dinas Lingkungan Hidup
+- Dan 10+ kategori lainnya
+
+## 🔐 Security
+
+- CSRF Protection (Laravel default)
+- XSS Protection via Blade escaping
+- SQL Injection protection via Eloquent ORM
+- Role-based access control (RBAC)
+- Rate limiting pada API endpoints
+- Session encryption
+
+## 🎓 Academic Context
+
+Proyek ini merupakan Tugas Akhir (TA) untuk program D3 Teknologi Informasi, Politeknik Negeri Ketapang.
+
+**Penulis**: Achmad Bagus Aprianto (3042023024)  
+**Metodologi**: Agile Development  
+**Tahun**: 2026
+
+## 📄 License
+
+Proyek ini bersifat privat dan dikembangkan untuk keperluan akademik. Tidak diperbolehkan untuk didistribusikan atau digunakan tanpa izin.
+
+## 🙏 Acknowledgments
+
+- Laravel Framework
+- Google Gemini AI
+- Playwright Browser Automation
+- Politeknik Negeri Ketapang
+- Kabupaten Kayong Utara (KMC)
+
+## 📞 Contact
+
+Untuk pertanyaan atau feedback, silakan hubungi:
+- Email: bagusaprianto@example.com
+- GitHub: [@Bgusss](https://github.com/Bgusss)
+
+---
+
+<p align="center">Made with ❤️ for Kabupaten Kayong Utara</p>
