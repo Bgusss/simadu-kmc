@@ -24,19 +24,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) {
-
-            $view->with(
-                'unreadCount',
-                Notification::where(
-                    'is_read',
-                    false
-                )->count()
-            );
-        });
+        // Force HTTPS in production
+        if ($this->app->environment('production')) {
+            \URL::forceScheme('https');
+        }
 
         View::composer('*', function ($view) {
-
             $view->with(
                 'unreadCount',
                 Notification::where(
