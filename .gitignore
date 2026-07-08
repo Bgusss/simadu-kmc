@@ -16,6 +16,9 @@ yarn-error.log
 /.idea
 /.vscode
 
+# Hermes working directory (local only)
+/.hermes
+
 # Playwright sensitive files
 playwright/facebook-session.json
 playwright/instagram-session.json
