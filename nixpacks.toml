@@ -1,6 +1,5 @@
 [phases.setup]
 nixPkgs = ["php83", "php83Packages.composer", "nodejs_20"]
-aptPkgs = ["php83-pdo", "php83-pdo_mysql", "php83-mbstring", "php83-gd", "php83-zip", "php83-xml", "php83-curl"]
 
 [phases.install]
 cmds = [
