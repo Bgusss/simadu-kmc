@@ -1,0 +1,103 @@
+═══════════════════════════════════════════════════════════════════
+STRATEGI REVISI BAB II - HUMANIZED (39 SUB-BAB)
+═══════════════════════════════════════════════════════════════════
+
+TARGET: Natural, human-like, anti-AI-detection
+WAKTU: 30-45 menit (chunked write)
+TANGGAL: 7 Juli 2026, 19:19 WIB
+
+───────────────────────────────────────────────────────────────────
+PRIORITAS REVISI (3 TIER)
+───────────────────────────────────────────────────────────────────
+
+🔴 TIER 1 - HIGH PRIORITY (12 sub-bab) - WAJIB REVISI:
+   Sub-bab dengan numbered list + pola AI paling kuat
+
+   2.2.2  Aplikasi Berbasis Web ✅ (DONE - sample)
+   2.2.4  Multi-Channel
+   2.2.6  Artificial Intelligence (AI)
+   2.2.8  Deteksi Duplikasi Aduan ✅ (DONE - sample)
+   2.2.9  Prioritas Eskalasi Aduan
+   2.2.12 Ticketing System
+   2.2.14 Natural Language Processing ✅ (DONE - sample)
+   2.2.15 Large Language Model (LLM)
+   2.2.19 Model-View-Controller (MVC)
+   2.2.27 Role-Based Access Control (RBAC)
+   2.2.32 Dashboard dan Statistik
+   2.2.39 Flowchart
+
+🟡 TIER 2 - MEDIUM PRIORITY (15 sub-bab) - POLISH:
+   Sub-bab yang sudah OK tapi perlu sedikit variasi
+
+   2.2.1  Sistem Informasi
+   2.2.3  Manajemen Aduan
+   2.2.5  Notifikasi Real-Time
+   2.2.7  Klasifikasi Aduan
+   2.2.10 Text Classification
+   2.2.11 Named Entity Recognition (NER)
+   2.2.13 Organisasi Perangkat Daerah (OPD)
+   2.2.16 Laravel
+   2.2.17 PHP
+   2.2.18 Composer
+   2.2.20 Pemrograman Berorientasi Objek (PBO)
+   2.2.21 MySQL
+   2.2.26 Google AI Studio
+   2.2.30 Node.js
+   2.2.33 Black Box Testing
+
+🟢 TIER 3 - LOW PRIORITY (12 sub-bab) - KEEP AS IS:
+   Sub-bab yang sudah cukup natural / terlalu teknis untuk diubah
+
+   2.2.22 Webhook
+   2.2.23 Tailwind CSS
+   2.2.24 Laragon
+   2.2.25 Visual Studio Code
+   2.2.27 Gemma 4 31B IT
+   2.2.28 Playwright
+   2.2.29 Vite
+   2.2.31 Database
+   2.2.34 Unified Modelling Language (UML)
+   2.2.35 Use Case Diagram
+   2.2.36 Activity Diagram
+   2.2.37 Sequence Diagram
+   2.2.38 Class Diagram
+
+───────────────────────────────────────────────────────────────────
+STYLE DISTRIBUTION (VARIASI GAYA)
+───────────────────────────────────────────────────────────────────
+
+TIER 1 (12 sub-bab):
+  → 4 sub-bab: Style B (definisi + penjelasan tanpa list)
+  → 4 sub-bab: Style C (definisi + contoh konkret)
+  → 4 sub-bab: Style D (definisi + perbandingan/trade-off)
+
+TIER 2 (15 sub-bab):
+  → 5 sub-bab: Style B
+  → 5 sub-bab: Hybrid (list pendek 2-3 poin + penjelasan)
+  → 5 sub-bab: Minor tweak (ubah frasa, variasi transisi)
+
+TIER 3 (12 sub-bab):
+  → KEEP AS IS (sudah cukup natural atau terlalu teknis)
+
+───────────────────────────────────────────────────────────────────
+EXECUTION PLAN (CHUNKED)
+───────────────────────────────────────────────────────────────────
+
+CHUNK 1: Sub-bab 2.2.1 - 2.2.13 (baris 36-150, ~115 baris)
+CHUNK 2: Sub-bab 2.2.14 - 2.2.26 (baris 152-280, ~130 baris)
+CHUNK 3: Sub-bab 2.2.27 - 2.2.39 (baris 282-523, ~240 baris)
+
+⚠️ CHUNKED WRITE PROTOCOL: MAX 300 LINES PER OPERATION
+
+───────────────────────────────────────────────────────────────────
+VERIFICATION CHECKLIST
+───────────────────────────────────────────────────────────────────
+
+✅ Numbered list: MAX 20% sub-bab (8/39), bukan 100%
+✅ Contoh konkret: MIN 30% sub-bab (12/39)
+✅ Analogi/perbandingan: MIN 20% sub-bab (8/39)
+✅ Variasi kalimat penutup (tidak semua "Dalam sistem ini...")
+✅ Panjang paragraf bervariasi (2-4 paragraf per sub-bab)
+✅ Sitasi tetap akurat (tidak diubah)
+
+───────────────────────────────────────────────────────────────────
