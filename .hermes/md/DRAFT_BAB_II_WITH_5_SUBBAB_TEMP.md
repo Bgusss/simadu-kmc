@@ -39,27 +39,7 @@ Sistem informasi merupakan kombinasi dari komponen-komponen yang terdiri atas ma
 
 ---
 
-#### 2.2.2 Metode Agile
-
-Metode Agile adalah pendekatan pengembangan perangkat lunak yang menekankan pada fleksibilitas, iterasi cepat, dan kolaborasi dalam proses pengembangan (Pressman, 2021). Berbeda dengan metode tradisional yang kaku dan sekuensial, Agile memungkinkan pengembang untuk merespons perubahan kebutuhan dengan cepat melalui siklus pengembangan yang pendek dan berulang. Metode ini pertama kali diperkenalkan melalui Agile Manifesto pada tahun 2001 dan sejak itu menjadi standar industri dalam pengembangan software modern.
-
-Metode Agile memiliki empat nilai inti: individu dan interaksi lebih penting daripada proses dan tools, software yang berfungsi lebih penting daripada dokumentasi yang lengkap, kolaborasi dengan pengguna lebih penting daripada negosiasi kontrak, dan merespons perubahan lebih penting daripada mengikuti rencana awal. Nilai-nilai ini memandu pengembang untuk fokus pada hasil yang dapat digunakan dan fleksibel terhadap perubahan.
-
-Dalam pengembangan sistem Tugas Akhir ini, metode Agile diterapkan melalui empat tahapan utama:
-
-1. **Requirements (Pengumpulan Kebutuhan)**: Tahap ini meliputi analisis kebutuhan sistem, identifikasi fitur utama seperti klasifikasi AI, scraping multi-channel, dan sistem ticketing, serta penentuan spesifikasi teknis dan fungsional.
-
-2. **Design (Perancangan)**: Tahap perancangan meliputi pembuatan diagram UML (Use Case Diagram, Activity Diagram, Sequence Diagram, dan Class Diagram), perancangan arsitektur sistem berbasis MVC, desain struktur database relasional, dan perancangan antarmuka pengguna (UI/UX).
-
-3. **Development (Pengembangan)**: Tahap implementasi kode menggunakan framework Laravel, integrasi AI classification berbasis Gemma 4 31B IT melalui Google AI Studio, pembangunan scraper multi-channel menggunakan Playwright untuk Facebook dan Instagram, implementasi sistem ticketing dengan SLA 24 jam, dan pengembangan dashboard monitoring real-time.
-
-4. **Testing (Pengujian)**: Tahap pengujian menggunakan metode black box testing untuk memastikan seluruh fungsionalitas sistem berjalan sesuai kebutuhan, serta iterasi tuning untuk meningkatkan akurasi klasifikasi AI dari tahap awal hingga mencapai tingkat akurasi optimal sebesar 97.5%.
-
-Metode Agile dipilih karena sangat cocok untuk pengembangan sistem berbasis kecerdasan buatan yang membutuhkan iterasi dan penyesuaian berkelanjutan. Proses tuning model AI, testing akurasi klasifikasi, dan penyempurnaan prompt engineering memerlukan siklus pengembangan yang fleksibel—karakteristik utama dari metode Agile. Selain itu, metode ini memungkinkan pengembangan bertahap dimana setiap fitur dapat diuji dan diperbaiki sebelum melanjutkan ke fitur berikutnya, sehingga meminimalkan risiko kegagalan sistem secara keseluruhan.
-
----
-
-#### 2.2.3 Aplikasi Berbasis Web
+#### 2.2.2 Aplikasi Berbasis Web
 
 Aplikasi berbasis web adalah perangkat lunak yang dijalankan pada server dan diakses melalui browser web, tanpa memerlukan instalasi pada perangkat klien (Rosa & Shalahuddin, 2018). Berbeda dengan aplikasi desktop tradisional yang harus diinstal di setiap perangkat pengguna, aplikasi web hanya memerlukan browser dan koneksi internet untuk diakses. Hal ini memudahkan proses update karena perubahan cukup dilakukan di server saja, tanpa perlu mengupdate setiap perangkat klien secara manual.
 

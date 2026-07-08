@@ -256,6 +256,23 @@ Untuk pertanyaan atau feedback, silakan hubungi:
 - Email: bagusaprianto@example.com
 - GitHub: [@Bgusss](https://github.com/Bgusss)
 
+## 🚀 Deployment
+
+### Railway Hosting (Free)
+
+Project ini bisa di-deploy gratis ke Railway dengan auto-deploy dari GitHub.
+
+**Quick Deploy:**
+1. Daftar di [Railway.app](https://railway.app) (login via GitHub)
+2. New Project → Deploy from GitHub → pilih repo ini
+3. Add MySQL database
+4. Set environment variables
+5. Deploy! 🎉
+
+**Panduan Lengkap:** Lihat [Railway Deployment Guide](.railway/DEPLOYMENT_GUIDE.md)
+
+**Branch Strategy:** Lihat [Branch Strategy Guide](.railway/BRANCH_STRATEGY.md)
+
 ---
 
 <p align="center">Made with ❤️ for Kabupaten Kayong Utara</p>
