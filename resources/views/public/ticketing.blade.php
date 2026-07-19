@@ -1,6 +1,6 @@
 @extends('public.layouts.app')
 
-@section('title', 'Dashboard Monitoring Publik - SIMADU KMC')
+@section('title', 'Dashboard Monitoring Publik - SIMODU KMC')
 
 @push('styles')
 <style>

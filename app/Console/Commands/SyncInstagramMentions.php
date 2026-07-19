@@ -27,13 +27,10 @@ class SyncInstagramMentions extends Command
      */
     public function handle()
     {
-        // Jalankan dari root direktori Laravel (bukan dari folder playwright) agar instagram-session.json ditemukan
-        $nodeProjectPath = base_path();
-        
-        // Kita gunakan path absolut node.exe karena environment variable kadang gagal membaca 'node'
-        $nodePath = 'C:\\laragon\\bin\\nodejs\\node-v22.9.0-win-x64\\node.exe';
+        $nodeProjectPath = config('services.playwright.project_path');
+        $nodePath = config('services.playwright.node_path');
 
-        $scriptPath = 'playwright/instagram-dm.js';
+        $scriptPath = 'instagram-dm.js';
 
         $this->info("Menjalankan script Playwright: {$scriptPath} ...");
 

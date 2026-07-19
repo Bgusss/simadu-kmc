@@ -58,20 +58,72 @@ function loadKnownIds() {
     const known = loadKnownIds();
 
     const browser = await chromium.launch({
-        headless: false
+        headless: false,
+        args: [
+            '--disable-features=Translate',
+            '--disable-translate',
+            '--disable-extensions',
+            '--lang=id-ID'
+        ]
     });
 
     const context = await browser.newContext({
-        storageState: 'facebook-session.json'
+        storageState: 'facebook-session.json',
+        locale: 'id-ID',
+        timezoneId: 'Asia/Pontianak',
+        extraHTTPHeaders: {
+            'Accept-Language': 'id-ID,id;q=0.9'
+        }
+    });
+    
+    // Inject script untuk disable auto-translate di halaman
+    await context.addInitScript(() => {
+        // Override Chrome translate
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['id-ID', 'id']
+        });
+        Object.defineProperty(navigator, 'language', {
+            get: () => 'id-ID'
+        });
     });
 
     const page = await context.newPage();
+
+    const openOriginalText = async (targetPage) => {
+        const originalButtons = targetPage.locator(
+            'text=/Lihat Asli|See Original|View Original/i'
+        );
+
+        const count = await originalButtons.count();
+        if (count === 0) {
+            return;
+        }
+
+        for (let i = 0; i < count; i++) {
+            try {
+                await originalButtons.nth(i).click({ timeout: 1500 });
+                await targetPage.waitForTimeout(500);
+            } catch {
+                // Abaikan tombol yang tidak visible/terlepas karena DOM Facebook berubah.
+            }
+        }
+
+        await targetPage.waitForTimeout(1000);
+    };
+
+    const extractSenderName = (text) => {
+        return (text || '')
+            .replace(/\s+/g, ' ')
+            .replace(/\s+(menyebut Anda|mentioned you|mentioned Anda).*$/i, '')
+            .replace(/\s+(dalam sebuah komentar|dalam komentar|in a comment).*$/i, '')
+            .trim();
+    };
 
     console.log('Membuka notifikasi Facebook...');
 
     await page.goto(
         'https://www.facebook.com/notifications',
-        { waitUntil: 'networkidle' }
+        { waitUntil: 'domcontentloaded', timeout: 45000 }
     );
 
     await page.waitForTimeout(5000);
@@ -110,7 +162,7 @@ function loadKnownIds() {
 
             await detailPage.goto(
                 aggregate.href,
-                { waitUntil: 'networkidle' }
+                { waitUntil: 'domcontentloaded', timeout: 45000 }
             );
 
             await detailPage.waitForTimeout(3000);
@@ -186,19 +238,33 @@ function loadKnownIds() {
                  */
                 const commentPage    = await context.newPage();
                 let   commentMessage = null;
+                let   commenterName  = extractSenderName(direct.text);
 
                 try {
 
                     await commentPage.goto(
                         direct.href,
-                        { waitUntil: 'networkidle' }
+                        { waitUntil: 'domcontentloaded', timeout: 45000 }
                     );
 
                     await commentPage.waitForTimeout(5000);
 
-                    const commenterName = direct.text
-                        .split('mentioned')[0]
-                        .trim();
+                    await openOriginalText(commentPage);
+
+                    const isBadExtractedText = (value) => {
+                        const text = (value || '').trim().toLowerCase();
+
+                        return !text || [
+                            'facebook',
+                            'suka',
+                            'balas',
+                            'like',
+                            'reply',
+                            'lihat asli',
+                            'see original',
+                            'view original'
+                        ].includes(text) || text.startsWith('lihat asli (');
+                    };
 
                     // 1. Coba cari spesifik berdasarkan commentId di DOM
                     let extractedText = null;
@@ -240,11 +306,13 @@ function loadKnownIds() {
                         }, { commentId, commenterName });
                     }
 
-                    if (extractedText) {
+                    if (!isBadExtractedText(extractedText)) {
                         commentMessage = extractedText;
                         console.log(`Berhasil mengekstrak komentar dengan targeted search: "${commentMessage}"`);
                     } else {
-                        // 2. Fallback: Cari di seluruh body text dari bawah ke atas
+                        // 2. Fallback: Cari di seluruh body text dari bawah ke atas.
+                        // Facebook kadang menaruh banyak anchor "Facebook" dekat comment_id,
+                        // jadi targeted search harus diabaikan jika hasilnya noise.
                         const bodyText = await commentPage
                             .locator('body')
                             .innerText();
@@ -256,14 +324,31 @@ function loadKnownIds() {
 
                         const index = lines.findLastIndex(line => line.toLowerCase() === commenterName.toLowerCase());
 
-                        if (index !== -1 && lines[index + 1]) {
+                        if (index !== -1 && !isBadExtractedText(lines[index + 1])) {
                             commentMessage = lines[index + 1];
                             console.log(`Berhasil mengekstrak komentar dengan fallback search dari bawah: "${commentMessage}"`);
                         } else {
                             const indexFirst = lines.findIndex(line => line.toLowerCase() === commenterName.toLowerCase());
-                            if (indexFirst !== -1 && lines[indexFirst + 1]) {
+                            if (indexFirst !== -1 && !isBadExtractedText(lines[indexFirst + 1])) {
                                 commentMessage = lines[indexFirst + 1];
                                 console.log(`Berhasil mengekstrak komentar dengan fallback search dari atas: "${commentMessage}"`);
+                            }
+                        }
+
+                        if (!commentMessage) {
+                            const simaduCandidateIndex = lines.findIndex(line => {
+                                return /^@?simadu\s*kmc\s+.+/i.test(line) &&
+                                    !isBadExtractedText(line);
+                            });
+
+                            if (simaduCandidateIndex !== -1) {
+                                commentMessage = lines[simaduCandidateIndex];
+
+                                if (!commenterName && lines[simaduCandidateIndex - 1]) {
+                                    commenterName = lines[simaduCandidateIndex - 1];
+                                }
+
+                                console.log(`Berhasil mengekstrak komentar dengan fallback keyword Simadu: "${commentMessage}"`);
                             }
                         }
                     }
@@ -292,6 +377,8 @@ function loadKnownIds() {
                         'lihat komentar lainnya', 'most relevant',
                         'paling relevan', 'semua komentar', 'all comments',
                         'ketapang media center', 'simadu kmc',
+                        'lihat asli', 'lihat asli (bahasa sunda)',
+                        'see original', 'view original',
                     ];
 
                     if (facebookNoiseWords.includes(lower)) {
@@ -400,7 +487,7 @@ function loadKnownIds() {
 
                 results.push({
                     notification_text: direct.text,
-                    sender:            direct.text.split('mentioned')[0].trim(),
+                    sender:            commenterName,
                     comment_message:   commentMessage,
                     comment_link:      normalizedLink,
                     comment_id:        commentId

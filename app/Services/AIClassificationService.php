@@ -238,17 +238,17 @@ class AIClassificationService
     private function buildPrompt(array $master, string $message, bool $retry = false): string
     {
         $examples = <<<'TXT'
-CONTOH 1 (PDAM - topik terbanyak ~22.6%):
+CONTOH 1 (PDAM — topik terbanyak ~22.6%):
 Aduan: "air PDAM jalur kalinilam perum. green aulia udah seminggu an dak ngalir, udah di laporkan ke Kantor tapi dak ade tindak lanjut, mohon bantuan di teruskan ke Pimpinan nye. No ID PDAM : 1080961"
 JSON:
 {"suggested_sub_category": "Air Bersih", "priority": "Sedang", "confidence": 97, "reasoning": "Keluhan air PDAM tidak mengalir sudah seminggu, sudah dilaporkan tanpa tindak lanjut."}
 
-CONTOH 2 (Lampu Jalan - topik kedua ~16.7%):
+CONTOH 2 (Lampu Jalan — topik kedua ~16.7%):
 Aduan: "Lampu PJU mati 1 tiang. Alamat: Perumahan BSD Sukaharja, Kabupaten Ketapang, Kalimantan Barat"
 JSON:
 {"suggested_sub_category": "Lampu Jalan", "priority": "Sedang", "confidence": 96, "reasoning": "Penerangan jalan umum tidak berfungsi di area perumahan."}
 
-CONTOH 3 (Jembatan):
+CONTOH 3 (Jembatan — bahaya keselamatan):
 Aduan: "jembatan di kampung saya itu udah agak goyang tiang nya bisa ndak di ganti jembatan nya Di desa batu lapis"
 JSON:
 {"suggested_sub_category": "Jembatan", "priority": "Tinggi", "confidence": 95, "reasoning": "Jembatan tidak stabil membahayakan keselamatan pengguna."}
@@ -258,7 +258,7 @@ Aduan: "Nama: Ahmad syahbandi. Alamat: JL.H.muhammad kumuk. Permasalahan: Belum 
 JSON:
 {"suggested_sub_category": "Bantuan Sosial", "priority": "Sedang", "confidence": 94, "reasoning": "Permohonan bantuan sosial bedah rumah yang belum diterima."}
 
-CONTOH 5 (Jalan Rusak):
+CONTOH 5 (Jalan Rusak — bahaya kecelakaan):
 Aduan: "sering terjadi tumpahan minyak CPO di jalan sui awan yg menyebabkan kecelakaan sepeda motor. Dan tumpahan minyak menyebabkan jalan rusak dan bergelombang. Mohon dapat menjadi perhatian pemda karena sangat membahayakan pengendara motor."
 JSON:
 {"suggested_sub_category": "Jalan", "priority": "Tinggi", "confidence": 96, "reasoning": "Jalan rusak akibat tumpahan CPO membahayakan pengendara motor."}
@@ -293,7 +293,7 @@ Aduan: "memohon bantuan supaya PLN kami bisa nyala, kendala nya kabel belum ada 
 JSON:
 {"suggested_sub_category": "Listrik", "priority": "Sedang", "confidence": 96, "reasoning": "Permohonan pemasangan jaringan listrik PLN ke daerah terpencil."}
 
-CONTOH 12 (Drainase):
+CONTOH 12 (Drainase — ancaman pertanian):
 Aduan: "tidak berfungsinya pintu air persawahan desa Banjarsari karena tidak ada pemeliharaan dari dinas pengairan menyebabkan masuknya air pasang laut ke persawahan"
 JSON:
 {"suggested_sub_category": "Drainase", "priority": "Tinggi", "confidence": 95, "reasoning": "Kerusakan infrastruktur pengairan mengancam lahan pertanian warga."}
@@ -308,10 +308,35 @@ Aduan: "di Desa sp3 sembelangaan ad tower kominfo BAKTI dengn kualitasnya blum b
 JSON:
 {"suggested_sub_category": "Internet", "priority": "Sedang", "confidence": 95, "reasoning": "Tower internet tidak berfungsi menghambat kegiatan pendidikan."}
 
-CONTOH 15 (Pajak/Retribusi):
+CONTOH 15 (Pajak/Retribusi — permintaan informasi):
 Aduan: "Info bagai mana cara mendaftar pajak bumi dan bangunan d wilayah ketapang"
 JSON:
 {"suggested_sub_category": "Pajak", "priority": "Rendah", "confidence": 93, "reasoning": "Pertanyaan prosedur pendaftaran PBB daerah."}
+
+CONTOH 16 (Sampah — lingkungan):
+Aduan: "sampah di parit depan rumah kami sudah menumpuk betabur kemana-mana, bau menyengat, tapi truk sampah ndak pernah lewat semenjak bulan lalu"
+JSON:
+{"suggested_sub_category": "Sampah", "priority": "Sedang", "confidence": 95, "reasoning": "Sampah menumpuk dan tidak diangkut truk sampah, menimbulkan bau."}
+
+CONTOH 17 (Kebakaran — darurat):
+Aduan: "ada kebakaran di daerah mulia kerta, api sudah menjalar ke 3 rumah, tolong kirim pemadam"
+JSON:
+{"suggested_sub_category": "Kebakaran", "priority": "Tinggi", "confidence": 98, "reasoning": "Kebakaran aktif menjalar ke pemukiman, memerlukan penanganan darurat segera."}
+
+CONTOH 18 (Banjir — darurat):
+Aduan: "air sudah masuk rumah setinggi lutut di kelurahan sampit, warga sudah mulai mengungsi ke sekolah, mohon bantuannya"
+JSON:
+{"suggested_sub_category": "Banjir", "priority": "Tinggi", "confidence": 97, "reasoning": "Banjir merendam pemukiman, warga mengungsi, memerlukan evakuasi dan bantuan."}
+
+CONTOH 19 (Dialek Melayu Ketapang):
+Aduan: "aik pdam kamek dak jalan udah seminggu, saye udah lapor tapi dak ade tanggapan dri kantor nye"
+JSON:
+{"suggested_sub_category": "Air Bersih", "priority": "Sedang", "confidence": 96, "reasoning": "Air PDAM tidak mengalir sudah seminggu tanpa tanggapan setelah dilaporkan."}
+
+CONTOH 20 (Kabel/Listrik — bukan jalan):
+Aduan: "ada kabel listrik jatuh menjuntai di tengah jalan depan SD 12 Ketapang, bahaya kena biak-biak yang lewat"
+JSON:
+{"suggested_sub_category": "Listrik", "priority": "Tinggi", "confidence": 97, "reasoning": "Kabel listrik menjuntai di jalan membahayakan keselamatan anak sekolah."}
 TXT;
 
         $retryNote = $retry
@@ -319,64 +344,98 @@ TXT;
             : '';
 
         return <<<PROMPT
-Anda adalah sistem klasifikasi aduan masyarakat milik Ketapang Media Center (KMC) Kabupaten Ketapang, Kalimantan Barat.
+Anda adalah SIMODU KMC — Sistem Informasi Monitoring Aduan Ketapang Media Center, Kabupaten Ketapang, Kalimantan Barat.
+Sistem ini menerima aduan masyarakat dari komentar media sosial (Instagram/Facebook) untuk diklasifikasikan secara otomatis.
 
-TUGAS UTAMA:
-Tentukan SUB KATEGORI yang paling tepat untuk aduan berikut. Kategori dan OPD akan ditentukan otomatis dari sub kategori.
+═══ TUGAS UTAMA ═══
+Tentukan SUB KATEGORI yang paling tepat untuk aduan berikut.
+Kategori induk dan OPD (Organisasi Perangkat Daerah) tujuan akan ditentukan otomatis oleh sistem berdasarkan sub kategori yang Anda pilih.
 
-KONTEKS BAHASA LOKAL (Dialek Melayu Ketapang/Kalbar):
+═══ KONTEKS BAHASA LOKAL (Dialek Melayu Ketapang/Kalbar) ═══
+Masyarakat Ketapang sering menggunakan dialek Melayu lokal dalam aduan mereka.
+Anda WAJIB memahami dan menerjemahkan dialek ini sebelum mengklasifikasikan:
 - "dak", "ndak", "sik", "sik ada" = tidak / tidak ada
-- "aek", "aik" = air (biasanya terkait laporan PDAM)
-- "dak ngalir", "ngk jalan", "dak pakai jalan" = air tidak mengalir (PDAM)
-- "aik teh" = air keruh seperti air teh (masalah PDAM)
-- "parit" = drainase / saluran air
+- "aek", "aik", "aiq" = air (biasanya terkait laporan PDAM)
+- "dak ngalir", "ngk jalan", "dak pakai jalan" = air tidak mengalir (masalah PDAM)
+- "aik teh" = air keruh seperti air teh (masalah kualitas air PDAM)
+- "parit" = drainase / saluran air / selokan
 - "sumbat", "tepampat" = tersumbat
 - "PJU", "lampu jalan" = Penerangan Jalan Umum
 - "solar sell", "solar cell" = lampu jalan tenaga surya
 - "id pelanggan", "idpel", "no id pdam" = nomor pelanggan PDAM
 - "sanyo" = mesin pompa air
-- "mati lampu", "padam listrik", "padam" = masalah listrik padam (Listrik / PLN)
-- "lampu merah" = lampu lalu lintas (bukan lampu penerangan jalan)
-- "min", "mimin" = sapaan untuk admin (bukan istilah internet/website)
+- "mati lampu", "padam listrik", "padam" = masalah listrik padam (→ sub kategori Listrik)
+- "lampu merah" = lampu lalu lintas (→ sub kategori Lampu Lalu Lintas, BUKAN Lampu Jalan)
+- "min", "mimin" = sapaan untuk admin KMC (BUKAN istilah internet/website)
 - "biak" = anak-anak / remaja
-- "bederai", "ancur", "bapok" = rusak parah / hancur (contoh: jalan bederai)
+- "bederai", "ancur", "bapok" = rusak parah / hancur (contoh: jalan bederai = jalan rusak parah)
 - "betabur" = berserakan (biasanya terkait sampah)
 - "lepak" = nongkrong (biasanya terkait ketertiban umum)
-- "sidak" = mereka
-- "kamek" = saya / kami
-- "kitak" = kalian
+- "sidak" = mereka, "kamek" = saya / kami, "kitak" = kalian
 - "pokok" = pohon (contoh: pokok tumbang = pohon tumbang)
 - "ngadang" = menghalangi / melintang
-- "ade" = ada
-- "saye" = saya
-- "dri" = dari
+- "ade" = ada, "saye" = saya, "dri" = dari
+- "turun padang" = kunjungan langsung ke lapangan
+- "gaduh gelisah" = perilaku agresif/tidak terkendali (biasanya ODGJ)
+- "minta2", "minta-minta" = meminta-minta (biasanya orang terlantar)
+- "ngerendap" = terendam air / amblas
 
-ATURAN WAJIB:
-1. Gunakan HANYA sub kategori yang tersedia dalam daftar.
-2. DILARANG membuat sub kategori baru.
-3. Jika tidak ada yang cocok, gunakan: suggested_sub_category = "Aduan Masyarakat"
-4. priority hanya boleh: Rendah, Sedang, atau Tinggi.
-5. confidence harus angka 0 sampai 100.
-6. reasoning harus singkat, maksimal 1 kalimat.
-7. Output harus JSON valid, tanpa markdown, tanpa teks tambahan, tanpa kode block.
-8. KASUS KHUSUS KABEL: Jika keluhan terkait "kabel" (kabel menjuntai, kabel putus, tiang listrik), pilih sub kategori "Listrik", meskipun kejadiannya berada di "jalan". Fokus pada objek utama masalah (kabel).
+═══ ATURAN KLASIFIKASI WAJIB ═══
+1. Gunakan HANYA sub kategori yang tersedia dalam daftar di bawah. DILARANG membuat sub kategori baru.
+2. Jika tidak ada sub kategori yang cocok sama sekali, gunakan: "Aduan Masyarakat".
+3. Fokus pada OBJEK UTAMA masalah, bukan lokasi kejadian:
+   - Kabel listrik jatuh di jalan → "Listrik" (bukan "Jalan")
+   - Pohon tumbang di jalan → "Pohon" (bukan "Jalan")
+   - Lampu PJU mati di jembatan → "Lampu Jalan" (bukan "Jembatan")
+   - Sampah menumpuk di parit → "Sampah" (bukan "Drainase")
+4. Bedakan dengan cermat:
+   - "Lampu Jalan" = PJU/penerangan jalan/solar cell ≠ "Lampu Lalu Lintas" = lampu merah/traffic light
+   - "Jalan" = jalan kabupaten/provinsi ≠ "Jalan Gang" = jalan lingkungan/gang/lorong
+   - "Drainase" = parit/gorong-gorong ≠ "Irigasi" = saluran persawahan/pintu air sawah
+   - "Air Bersih" = masalah PDAM ≠ "Pencemaran Air" = sungai/limbah tercemar
+   - "ODGJ" = gangguan jiwa ≠ "Orang Terlantar" = gelandangan/pengemis
+5. priority hanya boleh salah satu dari: "Rendah", "Sedang", atau "Tinggi".
+6. confidence harus angka bulat 0–100 (seberapa yakin Anda dengan sub kategori yang dipilih).
+7. reasoning harus singkat dan spesifik, maksimal 1 kalimat, menjelaskan mengapa sub kategori tersebut dipilih.
+8. Output HARUS berupa JSON valid murni. Tanpa markdown, tanpa teks tambahan, tanpa kode block.
 
-DAFTAR SUB KATEGORI YANG TERSEDIA:
+═══ ATURAN PENILAIAN PRIORITAS ═══
+Prioritas menentukan urgensi penanganan aduan oleh OPD terkait:
+
+▸ TINGGI — Memerlukan penanganan segera/darurat:
+  • Ancaman keselamatan jiwa: kebakaran, banjir merendam, longsor, kecelakaan, pohon tumbang di jalan
+  • Infrastruktur berbahaya: jembatan goyang/rusak parah, kabel listrik menjuntai, jalan amblas/putus
+  • Kekerasan & perlindungan: KDRT, kekerasan anak, kekerasan perempuan
+  • Kemanusiaan mendesak: ODGJ berkeliaran, orang terlantar butuh evakuasi
+  • Masalah berlarut-larut: sudah berbulan-bulan/bertahun-tahun tanpa tindak lanjut, sudah dilaporkan berkali-kali tapi tidak ditanggapi
+  • Bencana aktif: kebakaran hutan, banjir tidak surut, tanah longsor
+
+▸ SEDANG — Gangguan layanan publik yang perlu ditindak dalam waktu dekat:
+  • Gangguan utilitas: air PDAM tidak mengalir, listrik padam area kecil
+  • Infrastruktur rusak (tidak darurat): jalan berlubang, lampu jalan mati, drainase tersumbat
+  • Kebersihan: sampah menumpuk, pencemaran ringan
+  • Pelayanan publik: lambatnya pengurusan KTP/KK/akta, BPJS bermasalah
+  • Bantuan sosial: permohonan bansos/BLT/bedah rumah
+  • Ketenagakerjaan: keluhan akses kerja, outsourcing
+
+▸ RENDAH — Tidak mendesak, bersifat informatif atau umum:
+  • Pertanyaan/permintaan informasi: tanya prosedur, info layanan
+  • Saran/masukan kebijakan
+  • Monitoring berita/media
+  • Permohonan administratif (mutasi, pindah tugas)
+
+═══ DAFTAR SUB KATEGORI YANG TERSEDIA ═══
 - {$master['subCategoryBlock']}
 
-ATURAN PRIORITAS:
-- Tinggi: bahaya keselamatan, bencana, banjir merendam, jembatan rusak parah, KDRT, orang terlantar, kondisi darurat, masalah berbulan-bulan tanpa tindak lanjut.
-- Sedang: jalan berlubang, lampu jalan mati, PDAM tidak mengalir, drainase tersumbat, sampah menumpuk, fasilitas rusak.
-- Rendah: pertanyaan, permintaan informasi, saran, monitoring berita.
-
+═══ CONTOH KLASIFIKASI ═══
 {$examples}
 
-ADUAN:
+═══ ADUAN YANG HARUS DIKLASIFIKASIKAN ═══
 "{$message}"
 {$retryNote}
 
-KELUARKAN HANYA JSON SEPERTI INI:
-{"suggested_sub_category": "...", "priority": "Sedang", "confidence": 90, "reasoning": "..."}
+KELUARKAN HANYA JSON SEPERTI INI (tanpa teks lain):
+{"suggested_sub_category": "...", "priority": "...", "confidence": 90, "reasoning": "..."}
 PROMPT;
     }
 
@@ -399,7 +458,7 @@ PROMPT;
                             [
                                 'role' => 'user',
                                 'parts' => [
-                                    ['text' => "Anda adalah sistem klasifikasi aduan KMC Ketapang. Ikuti aturan secara ketat dan selalu menghasilkan JSON valid. Fokus menentukan sub kategori yang tepat.\n\n" . $prompt]
+                                    ['text' => "Anda adalah SIMODU KMC — sistem AI klasifikasi aduan masyarakat Ketapang Media Center. Ikuti aturan secara ketat dan selalu menghasilkan JSON valid. Fokus pada akurasi sub kategori, prioritas, dan deteksi spam/duplikasi.\n\n" . $prompt]
                                 ]
                             ]
                         ],
@@ -441,13 +500,13 @@ PROMPT;
 
             } catch (\Exception $e) {
                 if ($attempt === $maxRetries) {
-                    throw new \Exception('Gagal menghubungi AI (Groq): ' . $e->getMessage());
+                    throw new \Exception('Gagal menghubungi AI: ' . $e->getMessage());
                 }
                 sleep($retryDelay);
             }
         }
 
-        throw new \Exception('Gagal menghubungi AI (Groq): maksimum retry tercapai.');
+        throw new \Exception('Gagal menghubungi AI : maksimum retry tercapai.');
     }
 
     private function parseResult(string $content): ?array
@@ -1296,32 +1355,57 @@ PROMPT;
         // ── TAHAP 2: Filter AI ───────────────────────────────────────────────
         try {
             $prompt = <<<PROMPT
-Anda adalah sistem filter aduan masyarakat KMC Ketapang.
+Anda adalah sistem filter spam SIMODU KMC — Sistem Informasi Monitoring Aduan Ketapang Media Center, Kabupaten Ketapang, Kalimantan Barat.
+Sistem ini memproses komentar dari media sosial (Instagram/Facebook) dan harus memfilter komentar yang BUKAN aduan masyarakat yang layak diproses.
 
-KONTEKS BAHASA LOKAL (Dialek Melayu Ketapang/Kalbar):
-- "dak", "ndak", "sik", "sik ada" = tidak / tidak ada
-- "aek", "aik" = air
-- "parit" = drainase / saluran air
-- "pokok" = pohon (contoh: pokok ngadang jalan = pohon menghalangi jalan)
-- "ngadang" = menghalangi / melintang
-- "ade" = ada, "saye" = saya, "dri" = dari, "biak" = anak-anak
-- "bederai", "ancur", "bapok" = rusak parah
+═══ KONTEKS ═══
+Komentar yang masuk berasal dari postingan akun resmi KMC Ketapang di media sosial.
+Masyarakat menyampaikan keluhan/aduan lewat komentar, namun banyak juga komentar yang hanya berisi reaksi, ucapan, atau spam.
 
-TUGAS:
-Tentukan apakah komentar berikut adalah ADUAN/LAPORAN yang jelas dan layak diproses, atau BUKAN (spam, reaksi, ucapan, promosi, tidak jelas, dll).
+═══ KOSAKATA DIALEK MELAYU KETAPANG (WAJIB DIPAHAMI) ═══
+Masyarakat Ketapang sering menggunakan bahasa daerah. Komentar dalam dialek lokal yang berisi aduan nyata HARUS dianggap VALID:
+- "dak/ndak/sik/sik ada" = tidak/tidak ada → "dak ngalir" = tidak mengalir
+- "aek/aik/aiq" = air → "aik dak jalan" = air tidak mengalir (aduan PDAM)
+- "parit" = drainase/selokan → "parit sumbat" = drainase tersumbat
+- "pokok" = pohon → "pokok ngadang jalan" = pohon menghalangi jalan
+- "ngadang" = menghalangi → masalah infrastruktur
+- "bederai/ancur/bapok" = rusak parah → "jalan bederai" = jalan rusak parah
+- "betabur" = berserakan → "sampah betabur" = sampah berserakan
+- "ade" = ada, "saye/kamek" = saya/kami, "dri" = dari, "biak" = anak-anak
+- "minta2" = meminta-minta, "gaduh gelisah" = agresif (ODGJ)
+- "min/mimin" = sapaan admin (BUKAN spam, lanjut baca isi pesan)
 
-ATURAN:
-- Aduan VALID: berisi masalah nyata, permintaan layanan publik, keluhan fasilitas, laporan kejadian, atau pertanyaan terkait layanan pemerintah.
-- WAJIB pertimbangkan bahasa daerah lokal di atas. Jika masuk akal setelah diterjemahkan ke bahasa Indonesia (contoh "ade pokok ngadang jalan" = "ada pohon menghalangi jalan"), anggap VALID.
-- Aduan TIDAK VALID (spam): reaksi pendek (mantap, ok, keren), emoji saja, ucapan selamat, promosi, kalimat tidak bermakna, atau kalimat terlalu umum tanpa detail spesifik.
-- Nilai is_spam = true jika TIDAK VALID.
-- Nilai is_spam = false jika VALID dan layak dijadikan tiket aduan.
+═══ ATURAN DETEKSI SPAM ═══
 
-KOMENTAR:
+ADUAN VALID (is_spam = false) — layak dijadikan tiket:
+✅ Berisi keluhan/masalah nyata tentang layanan publik (air, jalan, listrik, sampah, dll)
+✅ Laporan kejadian (kebakaran, banjir, pohon tumbang, ODGJ, KDRT, dll)
+✅ Permintaan bantuan spesifik (bansos, bedah rumah, perizinan, dll)
+✅ Pertanyaan tentang layanan pemerintah (cara urus KTP, info pajak, dll)
+✅ Komentar dalam dialek Ketapang yang setelah diterjemahkan berisi aduan nyata
+✅ Pesan yang menyebut lokasi + masalah (meski singkat)
+✅ Tag @simodu kmc diikuti isi aduan → VALID (abaikan tag, fokus pada isi)
+
+BUKAN ADUAN / SPAM (is_spam = true) — tidak layak diproses:
+❌ Reaksi singkat tanpa isi: "amin", "mantap", "ok", "keren", "sip", "wkwk", "haha"
+❌ Hanya emoji tanpa teks bermakna
+❌ Ucapan selamat: "selamat ulang tahun", "happy birthday", "selamat lebaran"
+❌ Promosi/iklan: jualan, link produk, investasi, follow back
+❌ Komentar tes: "tes", "test", "halo min", "coba posting"
+❌ Kalimat sangat umum tanpa detail masalah: "kapan ya", "semoga cepat", "setuju"
+❌ Dukungan/pujian tanpa aduan: "semangat kerjanya", "lanjutkan program"
+❌ Komentar tidak bermakna: angka/simbol acak, huruf berulang
+
+PRINSIP UTAMA:
+- Jika RAGU antara spam atau valid → anggap VALID (is_spam = false). Lebih baik meloloskan komentar yang meragukan daripada memblokir aduan masyarakat yang nyata.
+- Komentar pendek tapi berisi masalah spesifik tetap VALID (contoh: "lampu jalan mati" → VALID).
+- Bahasa tidak baku / typo berat tetap VALID selama ada inti aduan.
+
+═══ KOMENTAR YANG HARUS DINILAI ═══
 "{$message}"
 
-KELUARKAN HANYA JSON:
-{"is_spam": true/false, "reason": "alasan singkat 1 kalimat"}
+KELUARKAN HANYA JSON (tanpa markdown, tanpa teks lain):
+{"is_spam": true/false, "reason": "alasan spesifik maksimal 1 kalimat"}
 PROMPT;
 
             $response = $this->callGemini($prompt);
@@ -1384,64 +1468,70 @@ PROMPT;
             $cleanNew = trim($cleanNew, " \t\n\r\0\x0B,.:;");
 
             $prompt = <<<PROMPT
-Kamu adalah sistem deteksi duplikasi aduan masyarakat Ketapang, Kalimantan Barat yang sangat ketat dan presisi.
-Bahasa masyarakat: Bahasa Indonesia formal, Bahasa Melayu Ketapang (dialek lokal), atau campuran keduanya.
+Anda adalah sistem deteksi duplikasi aduan SIMODU KMC — Sistem Informasi Monitoring Aduan Ketapang Media Center, Kabupaten Ketapang, Kalimantan Barat.
+Tugas Anda adalah menentukan apakah aduan BARU merupakan DUPLIKAT dari aduan yang sudah ada (sudah memiliki tiket yang sedang diproses).
 
-KOSAKATA DIALEK KETAPANG (referensi terjemahan):
-- "aik/aiq" = air
-- "dak/ndak/dek" = tidak/belum
-- "jalan" (konteks air) = mengalir
-- "galap/gelap" = mati lampu
+═══ TUJUAN ═══
+Mencegah pembuatan tiket ganda untuk aduan yang sama persis, agar OPD tidak menangani masalah yang identik dua kali.
+Sistem ini HARUS sangat ketat — hanya menandai duplikat jika benar-benar yakin 100%.
+
+═══ KOSAKATA DIALEK KETAPANG (referensi terjemahan) ═══
+Masyarakat Ketapang menggunakan dialek Melayu lokal. Pahami padanan berikut saat membandingkan:
+- "aik/aiq/aek" = air → konteks PDAM/air bersih
+- "dak/ndak/dek" = tidak/belum → "dak ngalir" = tidak mengalir
+- "jalan" (konteks air) = mengalir → "air dak jalan" = air tidak mengalir
+- "galap/gelap" = mati lampu / gelap gulita
 - "PJU" = Penerangan Jalan Umum (lampu jalan)
 - "ODGJ" = Orang Dengan Gangguan Jiwa
-- "jl/jln" = jalan (nama jalan)
-- "gg/gang" = gang/lorong
-- "rt/rw" = RT/RW (wilayah administratif)
-- "kel/kelurahan" = kelurahan
-- "desa" = desa
+- "parit" = drainase/selokan
+- "pokok" = pohon → "pokok tumbang" = pohon tumbang
+- "jl/jln" = jalan (nama jalan), "gg/gang" = gang/lorong
+- "rt/rw" = RT/RW (wilayah administratif terkecil)
+- "kel/kelurahan" = kelurahan, "ds/desa" = desa, "kec" = kecamatan
 
-===== ADUAN BARU YANG AKAN DICEK =====
+═══ ADUAN BARU YANG AKAN DICEK ═══
 "{$cleanNew}"
 
-===== DAFTAR ADUAN YANG SUDAH ADA (sudah punya tiket) =====
+═══ DAFTAR ADUAN YANG SUDAH ADA (sudah punya tiket aktif) ═══
 {$existingList}
 
-===== INSTRUKSI ANALISIS =====
-Lakukan analisis mendalam LANGKAH DEMI LANGKAH untuk setiap aduan di daftar:
+═══ INSTRUKSI ANALISIS (LANGKAH DEMI LANGKAH) ═══
 
-LANGKAH 1 — EKSTRAK dari ADUAN BARU:
-- Masalah utama: [apa yang dikeluhkan?]
-- Lokasi spesifik: [nama jalan, gang, RT/RW, kelurahan, desa, atau landmark — jika ada]
-- Objek terdampak: [lampu, pipa, jalan, pohon, dll — jika ada]
+LANGKAH 1 — EKSTRAK INFORMASI DARI ADUAN BARU:
+- Masalah utama: [apa yang dikeluhkan? air mati? jalan rusak? lampu padam?]
+- Lokasi spesifik: [nama jalan, nomor RT/RW, kelurahan, desa, kecamatan, atau landmark tertentu — jika disebutkan]
+- Objek terdampak: [lampu, pipa, jembatan, pohon, dll — jika disebutkan]
+- Identitas pelapor: [nama, nomor pelanggan — jika disebutkan]
 
-LANGKAH 2 — BANDINGKAN satu per satu dengan aduan yang sudah ada:
-Untuk setiap aduan [ID:X], periksa:
-a) Apakah MASALAH UTAMA sama atau sangat mirip (bukan hanya kategori yang sama)?
-b) Apakah LOKASI SPESIFIK sama atau merujuk ke tempat yang sama?
-c) Apakah OBJEK TERDAMPAK sama?
+LANGKAH 2 — BANDINGKAN SATU PER SATU DENGAN ADUAN YANG SUDAH ADA:
+Untuk setiap aduan [ID:X], periksa TIGA dimensi:
+a) MASALAH UTAMA — Apakah SAMA atau SANGAT MIRIP? (bukan hanya kategori yang sama!)
+b) LOKASI SPESIFIK — Apakah SAMA PERSIS atau jelas merujuk ke tempat yang sama?
+c) OBJEK TERDAMPAK — Apakah sama? (jika disebutkan di kedua aduan)
 
 LANGKAH 3 — PUTUSKAN:
-Aduan dinyatakan DUPLIKAT HANYA JIKA SEMUA kondisi berikut TERPENUHI:
-✅ Masalah utama IDENTIK atau SANGAT MIRIP (bukan sekadar kategori serupa)
+Aduan dinyatakan DUPLIKAT hanya jika SEMUA kondisi ini terpenuhi:
+✅ Masalah utama IDENTIK atau SANGAT MIRIP (bukan sekadar topik serupa)
 ✅ Lokasi SAMA PERSIS atau jelas merujuk ke tempat yang sama
-✅ Objek yang terdampak sama (jika disebutkan)
+✅ Objek yang terdampak sama (jika disebutkan di kedua aduan)
 
-CONTOH BUKAN DUPLIKAT (wajib ditolak):
+═══ CONTOH BUKAN DUPLIKAT (wajib ditolak) ═══
 ❌ "air PDAM mati di Jl. DI Panjaitan" ≠ "air PDAM mati di Gg. Mawar" → BEDA LOKASI
 ❌ "lampu jalan mati di Delta Pawan" ≠ "lampu jalan mati di Mulia Baru" → BEDA LOKASI
 ❌ "jalan rusak di RT 05 Kel. Sampit" ≠ "jalan rusak di RT 12 Kel. Sampit" → BEDA RT
 ❌ "air PDAM tidak mengalir" ≠ "pipa PDAM bocor" → BEDA MASALAH (meski sama-sama PDAM)
-❌ Jika aduan baru TIDAK menyebut lokasi dan aduan lama juga TIDAK menyebut lokasi yang sama → BUKAN DUPLIKAT (lokasi tidak terbukti sama)
+❌ Aduan baru TANPA lokasi ≠ aduan lama TANPA lokasi → TIDAK BISA diverifikasi = BUKAN DUPLIKAT
+❌ Lokasi hanya sebutan umum ("di ketapang", "di kota") tanpa nama jalan/kelurahan → BUKAN DUPLIKAT
 
-CONTOH DUPLIKAT SEJATI (yang boleh ditandai):
+═══ CONTOH DUPLIKAT SEJATI (yang boleh ditandai) ═══
 ✅ "aik pdam dak jalan di jl sutan syahrir" = "air PDAM mati 2 hari jl sultan syahrir" → SAMA masalah + SAMA lokasi
 ✅ "lampu PJU padam di depan kantor bupati" = "lampu jalan mati depan kantor bupati" → SAMA masalah + SAMA lokasi
-✅ "pohon tumbang halangi jalan di jl a yani km3" = "ada pohon ngadang jalan jl ahmad yani km 3" → SAMA masalah + SAMA lokasi
+✅ "pohon tumbang halangi jalan di jl a yani km3" = "ada pohon ngadang jalan jl ahmad yani km 3" → SAMA masalah + SAMA lokasi (bahasa berbeda tapi lokasi identik)
 
-ATURAN TAMBAHAN:
-- Jika aduan baru atau aduan lama TIDAK MENYEBUTKAN lokasi sama sekali → BUKAN DUPLIKAT (tidak bisa diverifikasi lokasinya sama)
-- Jika lokasi hanya disebutkan secara umum (misal: "di ketapang" atau "di kota") tanpa nama jalan/kelurahan/landmark → BUKAN DUPLIKAT
-- Lebih baik SALAH TIDAK MENDETEKSI daripada SALAH MENDETEKSI — jangan flag duplikat jika tidak yakin 100%
+═══ PRINSIP UTAMA ═══
+- Lebih baik SALAH TIDAK MENDETEKSI daripada SALAH MENDETEKSI duplikat
+- Jika tidak yakin 100% → is_duplicate = false
+- Kategori/topik yang sama BUKAN berarti duplikat (5 orang bisa melaporkan jalan rusak di 5 lokasi berbeda)
 
 KELUARKAN HANYA JSON (tanpa penjelasan, tanpa markdown, tanpa kode blok):
 {"is_duplicate": true/false, "matched_id": ID_ATAU_null, "similarity": ANGKA_0_SAMPAI_100, "reason": "alasan spesifik maks 15 kata"}

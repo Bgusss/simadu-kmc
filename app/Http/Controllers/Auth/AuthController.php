@@ -41,10 +41,12 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            $name = $user->name ?? $user->username ?? 'Pengguna';
+
             // Redirect berdasarkan role pengguna
             return match ($user->role) {
-                'admin' => redirect()->route('admin.dashboard'),
-                'opd'   => redirect()->route('opd.dashboard'),
+                'admin' => redirect()->route('admin.dashboard')->with('success', "Selamat datang kembali, {$name}! Anda berhasil masuk sebagai Administrator."),
+                'opd'   => redirect()->route('opd.dashboard')->with('success', "Selamat datang, {$name}! Anda berhasil masuk sebagai OPD."),
                 default => redirect('/login'),
             };
 
@@ -68,7 +70,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with('info', 'Anda telah berhasil keluar dari sistem.');
 
     }
 

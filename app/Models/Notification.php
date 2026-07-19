@@ -38,6 +38,13 @@ class Notification extends Model
         return $this->hasMany(Notification::class, 'duplicate_of_id');
     }
 
+    public function getDisplayMessageAttribute()
+    {
+        $message = $this->comment_message ?: $this->message ?: '';
+
+        return trim(preg_replace('/@?simadu\s*kmc\s*/i', '', $message));
+    }
+
     public function getSenderNameAttribute()
     {
         if (!empty($this->sender) && $this->sender !== 'Facebook') {

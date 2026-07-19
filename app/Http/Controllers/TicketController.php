@@ -243,7 +243,7 @@ class TicketController extends Controller
             'priority' => $validated['priority'],
         ]);
 
-        return redirect()->route('tickets.show', $ticket->id)
+        return redirect()->route('tickets.index')
             ->with('success', 'Detail tiket berhasil diperbarui.');
     }
 

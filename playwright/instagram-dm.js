@@ -1,11 +1,45 @@
 const { chromium } = require('playwright');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+const SESSION_FILE = path.resolve(__dirname, 'instagram-session.json');
 
 (async () => {
-    const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({ storageState: 'instagram-session.json' });
-    const page = await context.newPage();
+    const sessionExists = fs.existsSync(SESSION_FILE);
 
+    const browser = await chromium.launch({
+        headless: false,
+        args: [
+            '--disable-blink-features=AutomationControlled',
+            '--disable-features=Translate',
+            '--disable-translate',
+            '--disable-extensions',
+            '--lang=id-ID'
+        ]
+    });
+
+    const contextOptions = {
+        locale: 'id-ID',
+        timezoneId: 'Asia/Pontianak',
+        viewport: { width: 1920, height: 1080 },
+        extraHTTPHeaders: {
+            'Accept-Language': 'id-ID,id;q=0.9'
+        }
+    };
+
+    if (sessionExists) {
+        contextOptions.storageState = SESSION_FILE;
+    }
+
+    const context = await browser.newContext(contextOptions);
+
+    await context.addInitScript(() => {
+        Object.defineProperty(navigator, 'languages', { get: () => ['id-ID', 'id'] });
+        Object.defineProperty(navigator, 'language', { get: () => 'id-ID' });
+    });
+
+    const page = await context.newPage();
     const results = [];
     const seenKeys = new Set();
 
@@ -18,9 +52,7 @@ const crypto = require('crypto');
 
     const isNoiseLine = (line) => {
         const text = normalize(line);
-        const lower = text.toLowerCase();
         if (!text) return true;
-
         const noisePatterns = [
             /^\d+\s*(menit|jam|hari|minggu|bulan|tahun|[hjmdbst])\s*(lalu|yang lalu)?$/i,
             /^\d+\s*(min|hr|[hm]|d|w|mo|yr)s?\s*(ago)?$/i,
@@ -39,7 +71,7 @@ const crypto = require('crypto');
         if (!msg) return false;
         const text = normalize(msg);
         const lower = text.toLowerCase();
-        
+
         if (isNoiseLine(text)) return false;
 
         const withoutEmoji = text.replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}\s]/gu, '');
@@ -73,169 +105,293 @@ const crypto = require('crypto');
         return true;
     };
 
+    const saveSession = async () => {
+        try {
+            const state = await context.storageState();
+            fs.writeFileSync(SESSION_FILE, JSON.stringify(state, null, 2));
+            console.log('💾 Session Instagram tersimpan di:', SESSION_FILE);
+        } catch (e) {
+            console.error('Gagal menyimpan session:', e.message);
+        }
+    };
+
+    const dismissPopups = async () => {
+        const dismissTexts = ['Not Now', 'Lain Kali', 'Nanti Saja', 'Lewati'];
+        for (const text of dismissTexts) {
+            try {
+                const btn = page.locator(`button:has-text("${text}"), div[role="button"]:has-text("${text}")`);
+                if (await btn.count() > 0) {
+                    await btn.first().click({ force: true, timeout: 2000 });
+                    await page.waitForTimeout(500);
+                }
+            } catch (e) {}
+        }
+    };
+
     try {
-        console.log('Membuka halaman Inbox DM...');
-        await page.goto('https://www.instagram.com/direct/inbox/', { waitUntil: 'networkidle' });
-        await page.waitForTimeout(2000);
+        // ═══════════════════════════════════════════════
+        // FASE 0: CEK SESSION
+        // ═══════════════════════════════════════════════
+        if (!sessionExists) {
+            console.log('❌ Session Instagram tidak ditemukan.');
+            console.log('   Jalankan dulu: node login-instagram.js');
+            console.log('   Login manual, verifikasi email, lalu tekan Enter.');
+            await browser.close();
+            process.exit(1);
+        }
 
-        // Tutup popup "Not Now" / "Lain Kali" jika ada
-        await page.getByRole('button', { name: 'Not Now' }).click({ force: true }).catch(() => {});
-        await page.getByRole('button', { name: 'Lain Kali' }).click({ force: true }).catch(() => {});
-        await page.waitForTimeout(1000);
+        // ═══════════════════════════════════════════════
+        // FASE 1: AUTO-ACCEPT MESSAGE REQUESTS
+        // ═══════════════════════════════════════════════
+        console.log('--- FASE 1: Memeriksa Permintaan Pesan (Requests) ---');
+        await page.goto('https://www.instagram.com/direct/requests/', {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000
+        });
+        await page.waitForTimeout(3000);
 
-        // Fungsi pembantu untuk memproses list obrolan saat ini
-        const processChatList = async (tabName) => {
-            console.log(`\n=== Memproses tab: ${tabName} ===`);
-            // Tunggu sebentar agar list termuat setelah pindah tab
-            await page.waitForTimeout(1000); 
+        // Cek apakah session masih valid
+        if (page.url().includes('/accounts/login')) {
+            console.log('⚠️  Session expired! Menghapus session lama...');
+            if (fs.existsSync(SESSION_FILE)) fs.unlinkSync(SESSION_FILE);
+            console.log('   Jalankan ulang script untuk login kembali.');
+            await browser.close();
+            process.exit(1);
+        }
 
-            // Ambil daftar chat di tab yang sedang aktif
-            // Chat Instagram menggunakan div[role="button"] atau a[href...]. 
-            // Ciri khas baris obrolan adalah memiliki titik tengah "·" untuk waktu (misal "· 1m")
-            const chatLocators = page.locator('a[href^="/direct/t/"], div[role="button"], div[role="listitem"]')
-                .filter({ hasText: '·' })
-                .filter({ hasNotText: /Hidden Requests|Permintaan Tersembunyi/i });
-                
-            const chatCount = await chatLocators.count();
+        await dismissPopups();
 
-            if (chatCount === 0) {
-                console.log(`Tidak ada obrolan di tab ${tabName}.`);
-                return;
+        const reqLocators = page.locator('a[href^="/direct/t/"], div[role="listitem"]')
+            .filter({ hasText: /·|\d+\s*(m|h|d|w|min|jam|hari)/i })
+            .filter({ hasNotText: /Hidden Requests|Permintaan Tersembunyi/i });
+
+        let reqCount = await reqLocators.count();
+        if (reqCount > 0) {
+            const maxReq = Math.min(reqCount, 5);
+            console.log(`Ditemukan ${reqCount} permintaan pesan. Memproses maks ${maxReq}...`);
+
+            for (let i = 0; i < maxReq; i++) {
+                try {
+                    const freshReqLocators = page.locator('a[href^="/direct/t/"], div[role="listitem"]')
+                        .filter({ hasText: /·|\d+\s*(m|h|d|w|min|jam|hari)/i })
+                        .filter({ hasNotText: /Hidden Requests|Permintaan Tersembunyi/i });
+
+                    if (await freshReqLocators.count() === 0) break;
+
+                    await freshReqLocators.first().click({ force: true });
+                    await page.waitForTimeout(2000);
+
+                    const acceptBtn = page.locator('button, div[role="button"]')
+                        .filter({ hasText: /^Accept$|^Terima$/i });
+
+                    if (await acceptBtn.count() > 0) {
+                        console.log(`  ✅ Menerima permintaan ke-${i + 1}...`);
+                        await acceptBtn.first().click({ force: true });
+                        await page.waitForTimeout(1500);
+
+                        const moveGeneralBtn = page.locator('button, div[role="button"]')
+                            .filter({ hasText: /^General$|^Umum$/i })
+                            .filter({ hasNotText: 'Settings' });
+
+                        if (await moveGeneralBtn.count() > 0) {
+                            console.log(`  📂 Memindahkan ke tab General...`);
+                            await moveGeneralBtn.first().click({ force: true });
+                            await page.waitForTimeout(1000);
+                        }
+                    } else {
+                        console.log(`  ⏭️ Permintaan ke-${i + 1}: tidak ada tombol Accept.`);
+                    }
+
+                    await page.goto('https://www.instagram.com/direct/requests/', {
+                        waitUntil: 'domcontentloaded',
+                        timeout: 15000
+                    });
+                    await page.waitForTimeout(1500);
+                } catch (e) {
+                    console.log(`  ❌ Gagal memproses permintaan ke-${i + 1}: ${e.message}`);
+                }
             }
+        } else {
+            console.log('Tidak ada pesan baru di tab Requests.');
+        }
 
-            console.log(`Ditemukan ${chatCount} obrolan di ${tabName}. Memproses maksimal 5 obrolan teratas...`);
-            const maxProcess = Math.min(chatCount, 5);
+        // ═══════════════════════════════════════════════
+        // FASE 2: EKSTRAK ADUAN DARI GENERAL/INBOX
+        // ═══════════════════════════════════════════════
+        console.log('\n--- FASE 2: Mengekstrak Aduan dari DM ---');
+        await page.goto('https://www.instagram.com/direct/inbox/', {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000
+        });
+        await page.waitForTimeout(3000);
+        await dismissPopups();
+
+        const generalTab = page.locator('div[role="tab"], button, span')
+            .filter({ hasText: /^General$|^Umum$/i })
+            .filter({ hasNotText: /Settings|Pengaturan/i });
+
+        if (await generalTab.count() > 0) {
+            await generalTab.first().click({ force: true });
+            await page.waitForTimeout(3000);
+            console.log('Tab General/Umum ditemukan dan diklik.');
+        } else {
+            console.log('Tab General tidak ditemukan — menggunakan inbox utama.');
+        }
+
+        try {
+            await page.waitForSelector('div[role="button"]', { timeout: 10000 });
+        } catch(e) {}
+
+        let chatLocators = page.locator('div[role="button"]').filter({ hasText: /·/ });
+        let chatCount = await chatLocators.count();
+
+        if (chatCount === 0) {
+            console.log('Tidak ada obrolan ditemukan (Pastikan elemen UI sesuai).');
+        } else {
+            const maxProcess = Math.min(chatCount, 8);
+            console.log(`Ditemukan ${chatCount} obrolan. Memproses ${maxProcess} teratas...`);
 
             for (let i = 0; i < maxProcess; i++) {
                 try {
-                    const chatItem = chatLocators.nth(i);
-                    const itemText = await chatItem.innerText();
-                    const lines = itemText.split('\n').map(l => l.trim()).filter(Boolean);
-                    
-                    // Baris pertama biasanya nama pengirim
-                    const senderName = lines[0] || 'Pengirim DM';
-                    
-                    // Baris kedua biasanya preview pesan (contoh: "min aik pdam di btn tanjung pura dah 3 ha...")
-                    let previewText = lines[1] || '';
-                    previewText = previewText.split('·')[0].split('...')[0].trim(); // Ambil bagian awalnya saja
+                    let freshChats = page.locator('div[role="button"]').filter({ hasText: /·/ });
+                    if (i >= await freshChats.count()) break;
 
-                    // Klik obrolan untuk membukanya
+                    const chatItem = freshChats.nth(i);
+                    const itemText = await chatItem.innerText().catch(() => '');
+                    const lines = itemText.split('\n')
+                        .map(l => l.trim())
+                        .filter(l => l && !isNoiseLine(l));
+
+                    let senderName = 'Pengirim DM';
+                    if (lines.length > 0) {
+                        const candidate = lines[0];
+                        if (candidate.length < 40 && !candidate.toLowerCase().includes('min ')) {
+                            senderName = candidate;
+                        }
+                    }
+
                     await chatItem.click({ force: true });
-                    await page.waitForTimeout(1500); // Tunggu pesan dimuat
+                    
+                    let chatOpened = false;
+                    for (let attempt = 0; attempt < 10; attempt++) {
+                        const headerText = await page.evaluate(() => {
+                            const headerEl = document.querySelector('div[role="main"] header');
+                            return headerEl ? (headerEl.innerText || '') : '';
+                        });
+                        if (headerText.toLowerCase().includes(senderName.toLowerCase())) {
+                            chatOpened = true;
+                            break;
+                        }
+                        await page.waitForTimeout(500);
+                    }
 
-                    // Ekstrak semua gelembung pesan di panel kanan
-                    // Instagram selalu menggunakan dir="auto" untuk teks pesan
-                    // Kita juga memeriksa CSS flex/align parent-nya untuk membuang pesan dari kita sendiri (yang berada di kanan / flex-end)
-                    const allMessages = await page.locator('div[dir="auto"]').evaluateAll(els => {
-                        return els.map(e => {
-                            let isMine = false;
-                            let current = e.parentElement;
-                            for (let i = 0; i < 8; i++) {
+                    if (!chatOpened) {
+                        await page.waitForTimeout(2000);
+                    } else {
+                        await page.waitForTimeout(1500);
+                    }
+ 
+                    const targetMessage = await page.evaluate((senderName) => {
+                        const chatArea = document.querySelector('main[role="main"] > section > div > div > div:not([role="navigation"])');
+                        if (!chatArea) return null;
+
+                        const spans = Array.from(chatArea.querySelectorAll('span'));
+                        if (spans.length === 0) return null;
+
+                        const ignoreTexts = [
+                            'kirim pesan...', 'lihat profil', 'aktif', 'active', 'instagram', 'search', 'cari',
+                            'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu', 'kemarin', 'hari ini'
+                        ];
+
+                        for (let k = spans.length - 1; k >= 0; k--) {
+                            const span = spans[k];
+                            const text = span.innerText ? span.innerText.trim() : '';
+                            const lowerText = text.toLowerCase();
+
+                            if (!text || text.length < 8) continue;
+                            if (text.includes('\n')) continue;
+                            if (ignoreTexts.some(ignore => lowerText.includes(ignore))) continue;
+
+                            const isDateTime = /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}/.test(text) || 
+                                               /^\d{1,2}\.\d{2}$/.test(text) || 
+                                               /^\d{1,2}:\d{2}$/.test(text) ||
+                                               /^[a-zA-Z]+\s+\d{1,2}\.\d{2}$/.test(text);
+                            if (isDateTime) continue;
+
+                            let isInbound = false;
+                            let current = span;
+                            for (let j = 0; j < 5; j++) {
                                 if (!current) break;
-                                const style = window.getComputedStyle(current);
-                                if (style.alignSelf === 'flex-end') { isMine = true; break; }
-                                if (style.flexDirection === 'row' && style.justifyContent === 'flex-end') { isMine = true; break; }
-                                if (style.flexDirection === 'column' && style.alignItems === 'flex-end') { isMine = true; break; }
+                                if (current.getAttribute('role') === 'presentation') {
+                                    const style = window.getComputedStyle(current);
+                                    if (style.backgroundColor && style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor !== 'transparent') {
+                                        isInbound = true;
+                                        break;
+                                    }
+                                }
                                 current = current.parentElement;
                             }
-                            if (isMine) return null; // Abaikan pesan balasan admin
-                            return e.innerText.trim();
-                        }).filter(Boolean);
-                    });
 
-                    // Ambil 5 pesan terakhir untuk memastikan tidak ada aduan beruntun yang terlewat
-                    const recentMessages = allMessages.slice(-5);
+                            if (!isInbound) continue;
+
+                            return text;
+                        }
+
+                        return null;
+                    }, senderName);
+
+                    const recentMessages = targetMessage ? [targetMessage] : [];
                     let foundValid = false;
-
+ 
                     for (const msg of recentMessages) {
-                        if (isValidPostMessage(msg)) {
+                        const isValid = isValidPostMessage(msg);
+                        console.log(`  🔍 Mengevaluasi pesan dari ${senderName}: "${normalize(msg).substring(0, 60)}..." | Valid? ${isValid}`);
+                        
+                        if (isValid) {
                             const fingerprint = makeFingerprint(senderName, msg);
                             if (!seenKeys.has(fingerprint)) {
                                 seenKeys.add(fingerprint);
+ 
+                                const threadUrl = page.url().split('?')[0];
+                                const uniqueLink = `${threadUrl}#msg-${fingerprint.substring(0, 12)}`;
+ 
                                 results.push({
-                                    notification_text: `Pesan DM dari ${senderName} (Tab: ${tabName})`,
+                                    notification_text: `Pesan DM dari ${senderName}`,
                                     sender: senderName,
                                     message_type: 'dm',
                                     post_message: normalize(msg),
-                                    post_link: page.url()
+                                    post_link: uniqueLink
                                 });
                                 foundValid = true;
+                                console.log(`  📩 ${senderName}: "${normalize(msg).substring(0, 60)}..."`);
                             }
                         }
                     }
 
                     if (!foundValid) {
-                        console.log(`Pesan terbaru dari ${senderName} diabaikan (spam/sapaan pendek/sudah diproses).`);
+                        console.log(`  ⏭️ ${senderName}: tidak ada aduan valid (spam/sapaan/sudah diproses).`);
+                    }
+
+                    await page.goto('https://www.instagram.com/direct/inbox/', {
+                        waitUntil: 'domcontentloaded',
+                        timeout: 15000
+                    });
+                    await page.waitForTimeout(1500);
+
+                    const genTab = page.locator('div[role="tab"], button, span')
+                        .filter({ hasText: /^General$|^Umum$/i })
+                        .filter({ hasNotText: /Settings|Pengaturan/i });
+                    if (await genTab.count() > 0) {
+                        await genTab.first().click({ force: true });
+                        await page.waitForTimeout(1000);
                     }
                 } catch (e) {
-                    console.log(`Gagal memproses obrolan ke-${i} di ${tabName}: ${e.message}`);
+                    console.log(`  ❌ Gagal memproses obrolan ke-${i + 1}: ${e.message}`);
                 }
             }
-        };
-
-        // FASE 1: AUTO-ACCEPT MESSAGE REQUESTS
-        console.log('\n--- FASE 1: Memeriksa Permintaan Pesan (Requests) ---');
-        console.log('Membuka halaman Message Requests...');
-        await page.goto('https://www.instagram.com/direct/requests/', { waitUntil: 'networkidle' });
-        await page.waitForTimeout(1500);
-        
-        // Cek apakah ada daftar pesan (jika kosong biasanya tampil icon "Message requests")
-        const reqLocators = page.locator('a[href^="/direct/t/"], div[role="button"], div[role="listitem"]')
-                .filter({ hasText: '·' })
-                .filter({ hasNotText: /Hidden Requests|Permintaan Tersembunyi/i });
-                
-            let reqCount = await reqLocators.count();
-            if (reqCount > 0) {
-                const maxReq = Math.min(reqCount, 5);
-                
-                for (let i = 0; i < maxReq; i++) {
-                    try {
-                        // Selalu klik elemen pertama karena list akan bergeser naik setiap kali kita accept pesan
-                        if (await reqLocators.count() === 0) break;
-                        
-                        await reqLocators.first().click({ force: true });
-                        await page.waitForTimeout(1500);
-                        
-                        // Cari dan klik tombol Accept (Terima)
-                        const acceptBtn = page.locator('div[role="button"], button').filter({ hasText: /^Accept$|^Terima$/i });
-                        if (await acceptBtn.count() > 0) {
-                            console.log(`Mengklik Accept untuk permintaan ke-${i+1}...`);
-                            await acceptBtn.first().click({ force: true });
-                            await page.waitForTimeout(1000); // Tunggu modal pilihan muncul
-                            
-                            // Pilih folder "General" (Umum) pada modal
-                            const moveGeneralBtn = page.locator('button, div[role="button"], div[role="dialog"] span').filter({ hasText: /^General$|^Umum$/i }).filter({ hasNotText: 'Settings' });
-                            if (await moveGeneralBtn.count() > 0) {
-                                console.log(`Memindahkan pesan ke tab General...`);
-                                await moveGeneralBtn.first().click({ force: true });
-                                await page.waitForTimeout(1000);
-                            } else {
-                                console.log(`Gagal menemukan tombol General di modal. Melewati...`);
-                            }
-                        } else {
-                            console.log(`Tidak menemukan tombol Accept. Mungkin format chat berbeda.`);
-                        }
-                    } catch (e) {
-                        console.log(`Gagal meng-accept permintaan ke-${i+1}: ${e.message}`);
-                    }
-                }
-            } else {
-                console.log('Tidak ada pesan baru di tab Requests.');
-            }
-        console.log('\n--- FASE 2: Mengekstrak Aduan dari General ---');
-        console.log('Kembali ke halaman Inbox Utama...');
-        await page.goto('https://www.instagram.com/direct/inbox/', { waitUntil: 'networkidle' });
-        await page.waitForTimeout(1500);
-
-        console.log('Mencari tab General (Umum)...');
-        const generalTabLocators = page.locator('text=/General|Umum/i').filter({ hasNotText: 'Settings' });
-        
-        if (await generalTabLocators.count() > 0) {
-            await generalTabLocators.first().click({ force: true });
-            await processChatList('General/Umum');
-        } else {
-            console.log('Tab General (Umum) tidak ditemukan. Pastikan Anda sudah memindahkan pesan ke tab General.');
         }
+
+        await saveSession();
 
         console.log('\n===== HASIL EKSTRAKSI DM =====\n');
         console.log(JSON.stringify(results, null, 4));

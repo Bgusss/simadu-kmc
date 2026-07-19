@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Pelacakan Aduan - SIMADU KMC')</title>
+    <title>@yield('title', 'Pelacakan Aduan - SIMODU KMC')</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=kmc">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=kmc">
+    <link rel="apple-touch-icon" href="{{ asset('images/kmc-logo.png') }}?v=kmc">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
@@ -157,7 +160,7 @@
                 <div class="brand-divider"></div>
                 <div class="d-flex flex-column justify-content-center">
                     <div class="brand-title">
-                        SIMADU <span class="text-orange">KMC</span>
+                        SIMODU <span class="text-orange">KMC</span>
                     </div>
                     <div class="brand-subtitle">Sistem Monitoring Aduan Multi Channel</div>
                     <div class="brand-tagline">Ketapang Media Center</div>
@@ -200,11 +203,28 @@
         @yield('content')
     </main>
 
-    @include('partials.footer')
+    <footer class="footer bg-white border-top py-3 px-4 mt-auto">
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0">
+                    <p class="mb-0 text-secondary fw-semibold small">
+                        &copy; {{ date('Y') }} <span class="text-primary fw-bold">SIMODU KMC</span>. Hak Cipta Dilindungi.
+                    </p>
+                </div>
+                <div class="col-12 col-md-6 text-center text-md-end">
+                    <span class="text-muted small fw-medium">
+                        Sistem Monitoring Aduan Multi Channel - Ketapang Media Center
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('partials.flash-toast')
     @stack('scripts')
 </body>
 </html>

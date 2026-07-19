@@ -24,17 +24,6 @@
 </style>
 
 <div class="row">
-    @if(session('success'))
-    <div class="col-12 mb-3">
-        <div class="alert alert-success shadow-sm border-0 rounded-3 alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-check-circle me-2 fa-lg"></i>
-                <strong class="fs-6">{{ session('success') }}</strong>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
-    @endif
 
     @if(session('error'))
     <div class="col-12 mb-3">

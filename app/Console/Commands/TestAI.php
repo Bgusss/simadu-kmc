@@ -13,56 +13,61 @@ class TestAI extends Command
 
     // 10 aduan asli dari data lapangan KMC Ketapang
     private array $aduanAsli = [
-        [
-            'label'    => 'Air PDAM (dialek Ketapang)',
-            'expected' => 'Air Bersih → PDAM Ketapang',
-            'aduan'    => 'min aik nin kontan dak pakai jalan dah 2 hari nin, tolong gak dibenarkan. id pelanggan 1080961',
-        ],
-        [
-            'label'    => 'Lampu Jalan Mati',
-            'expected' => 'Lampu Jalan → Dinas Perhubungan',
-            'aduan'    => 'lampu sepanjang jalan jembatan pwn 5 mati semua, gelap banget pak, rawan kecelakaan',
-        ],
-        [
-            'label'    => 'Jalan Rusak CPO',
-            'expected' => 'Jalan → Dinas PUTR',
-            'aduan'    => 'sering terjadi tumpahan minyak CPO di jalan sui awan yg menyebabkan kecelakaan sepeda motor. Mohon dapat menjadi perhatian pemda karena sangat membahayakan pengendara motor.',
-        ],
-        [
-            'label'    => 'Orang Terlantar',
-            'expected' => 'Orang Terlantar → Dinas Sosial',
-            'aduan'    => 'ada lansia terlantar di jl agus salim perlu pertolongan, sudah beberapa hari di situ tidak ada yang ngurusin',
-        ],
-        [
-            'label'    => 'ODGJ Ganggu Warga',
-            'expected' => 'ODGJ → Dinas Sosial',
-            'aduan'    => 'izin melaporkan ada lansia dg gaduh gelisah di jalan kalinilam. Ada aksi kekerasan dari cucu. Beliau sering kabur dan sulit dikendalikan, mohon bantuannya',
-        ],
-        [
-            'label'    => 'Bantuan Sosial Bedah Rumah',
-            'expected' => 'Bantuan Sosial → Dinas Sosial',
-            'aduan'    => 'Nama: Ahmad syahbandi. Alamat: JL.H.muhammad kumuk. Permasalahan: Belum mendapatkan bantuan bedah rumah padahal sudah daftar lama.',
-        ],
-        [
-            'label'    => 'Ketenagakerjaan Perusahaan',
-            'expected' => 'Ketenagakerjaan → Dinas Tenaga Kerja',
-            'aduan'    => 'Kami pemuda kecamatan Matan Hilir Selatan sudah seringkali melamar pekerjaan di perusahaan PT BAP dan KBS tapi lamaran tidak ada yang diterima, padahal sudah mediasi. Mohon solusinya',
-        ],
-        [
-            'label'    => 'Listrik PLN Belum Masuk',
-            'expected' => 'Listrik → PLN',
-            'aduan'    => 'memohon bantuan supaya PLN kami bisa nyala, kendala nya kabel belum ada dari simpang kelampai 7 km, tiang sudah ada mohon di bantu',
-        ],
-        [
-            'label'    => 'Nelayan Butuh Alat Tangkap',
-            'expected' => 'Nelayan → Dinas Ketahanan Pangan',
-            'aduan'    => 'tolong bantu kami untuk alat tangkap, sudah beberapa tahun ini program ke pemerintah tidak pernah lagi mengucurkan bantuan kepada nelayan pesisir dusun sungai tengar kecamatan Kendawangan',
-        ],
-        [
-            'label'    => 'Drainase Pintu Air Sawah',
-            'expected' => 'Drainase → Dinas PUTR',
-            'aduan'    => 'tidak berfungsinya pintu air persawahan desa Banjarsari karena tidak ada pemeliharaan dari dinas pengairan menyebabkan masuknya air pasang laut ke persawahan kami',
-        ],
+        // [
+        //     'label'    => 'Air PDAM (dialek Ketapang)',
+        //     'expected' => 'Air Bersih → PDAM Ketapang',
+        //     'aduan'    => 'min aik nin kontan dak pakai jalan dah 2 hari nin, tolong gak dibenarkan. id pelanggan 1080961',
+        // ],
+         [
+        'label'    => 'Sapaan Iseng',
+        'expected' => 'spam',
+        'aduan'    => 'assalamualaikum admin, sehat ka?',
+         ],
+        // [
+        //     'label'    => 'Lampu Jalan Mati',
+        //     'expected' => 'Lampu Jalan → Dinas Perhubungan',
+        //     'aduan'    => 'lampu sepanjang jalan jembatan pwn 5 mati semua, gelap banget pak, rawan kecelakaan',
+        // ],
+        // [
+        //     'label'    => 'Jalan Rusak CPO',
+        //     'expected' => 'Jalan → Dinas PUTR',
+        //     'aduan'    => 'sering terjadi tumpahan minyak CPO di jalan sui awan yg menyebabkan kecelakaan sepeda motor. Mohon dapat menjadi perhatian pemda karena sangat membahayakan pengendara motor.',
+        // ],
+        // [
+        //     'label'    => 'Orang Terlantar',
+        //     'expected' => 'Orang Terlantar → Dinas Sosial',
+        //     'aduan'    => 'ada lansia terlantar di jl agus salim perlu pertolongan, sudah beberapa hari di situ tidak ada yang ngurusin',
+        // ],
+        // [
+        //     'label'    => 'ODGJ Ganggu Warga',
+        //     'expected' => 'ODGJ → Dinas Sosial',
+        //     'aduan'    => 'izin melaporkan ada lansia dg gaduh gelisah di jalan kalinilam. Ada aksi kekerasan dari cucu. Beliau sering kabur dan sulit dikendalikan, mohon bantuannya',
+        // ],
+        // [
+        //     'label'    => 'Bantuan Sosial Bedah Rumah',
+        //     'expected' => 'Bantuan Sosial → Dinas Sosial',
+        //     'aduan'    => 'Nama: Ahmad syahbandi. Alamat: JL.H.muhammad kumuk. Permasalahan: Belum mendapatkan bantuan bedah rumah padahal sudah daftar lama.',
+        // ],
+        // [
+        //     'label'    => 'Ketenagakerjaan Perusahaan',
+        //     'expected' => 'Ketenagakerjaan → Dinas Tenaga Kerja',
+        //     'aduan'    => 'Kami pemuda kecamatan Matan Hilir Selatan sudah seringkali melamar pekerjaan di perusahaan PT BAP dan KBS tapi lamaran tidak ada yang diterima, padahal sudah mediasi. Mohon solusinya',
+        // ],
+        // [
+        //     'label'    => 'Listrik PLN Belum Masuk',
+        //     'expected' => 'Listrik → PLN',
+        //     'aduan'    => 'memohon bantuan supaya PLN kami bisa nyala, kendala nya kabel belum ada dari simpang kelampai 7 km, tiang sudah ada mohon di bantu',
+        // ],
+        // [
+        //     'label'    => 'Nelayan Butuh Alat Tangkap',
+        //     'expected' => 'Nelayan → Dinas Ketahanan Pangan',
+        //     'aduan'    => 'tolong bantu kami untuk alat tangkap, sudah beberapa tahun ini program ke pemerintah tidak pernah lagi mengucurkan bantuan kepada nelayan pesisir dusun sungai tengar kecamatan Kendawangan',
+        // ],
+        // [
+        //     'label'    => 'Drainase Pintu Air Sawah',
+        //     'expected' => 'Drainase → Dinas PUTR',
+        //     'aduan'    => 'tidak berfungsinya pintu air persawahan desa Banjarsari karena tidak ada pemeliharaan dari dinas pengairan menyebabkan masuknya air pasang laut ke persawahan kami',
+        // ],
     ];
 
     public function handle(): void
@@ -71,7 +76,7 @@ class TestAI extends Command
 
         $this->newLine();
         $this->line('  <fg=cyan;options=bold>╔══════════════════════════════════════════════════════════════╗</>');
-        $this->line('  <fg=cyan;options=bold>║      TEST AI KLASIFIKASI — KMC KETAPANG (DATA LAPANGAN)      ║</>');
+        $this->line('  <fg=cyan;options=bold>║      TEST AI KLASIFIKASI — KETAPANG MEDIA CENTER             ║</>');
         $this->line('  <fg=cyan;options=bold>╚══════════════════════════════════════════════════════════════╝</>');
         $this->line("  Model  : <fg=yellow>" . config('gemini.model', 'gemma-4-31b-it') . "</> (Google AI Studio)");
         $this->line("  Total  : <fg=yellow>" . count($this->aduanAsli) . " aduan asli masyarakat Ketapang</>");

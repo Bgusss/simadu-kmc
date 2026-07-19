@@ -166,7 +166,7 @@ class DashboardController extends Controller
             'highPriorityNotification' => $highPriorityNotification ? [
                 'id' => $highPriorityNotification->id,
                 'sender_name' => $highPriorityNotification->sender_name ?? 'Pengirim Anonim',
-                'message' => trim(preg_replace('/@?simadu\s*kmc\s*/i', '', $highPriorityNotification->message)),
+                'message' => $highPriorityNotification->display_message,
                 'suggested_category' => $highPriorityNotification->suggested_category,
                 'suggested_sub_category' => $highPriorityNotification->suggested_sub_category,
                 'created_at' => $highPriorityNotification->created_at->diffForHumans(),
@@ -176,7 +176,7 @@ class DashboardController extends Controller
             'latestNotification' => $latestNotification ? [
                 'id' => $latestNotification->id,
                 'sender_name' => $latestNotification->sender_name ?? 'Pengirim Anonim',
-                'message' => trim(preg_replace('/@?simadu\s*kmc\s*/i', '', $latestNotification->message)),
+                'message' => $latestNotification->display_message,
                 'suggested_category' => $latestNotification->suggested_category,
                 'suggested_sub_category' => $latestNotification->suggested_sub_category,
                 'created_at' => $latestNotification->created_at->diffForHumans(),

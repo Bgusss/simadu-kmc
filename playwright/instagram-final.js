@@ -8,7 +8,9 @@ const crypto = require('crypto');
     });
 
     const context = await browser.newContext({
-        storageState: 'instagram-session.json'
+        storageState: 'instagram-session.json',
+        locale: 'id-ID',  // Bahasa Indonesia original
+        timezoneId: 'Asia/Pontianak'
     });
 
     const page = await context.newPage();

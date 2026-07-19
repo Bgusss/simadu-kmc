@@ -9,7 +9,7 @@
 
     <title>
 
-        @yield('title', 'SIMADU KMC')
+        @yield('title', 'SIMODU KMC')
 
     </title>
 
@@ -342,6 +342,20 @@
 
         /* Override SweetAlert2 Default Styles for elements */
         .ios-toast-popup .swal2-html-container {
+
+        /* ── SweetAlert Flash Toast ── */
+        .swal-toast-custom {
+            font-family: 'Instrument Sans', system-ui, sans-serif !important;
+            font-size: 0.875rem !important;
+            font-weight: 500 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+            padding: 12px 20px !important;
+        }
+        .swal-toast-success { border-left: 4px solid #22c55e !important; }
+        .swal-toast-error   { border-left: 4px solid #ef4444 !important; }
+        .swal-toast-warning { border-left: 4px solid #f59e0b !important; }
+        .swal-toast-info    { border-left: 4px solid #3b82f6 !important; }
             margin: 0 !important;
             padding: 0 !important;
             text-align: left !important;
@@ -467,6 +481,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('partials.flash-toast')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
@@ -645,7 +660,7 @@
                                 let platformIcon = '<i class="fa-solid fa-bell"></i>';
                                 let iconColor = '#0d47a1'; 
                                 let platformClass = 'default';
-                                let platformName = 'SIMADU KMC';
+                                let platformName = 'SIMODU KMC';
 
                                 if (notif.title && notif.title.toLowerCase().includes('facebook')) {
                                     platformIcon = '<i class="fa-brands fa-facebook-f"></i>';

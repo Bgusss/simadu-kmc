@@ -4,7 +4,7 @@
         <div class="row align-items-center justify-content-between">
             <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0">
                 <p class="mb-0 text-secondary fw-semibold small">
-                    &copy; {{ date('Y') }} <span class="text-primary fw-bold">SIMADU KMC</span>. Hak Cipta Dilindungi.
+                    &copy; {{ date('Y') }} <span class="text-primary fw-bold">SIMODU KMC</span>. Hak Cipta Dilindungi.
                 </p>
             </div>
             <div class="col-12 col-md-6 text-center text-md-end">

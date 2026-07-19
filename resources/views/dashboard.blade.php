@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - SIMADU KMC')
+@section('title', 'Dashboard - SIMODU KMC')
 
 @section('page-title')
     <i class="fa-solid fa-chart-line text-primary me-2"></i> Dashboard Overview
@@ -154,7 +154,7 @@
                     </div>
                     <div class="rounded-3 p-3 border-start border-danger border-3 mb-3" style="background-color: #fef2f2;">
                         <p class="mb-0 text-dark" style="font-size: 0.92rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            "{{ trim(preg_replace('/@?simadu\s*kmc\s*/i', '', $highPriorityNotification->message)) }}"
+                            "{{ $highPriorityNotification->display_message }}"
                         </p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
@@ -251,7 +251,7 @@
                     </div>
                     <div class="rounded-3 p-3 border-start border-primary border-3 mb-3" style="background-color: #f8fafc;">
                         <p class="mb-0 text-dark" style="font-size: 0.92rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            "{{ trim(preg_replace('/@?simadu\s*kmc\s*/i', '', $latestNotification->message)) }}"
+                            "{{ $latestNotification->display_message }}"
                         </p>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">

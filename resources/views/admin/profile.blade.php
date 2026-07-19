@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Profil Admin - SIMADU KMC')
+@section('title', 'Profil Admin - SIMODU KMC')
 @section('page-title')
     <i class="fa-solid fa-user-circle text-primary me-2"></i> Profil Admin
 @endsection
@@ -9,13 +9,6 @@
 <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data" class="container-fluid px-0">
     @csrf
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 rounded-4 shadow-sm mb-4" role="alert">
-            <i class="fa-solid fa-circle-check me-2 text-success"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
 
     <div class="row g-4">
         <!-- Left Column: Form Fields -->

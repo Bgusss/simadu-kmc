@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Tiket - SIMADU KMC')
+@section('title', 'Daftar Tiket - SIMODU KMC')
 @section('page-title')
     <i class="fa-solid fa-ticket text-primary me-2"></i> Daftar Tiket
 @endsection
@@ -55,26 +55,86 @@
         .table-hover tbody tr:hover {
             background-color: #f8fafc;
         }
+
+        .ticket-priority-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border: 1.5px solid;
+            border-radius: 8px;
+            background-color: #ffffff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .ticket-priority-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+            filter: brightness(0.98);
+        }
+
+        .ticket-priority-low {
+            border-color: #3b82f6;
+            color: #1d4ed8;
+            background-color: rgba(59, 130, 246, 0.02);
+        }
+
+        .ticket-priority-medium {
+            border-color: #eab308;
+            color: #a16207;
+            background-color: rgba(234, 179, 8, 0.02);
+        }
+
+        .ticket-priority-high {
+            border-color: #ef4444;
+            color: #b91c1c;
+            background-color: rgba(239, 68, 68, 0.02);
+        }
+
+        .priority-legend {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem 1.25rem;
+            margin-top: 1rem;
+            padding: 0.9rem 1rem;
+            border: 1.5px dashed #e2e8f0;
+            border-radius: 14px;
+            background: #f8fafc;
+        }
+
+        .priority-legend-title {
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .priority-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .priority-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 4px;
+            border: 1.5px solid transparent;
+        }
+
+        .priority-legend-low { border-color: #3b82f6; background-color: rgba(59, 130, 246, 0.1); }
+        .priority-legend-medium { border-color: #eab308; background-color: rgba(234, 179, 8, 0.1); }
+        .priority-legend-high { border-color: #ef4444; background-color: rgba(239, 68, 68, 0.1); }
     </style>
 
     <div class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-4">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show border-0 rounded-4 shadow-sm mb-4" role="alert">
-                    <i class="fa-solid fa-circle-check me-2"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show border-0 rounded-4 shadow-sm mb-4" role="alert">
-                    <i class="fa-solid fa-circle-exclamation me-2"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
             {{-- Search & Filter --}}
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">
@@ -167,7 +227,16 @@
                         @forelse($tickets as $ticket)
                             <tr>
                                 <td>
-                                    <span class="badge bg-secondary px-2 py-2 font-monospace">
+                                    @php
+                                        $priority = strtolower($ticket->priority ?? 'sedang');
+                                        $priorityBadgeClass = match ($priority) {
+                                            'tinggi' => 'ticket-priority-high',
+                                            'rendah' => 'ticket-priority-low',
+                                            default => 'ticket-priority-medium',
+                                        };
+                                        $priorityLabel = ucfirst($priority);
+                                    @endphp
+                                    <span class="ticket-priority-badge {{ $priorityBadgeClass }} font-monospace" title="Prioritas {{ $priorityLabel }}" data-bs-toggle="tooltip">
                                         {{ $ticket->ticket_number }}
                                     </span>
                                 </td>
@@ -271,6 +340,21 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <div class="priority-legend" role="note" aria-label="Keterangan warna prioritas tiket">
+                <span class="priority-legend-title">
+                    <i class="fa-solid fa-circle-info me-1"></i> Keterangan warna nomor tiket:
+                </span>
+                <span class="priority-legend-item">
+                    <span class="priority-legend-dot priority-legend-low"></span> Biru: Prioritas Rendah
+                </span>
+                <span class="priority-legend-item">
+                    <span class="priority-legend-dot priority-legend-medium"></span> Kuning: Prioritas Sedang
+                </span>
+                <span class="priority-legend-item">
+                    <span class="priority-legend-dot priority-legend-high"></span> Merah: Prioritas Tinggi
+                </span>
             </div>
 
             @if($tickets->hasPages())

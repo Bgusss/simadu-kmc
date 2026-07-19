@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manajemen OPD - SIMADU KMC')
+@section('title', 'Manajemen OPD - SIMODU KMC')
 @section('page-title')
     <i class="fa-solid fa-building-user text-primary me-2"></i> Daftar OPD
 @endsection
@@ -59,12 +59,6 @@
         </div>
     </div>
     <div class="card-body p-4">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
 
         <div class="table-responsive">
             <table class="table table-hover align-middle">

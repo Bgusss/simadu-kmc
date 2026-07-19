@@ -4,11 +4,48 @@ const crypto = require('crypto');
 (async () => {
 
     const browser = await chromium.launch({
-        headless: false
+        headless: false,
+        args: [
+            '--disable-features=Translate',
+            '--disable-translate',
+            '--disable-extensions',
+            '--lang=id-ID'
+        ]
     });
 
     const context = await browser.newContext({
-        storageState: 'facebook-session.json'
+        storageState: 'facebook-session.json',
+        locale: 'id-ID',
+        timezoneId: 'Asia/Pontianak',
+        extraHTTPHeaders: {
+            'Accept-Language': 'id-ID,id;q=0.9'
+        }
+    });
+    
+    // Inject script untuk disable auto-translate di halaman
+    await context.addInitScript(() => {
+        // Override Chrome translate
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['id-ID', 'id']
+        });
+        Object.defineProperty(navigator, 'language', {
+            get: () => 'id-ID'
+        });
+        
+        // Auto-klik "Lihat Asli" untuk disable translate Facebook
+        const observer = new MutationObserver(() => {
+            document.querySelectorAll('span, div').forEach(el => {
+                const text = el.textContent?.trim();
+                if (text?.includes('Lihat Asli') || text?.includes('See Original')) {
+                    const button = el.closest('div[role="button"]');
+                    if (button && !button.dataset.clicked) {
+                        button.dataset.clicked = 'true';
+                        button.click();
+                    }
+                }
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
     });
 
     const page = await context.newPage();
@@ -277,10 +314,35 @@ const crypto = require('crypto');
             const title = await page.title();
             let titleText = title.replace(' | Facebook', '').trim();
 
+            // Coba extract sender dari title dengan regex
             let sender = null;
             const senderMatch = titleText.match(/^(.+?)\s-\s(.+)$/);
             if (senderMatch) {
                 sender = senderMatch[1];
+            }
+
+            // Fallback: extract sender dari DOM (author name)
+            if (!sender || sender.toLowerCase().includes('simadu')) {
+                try {
+                    sender = await page.$eval(
+                        'h2 a[role="link"], h3 a[role="link"], strong a[role="link"]',
+                        el => el.textContent.trim()
+                    ).catch(() => null);
+                } catch (e) {}
+            }
+
+            // Jika masih gagal, coba dari meta tag author
+            if (!sender || sender.toLowerCase().includes('simadu')) {
+                try {
+                    sender = await page.$eval(
+                        'meta[property="og:title"], meta[name="author"]',
+                        el => el.getAttribute('content')
+                    ).catch(() => null);
+                    if (sender) {
+                        // Clean og:title yang biasanya format "Nama | Facebook"
+                        sender = sender.replace(' | Facebook', '').split(' - ')[0].trim();
+                    }
+                } catch (e) {}
             }
 
             let postMessage = '';

@@ -1,6 +1,6 @@
 <nav class="sidebar">
     <div class="sidebar-header">
-        <h4 class="mb-0 fw-bold">SIMADU-KMC</h4>
+        <h4 class="mb-0 fw-bold">SIMODU-KMC</h4>
         <small class="text-white-50">Portal OPD</small>
     </div>
 

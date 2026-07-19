@@ -21,7 +21,7 @@
                     line-height: 1.2;
                 ">
 
-                SIMADU KMC
+                SIMODU KMC
 
             </div>
 

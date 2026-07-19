@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SIMADU-KMC</title>
+    <title>Login - SIMODU KMC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts: Plus Jakarta Sans -->
@@ -86,7 +86,7 @@
     <div class="login-card">
         <div class="login-header">
             <img src="{{ asset('images/kmc-logo.png') }}" alt="KMC Logo" onerror="this.style.display='none'">
-            <h4 class="mb-0 fw-bold">SIMADU-KMC</h4>
+            <h4 class="mb-0 fw-bold">SIMODU KMC</h4>
             <p class="mb-0 text-white-50">Sistem Monitoring Aduan Multi Channel</p>
         </div>
         <div class="login-body">
@@ -135,5 +135,7 @@
             </div>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@include('partials.flash-toast')
 </body>
 </html>

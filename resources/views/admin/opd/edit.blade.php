@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit OPD - SIMADU KMC')
+@section('title', 'Edit OPD - SIMODU KMC')
 @section('page-title')
     <a href="{{ route('admin.opd.index') }}" class="btn-back me-2"><i class="fas fa-arrow-left"></i></a> 
     Edit OPD: {{ $opd->name }}

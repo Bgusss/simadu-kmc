@@ -24,30 +24,6 @@
 </style>
 
 <div class="row">
-    @if(session('success'))
-    <div class="col-12 mb-3">
-        <div class="alert alert-success shadow-sm border-0 rounded-3 alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-check-circle me-2 fa-lg"></i>
-                <strong class="fs-6">{{ session('success') }}</strong>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="col-12 mb-3">
-        <div class="alert alert-danger shadow-sm border-0 rounded-3 alert-dismissible fade show" role="alert">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-exclamation-circle me-2 fa-lg"></i>
-                <strong class="fs-6">{{ session('error') }}</strong>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
-    @endif
-
     @if($errors->any())
     <div class="col-12 mb-3">
         <div class="alert alert-danger shadow-sm border-0 rounded-3">
@@ -105,6 +81,26 @@
                             @if($ticket->sub_category)
                                 <div class="small mt-1 text-secondary"><i class="fas fa-level-up-alt fa-rotate-90 me-1"></i> {{ $ticket->sub_category }}</div>
                             @endif
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-4 border border-opacity-50 h-100 transition-all hover-shadow">
+                            <div class="text-muted small fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;"><i class="fas fa-building me-1"></i> Instansi Terkait</div>
+                            <div class="fw-bold text-dark fs-6">{{ $ticket->assignedOpd->name ?? 'Belum Ditugaskan' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-4 border border-opacity-50 h-100 transition-all hover-shadow">
+                            <div class="text-muted small fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;"><i class="fas fa-exclamation-circle me-1"></i> Prioritas</div>
+                            <div class="mt-1">
+                                @if(strtolower($ticket->priority) == 'tinggi')
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-arrow-up me-1"></i> Tinggi</span>
+                                @elseif(strtolower($ticket->priority) == 'sedang')
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-1 fw-bold text-dark"><i class="fa-solid fa-arrow-right me-1"></i> Sedang</span>
+                                @else
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-arrow-down me-1"></i> Rendah</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
