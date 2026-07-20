@@ -649,7 +649,7 @@
                         // Show a toast for each new notification
                         newNotifications.forEach((notif, index) => {
                             setTimeout(() => {
-                                let senderText = notif.sender ? notif.sender : 'Sistem';
+                                let senderText = notif.sender_name ? notif.sender_name : (notif.sender ? notif.sender : 'Sistem');
                                 let bodyText = notif.comment_message ? notif.comment_message : (notif.message ? notif.message : 'Ada pembaruan baru');
                                 
                                 // Hilangkan Tag Simadu KMC

@@ -72,7 +72,12 @@ class SyncInstagramMentions extends Command
 
         foreach ($mentions as $mention) {
             $postLink = rtrim(trim($mention['post_link'] ?? ''), '/');
-            $uniqueLink = $postLink . '#' . md5($mention['post_message']);
+
+            // Hapus SEMUA fragment dari permalink, pertahankan hanya thread URL
+            // (direct/t/xxxxx) sebagai basis unik, lalu tambahkan hash pesan.
+            // Ini mencegah duplikasi karena fragment #msg-xxxxx berubah setiap run.
+            $cleanLink = preg_replace('/#.*$/', '', $postLink);
+            $uniqueLink = rtrim($cleanLink, '/') . '#' . md5($mention['post_message']);
 
             if (empty($mention['post_message'])) {
                 $this->warn('Pesan dilewati: post_message kosong.');

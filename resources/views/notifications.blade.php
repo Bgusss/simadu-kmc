@@ -260,79 +260,68 @@
     {{-- Search & Filter --}}
     <div class="card border-0 shadow-sm rounded-4 mb-3">
         <div class="card-body px-3 py-2">
-
-            {{-- Header --}}
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.85rem;">
-                    <i class="fa-solid fa-sliders me-2 text-primary"></i>Filter & Pencarian
-                </h6>
-                @if(request()->filled('search') || request()->filled('type') || request()->filled('status') || request()->filled('duplicate'))
-                    <a href="{{ route('notifications.index') }}" class="btn btn-sm btn-light border text-danger fw-semibold rounded-pill px-3 shadow-sm" style="font-size: 0.75rem;">
-                        <i class="fa-solid fa-rotate-left me-1"></i>Reset
-                    </a>
-                @endif
-            </div>
-
             <form method="GET" action="{{ route('notifications.index') }}">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
 
-                {{-- Baris 1: Search --}}
-                <div class="position-relative mb-2">
-                    <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="z-index: 5; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.8rem;"></i>
-                    <input type="text" name="search" class="form-control rounded-pill ps-5 pe-5"
-                        style="height: 36px; font-size: 0.825rem; border-color: #cbd5e1; background: #f8fafc;"
-                        placeholder="Cari nama pengirim, isi aduan, atau kata kunci..."
-                        value="{{ request('search') }}">
-                    @if(request('search'))
-                        <a href="{{ route('notifications.index') }}" class="position-absolute text-muted text-decoration-none d-flex align-items-center" style="z-index: 5; right: 14px; top: 50%; transform: translateY(-50%);" title="Hapus Pencarian">
-                            <i class="fa-solid fa-circle-xmark"></i>
+                    {{-- Search Input --}}
+                    <div class="position-relative flex-grow-1" style="min-width: 200px;">
+                        <i class="fa-solid fa-magnifying-glass position-absolute text-muted" style="z-index: 5; left: 13px; top: 50%; transform: translateY(-50%); font-size: 0.78rem;"></i>
+                        <input type="text" name="search" class="form-control rounded-pill ps-5 pe-4"
+                            style="height: 34px; font-size: 0.8rem; border-color: #e2e8f0; background: #f8fafc;"
+                            placeholder="Cari pengirim atau isi aduan..."
+                            value="{{ request('search') }}">
+                        @if(request('search'))
+                            <a href="{{ route('notifications.index') }}" class="position-absolute text-muted text-decoration-none" style="z-index: 5; right: 12px; top: 50%; transform: translateY(-50%);" title="Hapus">
+                                <i class="fa-solid fa-circle-xmark" style="font-size: 0.8rem;"></i>
+                            </a>
+                        @endif
+                    </div>
+
+                    {{-- Filter: Jenis --}}
+                    <div class="position-relative" style="min-width: 140px;">
+                        <i class="fa-solid fa-layer-group position-absolute text-muted" style="z-index: 5; left: 11px; top: 50%; transform: translateY(-50%); font-size: 0.7rem;"></i>
+                        <select name="type" class="form-select ps-5 rounded-pill" style="height: 34px; border-color: #e2e8f0; font-size: 0.78rem; cursor: pointer; background-color: #f8fafc;">
+                            <option value="">Semua Jenis</option>
+                            <option value="Facebook Mention" {{ request('type') == 'Facebook Mention' ? 'selected' : '' }}>Facebook Post</option>
+                            <option value="Facebook Comment Mention" {{ request('type') == 'Facebook Comment Mention' ? 'selected' : '' }}>Facebook Komentar</option>
+                            <option value="Instagram DM" {{ request('type') == 'Instagram DM' ? 'selected' : '' }}>DM Instagram</option>
+                        </select>
+                    </div>
+
+                    {{-- Filter: Status --}}
+                    <div class="position-relative" style="min-width: 130px;">
+                        <i class="fa-solid fa-envelope-open-text position-absolute text-muted" style="z-index: 5; left: 11px; top: 50%; transform: translateY(-50%); font-size: 0.7rem;"></i>
+                        <select name="status" class="form-select ps-5 rounded-pill" style="height: 34px; border-color: #e2e8f0; font-size: 0.78rem; cursor: pointer; background-color: #f8fafc;">
+                            <option value="">Semua Status</option>
+                            <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Belum Dibaca</option>
+                            <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Sudah Dibaca</option>
+                        </select>
+                    </div>
+
+                    {{-- Filter: Duplikasi --}}
+                    <div class="position-relative" style="min-width: 140px;">
+                        <i class="fa-solid fa-copy position-absolute text-muted" style="z-index: 5; left: 11px; top: 50%; transform: translateY(-50%); font-size: 0.7rem;"></i>
+                        <select name="duplicate" class="form-select ps-5 rounded-pill" style="height: 34px; border-color: #e2e8f0; font-size: 0.78rem; cursor: pointer; background-color: #f8fafc;">
+                            <option value="">Semua Duplikasi</option>
+                            <option value="terdeteksi" {{ request('duplicate') === 'terdeteksi' ? 'selected' : '' }}>Perlu Verifikasi</option>
+                            <option value="bukan_duplikat" {{ request('duplicate') === 'bukan_duplikat' ? 'selected' : '' }}>Bukan Duplikat</option>
+                            <option value="dikonfirmasi_duplikat" {{ request('duplicate') === 'dikonfirmasi_duplikat' ? 'selected' : '' }}>Dikonfirmasi Duplikat</option>
+                        </select>
+                    </div>
+
+                    {{-- Tombol Terapkan --}}
+                    <button type="submit" class="btn btn-primary rounded-pill fw-semibold shadow-sm px-3" style="height: 34px; font-size: 0.78rem; white-space: nowrap;">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i>Terapkan
+                    </button>
+
+                    {{-- Tombol Reset (jika ada filter aktif) --}}
+                    @if(request()->filled('search') || request()->filled('type') || request()->filled('status') || request()->filled('duplicate'))
+                        <a href="{{ route('notifications.index') }}" class="btn btn-light border rounded-pill fw-semibold px-3 text-danger" style="height: 34px; font-size: 0.78rem; line-height: 22px; white-space: nowrap;">
+                            <i class="fa-solid fa-rotate-left me-1"></i>Reset
                         </a>
                     @endif
+
                 </div>
-
-                {{-- Baris 2: Filter Dropdowns --}}
-                <div class="row g-2 align-items-center">
-                    <div class="col-lg col-md-4 col-6">
-                        <div class="position-relative">
-                            <i class="fa-solid fa-layer-group position-absolute text-muted" style="z-index: 5; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.75rem;"></i>
-                            <select name="type" class="form-select ps-5 rounded-pill" style="height: 36px; border-color: #cbd5e1; font-size: 0.78rem; cursor: pointer; background-color: #f8fafc;">
-                                <option value="">Semua Jenis</option>
-                                <option value="Facebook Mention" {{ request('type') == 'Facebook Mention' ? 'selected' : '' }}>Facebook Post</option>
-                                <option value="Facebook Comment Mention" {{ request('type') == 'Facebook Comment Mention' ? 'selected' : '' }}>Facebook Komentar</option>
-                                <option value="Instagram DM" {{ request('type') == 'Instagram DM' ? 'selected' : '' }}>DM Instagram</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg col-md-4 col-6">
-                        <div class="position-relative">
-                            <i class="fa-solid fa-envelope-open-text position-absolute text-muted" style="z-index: 5; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.75rem;"></i>
-                            <select name="status" class="form-select ps-5 rounded-pill" style="height: 36px; border-color: #cbd5e1; font-size: 0.78rem; cursor: pointer; background-color: #f8fafc;">
-                                <option value="">Semua Status</option>
-                                <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Belum Dibaca</option>
-                                <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Sudah Dibaca</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg col-md-4 col-6">
-                        <div class="position-relative">
-                            <i class="fa-solid fa-copy position-absolute text-muted" style="z-index: 5; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.75rem;"></i>
-                            <select name="duplicate" class="form-select ps-5 rounded-pill" style="height: 36px; border-color: #cbd5e1; font-size: 0.78rem; cursor: pointer; background-color: #f8fafc;">
-                                <option value="">Semua Duplikasi</option>
-                                <option value="terdeteksi" {{ request('duplicate') === 'terdeteksi' ? 'selected' : '' }}>Perlu Verifikasi</option>
-                                <option value="bukan_duplikat" {{ request('duplicate') === 'bukan_duplikat' ? 'selected' : '' }}>Bukan Duplikat</option>
-                                <option value="dikonfirmasi_duplikat" {{ request('duplicate') === 'dikonfirmasi_duplikat' ? 'selected' : '' }}>Dikonfirmasi Duplikat</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-auto col-md-12 col-6">
-                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-semibold shadow-sm" style="height: 36px; font-size: 0.78rem;">
-                            <i class="fa-solid fa-magnifying-glass me-1"></i>Terapkan
-                        </button>
-                    </div>
-                </div>
-
             </form>
         </div>
     </div>

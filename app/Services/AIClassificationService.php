@@ -10,13 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class AIClassificationService
 {
-    /**
-     * Mapping Sub Kategori → (Kategori default, OPD default)
-     * Berdasarkan data lapangan asli KMC Ketapang (100+ laporan nyata).
-     * Digunakan sebagai sumber kebenaran ketika relasi DB belum diisi.
-     */
+
     private const SUB_CATEGORY_MAP = [
-        // ── LAYANAN PDAM (topik terbanyak ~22.6%) ──
+        // ── LAYANAN PDAM  ──
         'Air Bersih'          => ['category' => 'Layanan PDAM',                          'opd' => 'PDAM Ketapang'],
 
         // ── INFRASTRUKTUR DAN PEKERJAAN UMUM ──
@@ -136,7 +132,7 @@ class AIClassificationService
             );
         }
 
-        // ── Pre-check: Monitoring Berita (hemat API call) ──
+    
         if ($this->isMonitoringBerita($message)) {
             return $this->buildMonitoringBeritaResult($message);
         }
@@ -555,7 +551,6 @@ PROMPT;
             }
         }
 
-        // Pastikan suggested_sub_category adalah sub-kategori yang valid (bukan nama kategori)
         $suggestedSub = (string) ($result['suggested_sub_category'] ?? '');
         if ($suggestedSub === '') {
             return false;
@@ -1112,8 +1107,7 @@ PROMPT;
         }
 
         if (
-            str_contains($message, 'satpol') || str_contains($message, 'ketertiban') ||
-            str_contains($message, 'anjing')
+            str_contains($message, 'satpol') || str_contains($message, 'ketertiban') 
         ) {
             $fallback[] = 'Satpol PP';
         }
@@ -1261,13 +1255,6 @@ PROMPT;
     //  SPAM FILTER
     // ──────────────────────────────────────────────────────────────────────
 
-    /**
-     * Deteksi apakah komentar adalah spam / tidak jelas / tidak layak dijadikan tiket.
-     * Tahap 1: Filter heuristik lokal (cepat, tanpa panggil API).
-     * Tahap 2: Filter AI (panggil API, lebih akurat).
-     *
-     * Mengembalikan ['is_spam' => bool, 'reason' => string]
-     */
     public function isSpam(string $message): array
     {
         $raw = $message;
@@ -1275,23 +1262,23 @@ PROMPT;
 
         // ── TAHAP 1: Filter heuristik lokal ─────────────────────────────────
 
-        // 1a. Pesan kosong
+        // Pesan kosong
         if ($normalized === '') {
             return ['is_spam' => true, 'reason' => 'Pesan kosong.'];
         }
 
-        // 1b. Terlalu pendek (< 10 karakter bersih — hanya emoji/tanda baca/angka)
+        // Terlalu pendek (< 10 karakter bersih — hanya emoji/tanda baca/angka)
         $cleanChars = preg_replace('/[^a-zA-Z0-9\x{00C0}-\x{024F}\x{1E00}-\x{1EFF}]/u', '', $normalized);
         if (mb_strlen($cleanChars) < 8) {
             return ['is_spam' => true, 'reason' => 'Pesan terlalu pendek atau hanya berisi emoji/simbol.'];
         }
 
-        // 1c. Hanya berisi emoji (tidak ada huruf Latin maupun huruf apa pun)
+        // Hanya berisi emoji (tidak ada huruf Latin maupun huruf apa pun)
         if (preg_match('/^[\x{1F000}-\x{1FFFF}\x{2600}-\x{27BF}\s]+$/u', $raw)) {
             return ['is_spam' => true, 'reason' => 'Pesan hanya berisi emoji.'];
         }
 
-        // 1d. Kata berulang spam klasik
+        // Kata berulang spam klasik
         $spamPatterns = [
             '/\b(amin+|aminn+|aamiin+|wkwk+|haha+|hihi+|hehe+|xd+|lol+|mantap+|mantul+|okeh+|oke+|ok+|siip+|sip+|jos+|keren+)\b/iu',
         ];
@@ -1302,12 +1289,12 @@ PROMPT;
             }
         }
 
-        // 1e. Hanya angka / simbol
+        //  Hanya angka / simbol
         if (preg_match('/^[\d\s\W]+$/u', $normalized)) {
             return ['is_spam' => true, 'reason' => 'Pesan hanya berisi angka atau simbol.'];
         }
 
-        // 1f. Kata-kata yang jelas bukan aduan publik
+        // Kata-kata yang jelas bukan aduan publik
         $nonComplaintKeywords = [
             'selamat ulang tahun', 'happy birthday', 'hbd', 'met ultah',
             'happy new year', 'selamat tahun baru', 'merry christmas',
@@ -1322,7 +1309,7 @@ PROMPT;
             }
         }
 
-        // 1g. Strip prefix halaman (Simadu KMC / @Simadu KMC) untuk evaluasi isi sebenarnya
+        //  Strip prefix halaman (Simadu KMC / @Simadu KMC) untuk evaluasi isi sebenarnya
         $stripped = preg_replace('/^@?simadu\s*kmc\s*/iu', '', $normalized);
         $stripped = trim($stripped);
 
@@ -1331,7 +1318,7 @@ PROMPT;
             return ['is_spam' => true, 'reason' => 'Pesan hanya berisi tag mention tanpa isi aduan.'];
         }
 
-        // 1h. Pola komentar tes / tanpa konteks yang jelas
+        // Pola komentar tes / tanpa konteks yang jelas
         $testPatterns = [
             '/^tes\s*$/iu',
             '/^test\s*$/iu',

@@ -240,6 +240,13 @@ function loadKnownIds() {
                 let   commentMessage = null;
                 let   commenterName  = extractSenderName(direct.text);
 
+                // Validasi sender: tolak jika hanya simbol/titik/kosong
+                const isValidSender = (name) => {
+                    if (!name) return false;
+                    const cleaned = name.replace(/[\s·.…•\-—·]/gu, '');
+                    return cleaned.length >= 2;
+                };
+
                 try {
 
                     await commentPage.goto(
@@ -250,6 +257,42 @@ function loadKnownIds() {
                     await commentPage.waitForTimeout(5000);
 
                     await openOriginalText(commentPage);
+
+                    // Jika sender tidak valid, coba ekstrak dari DOM halaman komentar
+                    if (!isValidSender(commenterName)) {
+                        const domSender = await commentPage.evaluate((cId) => {
+                            // Cari anchor yang mengandung comment_id
+                            const anchors = Array.from(document.querySelectorAll('a'));
+                            const target = anchors.find(a => a.href && a.href.includes('comment_id=') && a.href.includes(cId));
+                            if (!target) return null;
+
+                            // Naik ke container komentar
+                            let parent = target.parentElement;
+                            for (let i = 0; i < 15; i++) {
+                                if (!parent) break;
+                                const role = parent.getAttribute('role');
+                                if (role === 'comment' || role === 'article') break;
+                                parent = parent.parentElement;
+                            }
+                            if (!parent) return null;
+
+                            // Nama biasanya ada di baris pertama teks dalam container
+                            const lines = parent.innerText.split('\n').map(l => l.trim()).filter(Boolean);
+                            // Filter noise
+                            const noise = ['facebook', 'suka', 'balas', 'like', 'reply', 'lihat asli', 'see original'];
+                            for (const line of lines) {
+                                if (line.length >= 2 && !noise.includes(line.toLowerCase()) && !/^\d/.test(line) && !/^[·.…•\-—]+$/.test(line)) {
+                                    return line;
+                                }
+                            }
+                            return null;
+                        }, commentId);
+
+                        if (domSender) {
+                            commenterName = domSender;
+                            console.log(`Sender dikoreksi dari DOM: "${commenterName}"`);
+                        }
+                    }
 
                     const isBadExtractedText = (value) => {
                         const text = (value || '').trim().toLowerCase();
@@ -479,6 +522,13 @@ function loadKnownIds() {
                 // ── Jangan push jika comment_message null (sudah terfilter) ──
                 if (commentMessage === null) {
                     console.log(`Komentar dilewati (noise/spam) untuk comment_id=${commentId}`);
+                    await commentPage.close();
+                    continue;
+                }
+
+                // ── Jangan push jika sender tidak valid ──
+                if (!isValidSender(commenterName)) {
+                    console.log(`Komentar dilewati (sender tidak valid: "${commenterName}") untuk comment_id=${commentId}`);
                     await commentPage.close();
                     continue;
                 }

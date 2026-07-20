@@ -53,6 +53,19 @@ const SESSION_FILE = path.resolve(__dirname, 'instagram-session.json');
     const isNoiseLine = (line) => {
         const text = normalize(line);
         if (!text) return true;
+
+        // Status online / UI noise Instagram
+        const instagramNoise = [
+            'aktif', 'active', 'active now', 'aktif sekarang',
+            'online', 'offline', 'terakhir dilihat',
+            'last seen', 'baru saja aktif', 'typing',
+            'sedang mengetik', 'seen', 'dilihat',
+            'audio call', 'video call', 'panggilan',
+            'kirim pesan', 'send message', 'ketik pesan',
+            'type a message', 'instagram', 'messenger',
+        ];
+        if (instagramNoise.includes(text.toLowerCase())) return true;
+
         const noisePatterns = [
             /^\d+\s*(menit|jam|hari|minggu|bulan|tahun|[hjmdbst])\s*(lalu|yang lalu)?$/i,
             /^\d+\s*(min|hr|[hm]|d|w|mo|yr)s?\s*(ago)?$/i,
@@ -60,6 +73,10 @@ const SESSION_FILE = path.resolve(__dirname, 'instagram-session.json');
             /^(\d+)\s*$/,
             /^[\p{P}\p{S}]+$/u,
             /^.{0,1}$/,
+            /^aktif\s+\d/i,           // "Aktif 2 jam lalu"
+            /^active\s+\d/i,          // "Active 2h ago"
+            /^terakhir\s+(dilihat|aktif)/i,  // "Terakhir dilihat 5m lalu"
+            /^last\s+seen/i,          // "Last seen 5m ago"
         ];
         for (const pattern of noisePatterns) {
             if (pattern.test(text)) return true;
