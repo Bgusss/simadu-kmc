@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Opd\OpdController;
 use App\Http\Controllers\Public\TicketingController;
 use App\Http\Controllers\Admin\AdminOpdController;
+use App\Http\Controllers\StorageFileController;
 
 use App\Models\Notification;
 use App\Models\FacebookCommentMention;
@@ -21,6 +22,15 @@ use App\Models\FacebookPostMention;
 Route::get('/', function () {
     return redirect()->route('ticketing.index');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Storage File Serve (php artisan serve tidak support symlink)
+|--------------------------------------------------------------------------
+*/
+Route::get('/storage/{path}', [StorageFileController::class, 'show'])
+    ->where('path', '.*')
+    ->name('storage.file');
 
 /*
 |--------------------------------------------------------------------------
