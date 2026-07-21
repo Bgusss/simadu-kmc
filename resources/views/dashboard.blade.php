@@ -365,6 +365,33 @@
     .notif-card-slot.is-swapping {
         pointer-events: none;
     }
+
+    /* Mobile: unstack cards, show vertically */
+    @media (max-width: 767.98px) {
+        #notif-stack-outer {
+            display: flex !important;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 0;
+        }
+        #notif-stack-outer > .notif-card-slot {
+            position: relative !important;
+            transform: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+            z-index: auto !important;
+            box-shadow: 0 4px 12px -2px rgba(0,0,0,0.08) !important;
+        }
+        .notif-card-slot.is-back {
+            transform: none !important;
+            opacity: 1 !important;
+            filter: none !important;
+            cursor: default !important;
+        }
+        .notif-card-slot.is-back .card {
+            pointer-events: auto !important;
+        }
+    }
     </style>
 
     <script>
