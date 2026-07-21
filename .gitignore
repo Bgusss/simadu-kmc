@@ -9,3 +9,4 @@ DETEKSI_DUPLIKASI_SUMMARY.md
 .hermes/
 playwright/known-comment-ids.json
 .railway/
+public/storage
