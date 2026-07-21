@@ -92,6 +92,14 @@
         border-radius: 20px; 
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02), 0 8px 10px -6px rgba(0, 0, 0, 0.02); 
     }
+    @media (max-width: 575.98px) {
+        .timeline { padding-left: 2.5rem; }
+        .timeline-icon { left: -2.5rem; width: 28px; height: 28px; font-size: 0.75rem; }
+        .timeline::before { left: 12px; }
+        .timeline-content { padding: 1rem; border-radius: 14px; }
+        .card-custom { border-radius: 14px; }
+        .card-custom .card-body { padding: 1rem !important; }
+    }
 </style>
 @endpush
 

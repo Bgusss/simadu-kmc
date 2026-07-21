@@ -2,10 +2,13 @@
 
     <div class="d-flex justify-content-between align-items-center position-relative">
 
-        {{-- Kiri: Page Title --}}
-        <div class="mb-0 fw-bold d-flex align-items-center text-dark" style="letter-spacing: -0.5px; font-size: 22px;">
-            @yield('page-title')
-        </div>
+        <div class="topbar d-flex justify-content-between align-items-center">
+            <div class="fw-bold text-dark fs-5 d-flex align-items-center">
+                <button class="hamburger-btn me-2" onclick="toggleSidebar()" aria-label="Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                @yield('page-title')
+            </div>
 
         {{-- Tengah: Tab Navigation (absolut agar benar-benar di tengah) --}}
         @hasSection('tab-nav')

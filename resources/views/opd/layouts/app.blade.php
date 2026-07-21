@@ -198,18 +198,41 @@
             box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08) !important;
         }
         
-        @media (max-width: 768px) {
+        /* ── Mobile Responsive ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 99;
+            transition: opacity 0.3s;
+        }
+        .sidebar-overlay.show { display: block; }
+
+        @media (max-width: 991.98px) {
             .sidebar {
-                margin-left: -270px;
+                position: fixed;
+                left: 0;
+                top: 0;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
             }
-            .sidebar.active {
-                margin-left: 0;
-            }
+            .sidebar.show { transform: translateX(0); }
+            .content { padding: 16px !important; min-height: 100vh; }
+            .navbar { padding: 12px 16px !important; border-radius: 12px; margin-bottom: 16px; }
+        }
+
+        @media (max-width: 575.98px) {
+            .content { padding: 10px !important; }
+            .navbar { padding: 10px 12px !important; margin-bottom: 12px; }
+            body { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Sidebar -->
         @include('opd.partials.sidebar')
 
@@ -217,7 +240,7 @@
         <div class="content">
             <nav class="navbar navbar-expand-lg navbar-light">
                 <div class="container-fluid">
-                    <button type="button" id="sidebarCollapse" class="btn btn-primary d-md-none">
+                    <button type="button" id="sidebarCollapse" class="btn btn-outline-primary border-0 d-lg-none" style="font-size: 1.2rem;">
                         <i class="fas fa-bars"></i>
                     </button>
                     <h5 class="mb-0 ms-2 text-dark fw-bold">@yield('header', 'OPD Portal')</h5>
@@ -263,10 +286,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @include('partials.flash-toast')
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById('sidebarCollapse').addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('active');
-            });
+        function toggleOpdSidebar() {
+            document.querySelector('.sidebar').classList.toggle('show');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+            document.body.style.overflow = document.querySelector('.sidebar').classList.contains('show') ? 'hidden' : '';
+        }
+        document.getElementById('sidebarCollapse').addEventListener('click', toggleOpdSidebar);
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleOpdSidebar);
+        document.querySelectorAll('.sidebar a').forEach(a => {
+            a.addEventListener('click', () => { if (window.innerWidth < 992) toggleOpdSidebar(); });
         });
     </script>
     @stack('scripts')

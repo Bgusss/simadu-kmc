@@ -8,6 +8,14 @@
 
 @section('content')
 <style>
+    @media (max-width: 575.98px) {
+        .card-premium .card-body { padding: 16px !important; }
+        .card-premium .card-header { padding: 12px 16px !important; }
+        .d-flex.gap-2.mb-4 { flex-direction: column; }
+        .d-flex.gap-2.mb-4 .btn,
+        .d-flex.gap-2.mb-4 form { width: 100%; }
+        .d-flex.gap-2.mb-4 form button { width: 100%; }
+    }
     .card-premium {
         border: 1px solid rgba(0,0,0,0.04);
         border-radius: 20px;

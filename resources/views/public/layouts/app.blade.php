@@ -150,6 +150,20 @@
             color: #334155;
             line-height: 1.2;
         }
+        @media (max-width: 575.98px) {
+            .brand-logo { width: 36px !important; height: 36px !important; }
+            .brand-divider { height: 32px; margin-left: 0.6rem; margin-right: 0.6rem; }
+            .brand-title { font-size: 17px; }
+            .brand-subtitle { font-size: 8px; }
+            .brand-tagline { font-size: 10px; }
+            .nav-pills { flex-direction: column; width: 100%; }
+            .nav-pills .nav-link { font-size: 0.82rem !important; padding: 8px 16px !important; text-align: center; }
+            .navbar { padding-top: 10px !important; padding-bottom: 10px !important; }
+            footer .row { text-align: center !important; }
+        }
+        @media (max-width: 991.98px) {
+            .nav-pills { margin-top: 12px; margin-bottom: 8px; }
+        }
     </style>
     @stack('styles')
 </head>

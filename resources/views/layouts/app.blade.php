@@ -450,6 +450,49 @@
             background: linear-gradient(90deg, #0d6efd 0%, #fd7e14 100%);
             transform-origin: left;
         }
+
+        /* ── Mobile Responsive ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1029;
+            transition: opacity 0.3s;
+        }
+        .sidebar-overlay.show { display: block; }
+
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.35rem;
+            color: var(--kmc-blue);
+            padding: 4px 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; }
+            .hamburger-btn { display: inline-flex; }
+            .topbar { padding: 10px 16px !important; }
+            .content { padding: 16px 16px 0 16px !important; }
+            .content > div:last-child { margin-left: -16px !important; margin-right: -16px !important; }
+            #ios-toast-container { right: 10px !important; left: 10px !important; max-width: 100% !important; }
+            .ios-toast-popup { max-width: 100% !important; border-radius: 16px !important; }
+        }
+
+        @media (max-width: 575.98px) {
+            .topbar { padding: 8px 12px !important; }
+            .content { padding: 12px 12px 0 12px !important; }
+            .content > div:last-child { margin-left: -12px !important; margin-right: -12px !important; }
+            body { font-size: 0.9rem; }
+        }
     </style>
 
     @stack('styles')
@@ -458,6 +501,7 @@
 
 <body>
 
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     @include('partials.sidebar')
 
     <div class="main-content">

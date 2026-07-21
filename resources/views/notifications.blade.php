@@ -257,8 +257,21 @@
         }
     </style>
 
+    <style>
+        @media (max-width: 575.98px) {
+            .notif-row .d-flex { flex-direction: column; align-items: flex-start !important; gap: 4px !important; }
+            .notif-row .badge { font-size: 0.65rem !important; }
+            .notif-row .small { font-size: 0.75rem !important; }
+        }
+    </style>
+
     {{-- Search & Filter --}}
     <div class="card border-0 shadow-sm rounded-4 mb-3">
+        <div class="card-header bg-white border-0 py-2 px-3 rounded-top-4">
+            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.85rem;">
+                <i class="fa-solid fa-filter text-primary me-2"></i>Filter & Pencarian
+            </h6>
+        </div>
         <div class="card-body px-3 py-2">
             <form method="GET" action="{{ route('notifications.index') }}">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
