@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StorageFileController extends Controller
@@ -20,5 +19,34 @@ class StorageFileController extends Controller
         }
 
         return response()->file($fullPath);
+    }
+
+    /**
+     * Debug endpoint sementara — hapus setelah gambar bekerja.
+     */
+    public function debug()
+    {
+        $storagePath = storage_path('app/public');
+        $result = [
+            'storage_path' => $storagePath,
+            'exists' => is_dir($storagePath),
+            'public_storage_exists' => file_exists(public_path('storage')),
+            'public_storage_is_link' => is_link(public_path('storage')),
+        ];
+
+        // List files
+        $files = [];
+        if (is_dir($storagePath)) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($storagePath, \RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+            foreach ($iterator as $file) {
+                $files[] = str_replace($storagePath . '/', '', $file->getPathname());
+            }
+        }
+        $result['files'] = $files;
+        $result['file_count'] = count($files);
+
+        return response()->json($result, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }
