@@ -1,4 +1,4 @@
-# Sistem Informasi Manajemen Aduan Multi Channel KMC
+# Sistem Informasi Monitoring Aduan Multi Channel KMC
 
 <p align="center">
   <img src="public/images/kmc-logo-full.png" alt="KMC Logo" width="300">
