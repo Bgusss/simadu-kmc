@@ -28,7 +28,6 @@ Route::get('/', function () {
 | Storage File Serve (php artisan serve tidak support symlink)
 |--------------------------------------------------------------------------
 */
-Route::get('/storage-debug', [StorageFileController::class, 'debug'])->name('storage.debug');
 Route::get('/storage/{path}', [StorageFileController::class, 'show'])
     ->where('path', '.*')
     ->name('storage.file');
