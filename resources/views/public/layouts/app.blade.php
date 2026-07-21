@@ -44,6 +44,11 @@
         }
         
         /* Premium segment control navigation pills */
+        .nav-pills-wrapper {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 0;
+        }
         .nav-pills {
             background-color: #f1f5f9;
             padding: 5px;
@@ -60,6 +65,7 @@
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             background-color: transparent !important;
             border: none !important;
+            white-space: nowrap;
         }
         .nav-pills .nav-link:hover {
             color: var(--kmc-blue) !important;
@@ -150,25 +156,30 @@
             color: #334155;
             line-height: 1.2;
         }
+
+        /* ── Mobile Responsive ── */
+        @media (max-width: 991.98px) {
+            .nav-pills-wrapper { padding: 8px 0; }
+            .nav-pills { width: 100%; justify-content: center; }
+            .nav-pills .nav-link { padding: 8px 16px !important; font-size: 0.82rem; }
+        }
         @media (max-width: 575.98px) {
             .brand-logo { width: 36px !important; height: 36px !important; }
             .brand-divider { height: 32px; margin-left: 0.6rem; margin-right: 0.6rem; }
             .brand-title { font-size: 17px; }
             .brand-subtitle { font-size: 8px; }
             .brand-tagline { font-size: 10px; }
-            .nav-pills { flex-direction: column; width: 100%; }
-            .nav-pills .nav-link { font-size: 0.82rem !important; padding: 8px 16px !important; text-align: center; }
             .navbar { padding-top: 10px !important; padding-bottom: 10px !important; }
+            .nav-pills .nav-link { padding: 7px 12px !important; font-size: 0.78rem; }
+            .nav-pills .nav-link i { display: none; }
             footer .row { text-align: center !important; }
-        }
-        @media (max-width: 991.98px) {
-            .nav-pills { margin-top: 12px; margin-bottom: 8px; }
         }
     </style>
     @stack('styles')
 </head>
-<body class="d-flex flex-column min-vh-100">    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
-        <div class="container">
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-light bg-white shadow-sm py-3">
+        <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center text-decoration-none" href="{{ route('ticketing.index') }}">
                 <img src="{{ asset('images/kmc-logo.png') }}" alt="Logo KMC" style="width: 50px; height: 50px; object-fit: contain;" class="brand-logo">
                 <div class="brand-divider"></div>
@@ -180,38 +191,37 @@
                     <div class="brand-tagline">Ketapang Media Center</div>
                 </div>
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="d-flex align-items-center">
                 @if(request()->routeIs('ticketing.index'))
-                    <ul class="nav nav-pills mx-auto" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active px-4 rounded-pill fw-bold" id="pills-lacak-tab" data-bs-toggle="pill" data-bs-target="#pills-lacak" type="button" role="tab" aria-controls="pills-lacak" aria-selected="true">
-                                <i class="fas fa-search me-2"></i> Lacak Laporan
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link px-4 rounded-pill fw-bold ms-2" id="pills-statistik-tab" data-bs-toggle="pill" data-bs-target="#pills-statistik" type="button" role="tab" aria-controls="pills-statistik" aria-selected="false">
-                                <i class="fas fa-chart-pie me-2"></i> Statistik & Kinerja
-                            </button>
-                        </li>
-                    </ul>
+                    @auth
+                        <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('opd.dashboard') }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold" style="border-color: #0D47A1; color: #0D47A1;">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-primary rounded-pill px-3 px-md-4 fw-bold" style="background-color: #0D47A1; border-color: #0D47A1; font-size: 0.85rem;">Login</a>
+                    @endauth
                 @endif
-                <ul class="navbar-nav ms-auto align-items-center">
-                    @if(request()->routeIs('ticketing.index'))
-                        <li class="nav-item">
-                            @auth
-                                <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('opd.dashboard') }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold" style="border-color: #0D47A1; color: #0D47A1;">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}" class="btn btn-primary rounded-pill px-4 fw-bold" style="background-color: #0D47A1; border-color: #0D47A1;">Login</a>
-                            @endauth
-                        </li>
-                    @endif
-                </ul>
             </div>
         </div>
     </nav>
+
+    {{-- Tab Navigation — selalu visible, di luar navbar collapse --}}
+    @if(request()->routeIs('ticketing.index'))
+        <div class="nav-pills-wrapper">
+            <div class="container d-flex justify-content-center">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-4 rounded-pill fw-bold" id="pills-lacak-tab" data-bs-toggle="pill" data-bs-target="#pills-lacak" type="button" role="tab" aria-controls="pills-lacak" aria-selected="true">
+                            <i class="fas fa-search me-1"></i> Lacak Laporan
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-4 rounded-pill fw-bold" id="pills-statistik-tab" data-bs-toggle="pill" data-bs-target="#pills-statistik" type="button" role="tab" aria-controls="pills-statistik" aria-selected="false">
+                            <i class="fas fa-chart-pie me-1"></i> Statistik & Kinerja
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    @endif
 
     <main class="flex-grow-1">
         @yield('content')
