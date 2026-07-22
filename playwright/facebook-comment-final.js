@@ -151,10 +151,16 @@ function loadKnownIds() {
 
     console.log(`Total mention ditemukan di halaman: ${todayAggregateLinks.length}`);
 
+    // Facebook menyusun notifikasi terbaru di urutan paling atas.
+    // Batas global ini memastikan hanya 4 comment mention terbaru yang diproses.
+    const MAX_LATEST_MENTIONS = 4;
     const results        = [];
     const processedLinks = new Set();  // deduplikasi dalam satu run
 
     for (const aggregate of todayAggregateLinks) {
+        if (results.length >= MAX_LATEST_MENTIONS) {
+            break;
+        }
 
         const detailPage = await context.newPage();
 
@@ -200,8 +206,8 @@ function loadKnownIds() {
                 return true;
             });
 
-            // Batasi maksimal 10 link baru per aggregate agar tidak timeout
-            const linksToProcess = newDirectLinks.slice(0, 10);
+            // Hanya ambil jumlah yang tersisa dari batas global 4 mention terbaru.
+            const linksToProcess = newDirectLinks.slice(0, MAX_LATEST_MENTIONS - results.length);
 
             if (linksToProcess.length === 0) {
                 console.log('Semua link di aggregate ini sudah diproses sebelumnya.');
