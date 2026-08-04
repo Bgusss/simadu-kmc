@@ -51,4 +51,9 @@ return [
         'project_path' => env('PLAYWRIGHT_PROJECT_PATH', base_path('playwright')),
     ],
 
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+        'bot_number' => env('FONNTE_BOT_NUMBER'),
+    ],
+
 ];

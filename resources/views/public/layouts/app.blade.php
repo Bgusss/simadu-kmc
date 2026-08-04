@@ -191,7 +191,12 @@
                     <div class="brand-tagline">Ketapang Media Center</div>
                 </div>
             </a>
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                @unless(request()->routeIs('public.complaint.create'))
+                    <a href="{{ route('public.complaint.create') }}" class="btn rounded-pill px-3 px-md-4 fw-bold" style="background-color: #f57c00; border-color: #f57c00; color: white; font-size: 0.85rem;">
+                        <i class="fas fa-bullhorn me-1 d-none d-md-inline"></i>Lapor
+                    </a>
+                @endunless
                 @if(request()->routeIs('ticketing.index'))
                     @auth
                         <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('opd.dashboard') }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold" style="border-color: #0D47A1; color: #0D47A1;">Dashboard</a>

@@ -10,8 +10,10 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Opd\OpdController;
 use App\Http\Controllers\Public\TicketingController;
+use App\Http\Controllers\Public\PublicComplaintController;
 use App\Http\Controllers\Admin\AdminOpdController;
 use App\Http\Controllers\StorageFileController;
+use App\Http\Controllers\WhatsappController;
 
 use App\Models\Notification;
 use App\Models\FacebookCommentMention;
@@ -34,12 +36,22 @@ Route::get('/storage/{path}', [StorageFileController::class, 'show'])
 
 /*
 |--------------------------------------------------------------------------
-| Public Tracking & Auth
+| WhatsApp Webhook (tanpa auth — Fonnte mengirim ke endpoint ini)
+|--------------------------------------------------------------------------
+*/
+Route::post('/webhook/whatsapp', [WhatsappController::class, 'webhook'])->name('webhook.whatsapp');
+
+/*
+|--------------------------------------------------------------------------
+| Public Tracking, Complaint Form & Auth
 |--------------------------------------------------------------------------
 */
 
 Route::get('/ticketing', [TicketingController::class, 'index'])->name('ticketing.index');
 Route::get('/ticketing/{tracking_number}', [TicketingController::class, 'show'])->name('ticketing.show');
+
+Route::get('/lapor', [PublicComplaintController::class, 'create'])->name('public.complaint.create');
+Route::post('/lapor', [PublicComplaintController::class, 'store'])->name('public.complaint.store');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
@@ -54,6 +66,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/dashboard/notifications/poll', [DashboardController::class, 'pollNotifications'])->name('dashboard.poll');
+    Route::get('/tes-wa', [WhatsappController::class, 'sendTest'])->name('whatsapp.test');
     Route::resource('admin/opd', AdminOpdController::class, ['as' => 'admin']);
     
     Route::get('/admin/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'index'])->name('admin.profile');
