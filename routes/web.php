@@ -39,7 +39,7 @@ Route::get('/storage/{path}', [StorageFileController::class, 'show'])
 | WhatsApp Webhook (tanpa auth — Fonnte mengirim ke endpoint ini)
 |--------------------------------------------------------------------------
 */
-Route::post('/webhook/whatsapp', [WhatsappController::class, 'webhook'])->name('webhook.whatsapp');
+Route::match(['get', 'post'], '/webhook/whatsapp', [WhatsappController::class, 'webhook'])->name('webhook.whatsapp');
 
 /*
 |--------------------------------------------------------------------------
