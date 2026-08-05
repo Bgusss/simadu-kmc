@@ -162,51 +162,8 @@
 </div>
 
 <div class="row">
-    <!-- Baris 2: Perbarui Status & Riwayat Diskusi -->
-    <div class="col-lg-7 mb-4">
-        <div class="card card-premium overflow-hidden h-100">
-            <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 fw-bold">
-                <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-sync-alt me-2 text-warning"></i> Perbarui Status Tiket</h5>
-            </div>
-            <div class="card-body px-4 pb-4">
-                <form action="{{ route('opd.tickets.status', $ticket->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold">Pilih Status Baru</label>
-                        <select name="status" class="form-select form-premium py-2 px-3 shadow-none" required>
-                            @if(in_array($ticket->status, ['baru', 'diteruskan']))
-                                <option value="" selected disabled>-- Pilih Status Baru --</option>
-                            @endif
-                            <option value="diterima" {{ $ticket->status == 'diterima' ? 'selected' : '' }}>Diterima (Sedang ditinjau)</option>
-                            <option value="diproses" {{ $ticket->status == 'diproses' ? 'selected' : '' }}>Diproses (Sedang ditindaklanjuti)</option>
-                            <option value="selesai" {{ $ticket->status == 'selesai' ? 'selected' : '' }}>Selesai (Masalah terselesaikan)</option>
-                            <option value="eskalasi" {{ $ticket->status == 'eskalasi' ? 'selected' : '' }}>Eskalasi (Butuh bantuan instansi lain)</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold">Catatan Internal (Opsional)</label>
-                        <textarea name="notes" class="form-control form-premium py-2 px-3 shadow-none" rows="2" placeholder="Catatan log perubahan status..."></textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label text-muted fw-bold">Lampiran Bukti (Opsional)</label>
-                        <label class="d-block m-0">
-                            <div class="form-control form-premium shadow-none d-flex align-items-center" style="cursor: pointer; padding: 0.4rem;">
-                                <div class="bg-secondary text-white px-3 py-2 rounded me-3 small fw-bold"><i class="fas fa-folder-open me-1"></i> Pilih File</div>
-                                <span class="text-muted small text-truncate" style="flex: 1;" id="filename-status">Belum ada file...</span>
-                            </div>
-                            <input type="file" name="attachment" class="d-none" accept=".jpg,.jpeg,.png" onchange="document.getElementById('filename-status').innerText = this.files[0] ? this.files[0].name : 'Belum ada file...'">
-                        </label>
-                        <div class="form-text mt-2 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> Hanya format <strong>JPG, JPEG, PNG</strong>. Maksimal <strong>5MB</strong>.</div>
-                    </div>
-                    <button type="submit" class="btn text-dark fw-bold w-100 rounded-pill py-2" style="background-color: #ffc107; border: none; box-shadow: 0 4px 6px rgba(255, 193, 7, 0.2);">
-                        <i class="fas fa-save me-2"></i> Simpan Status
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-5 mb-4">
+    <!-- Baris 2: Riwayat & Diskusi -->
+    <div class="col-lg-12 mb-4">
         <div class="card card-premium overflow-hidden h-100">
             <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 fw-bold">
                 <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-history me-2 text-secondary"></i> Riwayat & Diskusi</h5>

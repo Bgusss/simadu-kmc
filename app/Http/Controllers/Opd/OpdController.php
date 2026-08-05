@@ -142,37 +142,6 @@ class OpdController extends Controller
         return redirect()->back()->with('success', 'Tanggapan berhasil ditambahkan.');
     }
 
-    public function updateStatus(Request $request, Ticket $ticket)
-    {
-        $user = Auth::user();
-
-        if ($ticket->assigned_opd_id !== $user->opd_id) {
-            return abort(403, 'Unauthorized.');
-        }
-
-        $request->validate([
-            'status' => 'required|in:diterima,diproses,selesai,eskalasi,proses_disposisi',
-            'notes' => 'nullable|string',
-            'attachment' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-        ]);
-
-        $oldStatus = $ticket->status;
-        $newStatus = $request->status;
-
-        $attachmentPath = null;
-        if ($request->hasFile('attachment')) {
-            $attachmentPath = $request->file('attachment')->store('attachments', 'public');
-        }
-
-        if ($oldStatus === $newStatus && empty($request->notes) && !$attachmentPath) {
-            return redirect()->back()->with('error', 'Tidak ada perubahan status atau catatan yang disimpan.');
-        }
-
-        $ticket->updateStatus($newStatus, $user->id, $request->notes ?? 'Status diperbarui oleh OPD', $attachmentPath);
-
-        return redirect()->back()->with('success', 'Status tiket berhasil diperbarui.');
-    }
-
     public function profile()
     {
         $user = Auth::user();

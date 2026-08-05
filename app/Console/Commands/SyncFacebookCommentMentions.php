@@ -274,8 +274,8 @@ class SyncFacebookCommentMentions extends Command
                             'AI berhasil: ' . $mention['comment_message']
                         );
 
-                        // ── DETEKSI DUPLIKASI AI ─────────────────────────────
-                        $duplicateResult = $ai->checkDuplicate(
+                        // ── DETEKSI DUPLIKASI (Cosine Similarity) ──────────────────
+                        $duplicateResult = app(\App\Services\CosineSimilarityService::class)->checkDuplicate(
                             $mention['comment_message'],
                             $notification->id
                         );

@@ -68,6 +68,12 @@
         .platform-avatar.facebook {
             background: #1877F2 !important;
         }
+        .platform-avatar.whatsapp {
+            background: #25D366 !important;
+        }
+        .platform-avatar.web {
+            background: #3b82f6 !important;
+        }
         .unread-dot {
             position: absolute; 
             top: -1px; 
@@ -298,6 +304,8 @@
                             <option value="Facebook Mention" {{ request('type') == 'Facebook Mention' ? 'selected' : '' }}>Facebook Post</option>
                             <option value="Facebook Comment Mention" {{ request('type') == 'Facebook Comment Mention' ? 'selected' : '' }}>Facebook Komentar</option>
                             <option value="Instagram DM" {{ request('type') == 'Instagram DM' ? 'selected' : '' }}>DM Instagram</option>
+                            <option value="WhatsApp" {{ request('type') == 'WhatsApp' ? 'selected' : '' }}>WhatsApp</option>
+                            <option value="Laporan Web SIMADU" {{ request('type') == 'Laporan Web SIMADU' ? 'selected' : '' }}>Laporan Web</option>
                         </select>
                     </div>
 

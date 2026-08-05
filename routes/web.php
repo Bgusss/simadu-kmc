@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Existing routes that should probably be admin-only
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/partial', [NotificationController::class, 'partial'])->name('notifications.partial');
+    Route::get('/notifications/{id}/show', [NotificationController::class, 'show'])->name('notifications.show');
 
     // Duplicate verification routes
     Route::post('/notifications/{id}/not-duplicate', [NotificationController::class, 'confirmNotDuplicate'])->name('notifications.not-duplicate');
@@ -87,6 +88,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+    Route::post('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.status');
 });
 
 /*
@@ -101,7 +103,6 @@ Route::middleware(['auth', 'role:opd'])->prefix('opd')->name('opd.')->group(func
     Route::get('/tickets/{ticket}', [OpdController::class, 'showTicket'])->name('tickets.show');
     Route::get('/tickets/{ticket}/edit', [OpdController::class, 'editTicket'])->name('tickets.edit');
     Route::post('/tickets/{ticket}/respond', [OpdController::class, 'respond'])->name('tickets.respond');
-    Route::post('/tickets/{ticket}/status', [OpdController::class, 'updateStatus'])->name('tickets.status');
     Route::get('/profile', [OpdController::class, 'profile'])->name('profile');
     Route::post('/profile', [OpdController::class, 'updateProfile'])->name('profile.update');
 });

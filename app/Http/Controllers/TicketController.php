@@ -254,4 +254,33 @@ class TicketController extends Controller
         return redirect()->route('tickets.index')
             ->with('success', 'Tiket berhasil dihapus.');
     }
+
+    /**
+     * Admin memperbarui status tiket.
+     * (Dipindahkan dari OpdController — sekarang hanya admin yang bisa update status)
+     */
+    public function updateStatus(Request $request, Ticket $ticket)
+    {
+        $request->validate([
+            'status' => 'required|in:diterima,diproses,dijawab,selesai,eskalasi,proses_disposisi,ditolak',
+            'notes' => 'nullable|string',
+            'attachment' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+        ]);
+
+        $oldStatus = $ticket->status;
+        $newStatus = $request->status;
+
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('attachments', 'public');
+        }
+
+        if ($oldStatus === $newStatus && empty($request->notes) && !$attachmentPath) {
+            return redirect()->back()->with('error', 'Tidak ada perubahan status atau catatan yang disimpan.');
+        }
+
+        $ticket->updateStatus($newStatus, auth()->id(), $request->notes ?? 'Status diperbarui oleh Admin KMC', $attachmentPath);
+
+        return redirect()->back()->with('success', 'Status tiket berhasil diperbarui.');
+    }
 }

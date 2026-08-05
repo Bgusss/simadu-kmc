@@ -15,6 +15,18 @@
             $platformColor = '#1877F2';
             $avatarClass = 'facebook';
             $avatarIcon = 'fa-facebook-f';
+        } elseif ($notif->title == 'WhatsApp' || str_contains($notif->title ?? '', 'WhatsApp')) {
+            $platform = 'WhatsApp';
+            $platformBg = '#dcfce7';
+            $platformColor = '#166534';
+            $avatarClass = 'whatsapp';
+            $avatarIcon = 'fa-whatsapp';
+        } elseif ($notif->title == 'Laporan Web SIMADU' || str_contains($notif->title ?? '', 'Laporan Web')) {
+            $platform = 'Laporan Web';
+            $platformBg = '#dbeafe';
+            $platformColor = '#1e40af';
+            $avatarClass = 'web';
+            $avatarIcon = 'fa-globe';
         } else {
             $platform = 'Postingan Facebook';
             $platformBg = '#E7F0FF';
@@ -106,10 +118,15 @@
                 <span class="status-badge status-badge-read">Terbaca</span>
             @endif
 
-            @if ($notif->permalink)
+            <a href="{{ route('notifications.show', $notif->id) }}"
+                class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                <i class="fa-solid fa-eye" style="font-size: 0.72rem;"></i>Detail
+            </a>
+
+            @if ($notif->permalink && !in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']))
                 <a href="/notification/{{ $notif->id }}/detail?url={{ urlencode($notif->permalink) }}"
-                    target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>Lihat
+                    target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>Sumber
                 </a>
             @endif
         </div>

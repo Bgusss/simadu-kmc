@@ -23,6 +23,25 @@ class NotificationController extends Controller
         );
     }
 
+    /**
+     * Detail notifikasi — menampilkan form laporan, lampiran, dan info pelapor.
+     * Khusus untuk notifikasi WhatsApp dan Laporan Web SIMADU.
+     */
+    public function show($id)
+    {
+        $notification = Notification::with(['ticket.assignedOpd', 'ticket.statusLogs.user', 'ticket.responses.user', 'duplicateOf'])->findOrFail($id);
+
+        // Tandai sudah dibaca
+        if (!$notification->is_read) {
+            $notification->update(['is_read' => true]);
+        }
+
+        // Load AI classification
+        $notification->ai = AIClassification::where('notification_id', $notification->id)->first();
+
+        return view('notifications.show', compact('notification'));
+    }
+
     public function partial(Request $request)
     {
         $notifications = $this->buildNotificationQuery($request);

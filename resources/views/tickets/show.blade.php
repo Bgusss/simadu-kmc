@@ -138,6 +138,45 @@
                 </button>
             </form>
         </div>
+
+        {{-- Perbarui Status Tiket (Admin Only) --}}
+        <div class="card card-premium overflow-hidden mb-4">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 fw-bold">
+                <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-sync-alt me-2 text-warning"></i> Perbarui Status Tiket</h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+                <form action="{{ route('tickets.status', $ticket->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label text-muted fw-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.3px;">Pilih Status Baru</label>
+                        <select name="status" class="form-select py-2 px-3" style="border-radius: 12px; border: 1px solid #e2e8f0;" required>
+                            @if(in_array($ticket->status, ['baru', 'diteruskan']))
+                                <option value="" selected disabled>-- Pilih Status Baru --</option>
+                            @endif
+                            <option value="diterima" {{ $ticket->status == 'diterima' ? 'selected' : '' }}>Diterima (Sedang ditinjau)</option>
+                            <option value="proses_disposisi" {{ $ticket->status == 'proses_disposisi' ? 'selected' : '' }}>Proses Disposisi</option>
+                            <option value="diproses" {{ $ticket->status == 'diproses' ? 'selected' : '' }}>Diproses (Sedang ditindaklanjuti)</option>
+                            <option value="dijawab" {{ $ticket->status == 'dijawab' ? 'selected' : '' }}>Dijawab</option>
+                            <option value="selesai" {{ $ticket->status == 'selesai' ? 'selected' : '' }}>Selesai (Masalah terselesaikan)</option>
+                            <option value="eskalasi" {{ $ticket->status == 'eskalasi' ? 'selected' : '' }}>Eskalasi (Butuh bantuan instansi lain)</option>
+                            <option value="ditolak" {{ $ticket->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted fw-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.3px;">Catatan (Opsional)</label>
+                        <textarea name="notes" class="form-control py-2 px-3" style="border-radius: 12px; border: 1px solid #e2e8f0;" rows="2" placeholder="Catatan log perubahan status..."></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted fw-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.3px;">Lampiran Bukti (Opsional)</label>
+                        <input type="file" name="attachment" class="form-control" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png">
+                        <div class="form-text mt-1 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> JPG, JPEG, PNG — Maks 5MB</div>
+                    </div>
+                    <button type="submit" class="btn text-dark fw-bold w-100 rounded-pill py-2" style="background-color: #ffc107; border: none; box-shadow: 0 4px 6px rgba(255, 193, 7, 0.2);">
+                        <i class="fas fa-save me-2"></i> Simpan Status
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Kolom Kanan: Timeline & Tanggapan -->
