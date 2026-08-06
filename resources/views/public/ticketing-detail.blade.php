@@ -157,19 +157,19 @@
                         <div class="col-md-6">
                             <div class="text-muted small mb-1 fw-medium text-uppercase tracking-wider">Prioritas</div>
                             <div>
-                                @if(strtolower($ticket->priority) == 'tinggi')
-                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-2 fw-bold"><i class="fa-solid fa-arrow-up me-1"></i> Tinggi</span>
-                                @elseif(strtolower($ticket->priority) == 'sedang')
-                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-2 fw-bold text-dark"><i class="fa-solid fa-arrow-right me-1"></i> Sedang</span>
+                                @if(strtolower($ticket->priority ?? '') == 'tinggi')
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-arrow-up me-1"></i> Tinggi</span>
+                                @elseif(strtolower($ticket->priority ?? '') == 'sedang')
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-1 fw-bold text-dark"><i class="fa-solid fa-arrow-right me-1"></i> Sedang</span>
                                 @else
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-2 fw-bold"><i class="fa-solid fa-arrow-down me-1"></i> Rendah</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-arrow-down me-1"></i> Rendah</span>
                                 @endif
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted small mb-1 fw-medium text-uppercase tracking-wider">Waktu Pelaporan</div>
                             <div class="fw-bold text-dark" style="font-size: 1.1rem;">
-                                {{ $ticket->created_at->translatedFormat('d F Y') }} <span class="text-muted fw-normal ms-2">{{ $ticket->created_at->format('H:i') }} WIB</span>
+                                {{ $ticket->created_at?->translatedFormat('d F Y') }} <span class="text-muted fw-normal ms-2">{{ $ticket->created_at?->format('H:i') }} WIB</span>
                             </div>
                         </div>
                     </div>

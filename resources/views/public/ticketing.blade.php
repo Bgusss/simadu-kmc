@@ -415,8 +415,8 @@
                                 {{ $t->tracking_number ?? $t->ticket_number }}
                             </td>
                             <td class="text-muted small text-nowrap">
-                                <div>{{ $t->created_at->format('d M Y') }}</div>
-                                <div>{{ $t->created_at->format('H:i') }} WIB</div>
+                                <div>{{ $t->created_at?->format('d M Y') }}</div>
+                                <div>{{ $t->created_at?->format('H:i') }} WIB</div>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">

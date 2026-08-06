@@ -133,7 +133,7 @@
                             <span class="ai-tag" style="background: {{ $platformBg }}; color: {{ $platformColor }};">
                                 <i class="fa-brands {{ $platformIcon }}"></i> {{ $platformLabel }}
                             </span>
-                            <span class="text-muted small"><i class="far fa-clock me-1"></i>{{ $notification->created_at->format('d M Y, H:i') }}</span>
+                            <span class="text-muted small"><i class="far fa-clock me-1"></i>{{ $notification->created_at?->format('d M Y, H:i') }}</span>
                         </div>
                     </div>
                 </div>
@@ -393,7 +393,7 @@
                                             <span class="fw-bold small {{ $event->type == 'response' ? 'text-primary' : 'text-dark' }}">
                                                 <i class="fas {{ $event->type == 'response' ? 'fa-comment' : 'fa-sync-alt' }} me-1"></i> {{ $event->user }}
                                             </span>
-                                            <span class="text-muted" style="font-size: 0.72rem;">{{ $event->date->format('d M, H:i') }}</span>
+                                            <span class="text-muted" style="font-size: 0.72rem;">{{ $event->date?->format('d M, H:i') }}</span>
                                         </div>
                                         @if($event->type == 'response')
                                             <div class="small text-muted" style="white-space: pre-line;">{{ Str::limit($event->content, 100) }}</div>

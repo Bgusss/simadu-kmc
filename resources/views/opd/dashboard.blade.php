@@ -120,8 +120,8 @@
                                 <tr style="border-bottom: 1px solid #f1f5f9;">
                                     <td class="px-4 py-3"><span class="fw-bold text-primary">{{ $ticket->tracking_number ?? $ticket->ticket_number ?? '#' . $ticket->id }}</span></td>
                                     <td class="py-3 text-muted">
-                                        <div class="fw-medium text-dark">{{ $ticket->created_at->format('d M Y') }}</div>
-                                        <div class="small">{{ $ticket->created_at->format('H:i') }} WIB</div>
+                                        <div class="fw-medium text-dark">{{ $ticket->created_at?->format('d M Y') }}</div>
+                                        <div class="small">{{ $ticket->created_at?->format('H:i') }} WIB</div>
                                     </td>
                                     <td class="py-3">
                                         <div class="text-truncate text-dark" style="max-width: 280px;" title="{{ $ticket->complaint }}">

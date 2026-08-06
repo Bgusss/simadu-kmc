@@ -72,8 +72,8 @@
                 <div class="mb-4 border-bottom pb-3">
                     <h5 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Laporan #{{ $ticket->tracking_number ?? $ticket->ticket_number }}</h5>
                     <div class="text-muted small d-flex align-items-center">
-                        <span class="badge bg-light text-dark border px-2 py-1 me-2"><i class="fab fa-{{ strtolower($ticket->platform) }} text-primary"></i> {{ ucfirst($ticket->platform) }}</span>
-                        Dikirim pada {{ $ticket->created_at->format('d M Y, H:i') }}
+                        <span class="badge bg-light text-dark border px-2 py-1 me-2"><i class="fab fa-{{ strtolower($ticket->platform ?? '') }} text-primary"></i> {{ ucfirst($ticket->platform ?? '') }}</span>
+                        Dikirim pada {{ $ticket->created_at?->format('d M Y, H:i') }}
                     </div>
                 </div>
                 
@@ -166,7 +166,7 @@
                                         <i class="fas fa-sync-alt me-1"></i> {{ $event->user }}
                                     @endif
                                 </span>
-                                <span class="text-muted small bg-light px-2 py-1 rounded" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i> {{ $event->date->format('d M, H:i') }}</span>
+                                <span class="text-muted small bg-light px-2 py-1 rounded" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i> {{ $event->date?->format('d M, H:i') }}</span>
                             </div>
                             
                             <div class="card timeline-card shadow-sm {{ $event->type == 'response' ? 'bg-primary-subtle border-primary border-opacity-25' : 'bg-light' }}">

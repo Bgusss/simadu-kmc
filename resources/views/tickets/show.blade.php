@@ -67,8 +67,8 @@
                 <div class="mb-4 border-bottom pb-3">
                     <h5 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Laporan #{{ $ticket->tracking_number ?? $ticket->ticket_number }}</h5>
                     <div class="text-muted small d-flex align-items-center">
-                        <span class="badge bg-light text-dark border px-2 py-1 me-2"><i class="fab fa-{{ strtolower($ticket->platform) }} text-primary"></i> {{ ucfirst($ticket->platform) }}</span>
-                        Dikirim pada {{ $ticket->created_at->format('d M Y, H:i') }}
+                        <span class="badge bg-light text-dark border px-2 py-1 me-2"><i class="fab fa-{{ strtolower($ticket->platform ?? '') }} text-primary"></i> {{ ucfirst($ticket->platform ?? '') }}</span>
+                        Dikirim pada {{ $ticket->created_at?->format('d M Y, H:i') }}
                     </div>
                 </div>
                 
@@ -101,9 +101,9 @@
                         <div class="p-3 bg-light rounded-4 border border-opacity-50 h-100 transition-all hover-shadow">
                             <div class="text-muted small fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;"><i class="fas fa-exclamation-circle me-1"></i> Prioritas</div>
                             <div class="mt-1">
-                                @if(strtolower($ticket->priority) == 'tinggi')
+                                @if(strtolower($ticket->priority ?? '') == 'tinggi')
                                     <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-arrow-up me-1"></i> Tinggi</span>
-                                @elseif(strtolower($ticket->priority) == 'sedang')
+                                @elseif(strtolower($ticket->priority ?? '') == 'sedang')
                                     <span class="badge bg-warning bg-opacity-10 text-warning border border-warning rounded-pill px-3 py-1 fw-bold text-dark"><i class="fa-solid fa-arrow-right me-1"></i> Sedang</span>
                                 @else
                                     <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-arrow-down me-1"></i> Rendah</span>
@@ -256,7 +256,7 @@
                                         <i class="fas fa-sync-alt me-1"></i> {{ $event->user }}
                                     @endif
                                 </span>
-                                <span class="text-muted small bg-light px-2 py-1 rounded" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i> {{ $event->date->format('d M, H:i') }}</span>
+                                <span class="text-muted small bg-light px-2 py-1 rounded" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i> {{ $event->date?->format('d M, H:i') }}</span>
                             </div>
                             
                             <div class="card timeline-card shadow-sm {{ $event->type == 'response' ? 'bg-primary-subtle border-primary border-opacity-25' : 'bg-light' }}">

@@ -247,7 +247,7 @@
                                 </td>
                                 <td class="text-center">
                                     @php
-                                        $platformLower = strtolower($ticket->platform);
+                                        $platformLower = strtolower($ticket->platform ?? '');
                                     @endphp
                                     @if($platformLower == 'facebook')
                                         <span class="d-inline-flex align-items-center justify-content-center rounded-circle text-white shadow-sm" style="width: 32px; height: 32px; background-color: #1877F2;" title="Facebook" data-bs-toggle="tooltip">

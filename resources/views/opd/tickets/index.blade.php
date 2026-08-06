@@ -132,8 +132,8 @@
                                 @endif
                             </td>
                             <td class="py-3 text-muted">
-                                <div class="fw-medium text-dark">{{ $ticket->created_at->format('d M Y') }}</div>
-                                <div class="small">{{ $ticket->created_at->format('H:i') }} WIB</div>
+                                <div class="fw-medium text-dark">{{ $ticket->created_at?->format('d M Y') }}</div>
+                                <div class="small">{{ $ticket->created_at?->format('H:i') }} WIB</div>
                             </td>
                             <td class="py-3">
                                 @php
