@@ -215,39 +215,53 @@
         border: 2px solid #e2e8f0;
         background: #f8fafc;
         transition: all 0.3s ease;
+        flex-shrink: 0;
     }
     .preview-item:hover {
         border-color: var(--kmc-blue);
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .preview-item img,
-    .preview-item video {
+    .preview-item.preview-video {
+        width: 260px;
+        height: 160px;
+    }
+    .preview-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+    .preview-item video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
     }
     .preview-item .remove-btn {
         position: absolute;
         top: 6px;
         right: 6px;
-        width: 26px;
-        height: 26px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         border: none;
         background: rgba(239, 68, 68, 0.9);
         color: white;
-        font-size: 0.7rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        font-size: 11px;
+        line-height: 24px;
+        text-align: center;
+        padding: 0;
         cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
         transition: all 0.2s ease;
         z-index: 5;
     }
     .preview-item .remove-btn:hover {
         background: #dc2626;
         transform: scale(1.1);
+    }
+    .preview-item .remove-btn i {
+        vertical-align: middle;
+        line-height: inherit;
     }
     .preview-item .file-label {
         position: absolute;
@@ -257,7 +271,7 @@
         background: rgba(0,0,0,0.6);
         color: white;
         font-size: 0.65rem;
-        padding: 3px 6px;
+        padding: 4px 8px;
         text-align: center;
         white-space: nowrap;
         overflow: hidden;
@@ -270,8 +284,9 @@
         background: rgba(0,0,0,0.7);
         color: white;
         font-size: 0.6rem;
-        padding: 2px 6px;
+        padding: 2px 8px;
         border-radius: 6px;
+        z-index: 4;
     }
 </style>
 @endpush
@@ -561,8 +576,9 @@
             div.className = 'preview-item';
 
             if (item.isVideo) {
+                div.classList.add('preview-video');
                 div.innerHTML = `
-                    <video src="${url}" muted></video>
+                    <video src="${url}" controls playsinline></video>
                     <span class="video-badge"><i class="fas fa-video"></i> Video</span>
                     <button type="button" class="remove-btn" data-id="${item.id}"><i class="fas fa-times"></i></button>
                     <div class="file-label">${item.file.name}</div>
