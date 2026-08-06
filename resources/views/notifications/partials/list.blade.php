@@ -121,9 +121,9 @@
             {{-- Tombol Detail internal HANYA untuk WhatsApp / Web --}}
             @if (in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']) || str_contains($notif->title ?? '', 'WhatsApp') || str_contains($notif->title ?? '', 'Laporan Web'))
                 <a href="{{ route('notifications.show', $notif->id) }}"
-                    class="btn btn-outline-primary btn-sm rounded-pill fw-bold d-inline-flex align-items-center justify-content-center gap-2"
-                    style="font-size: 0.82rem; border-width: 2px; padding: 6px 18px; white-space: nowrap;">
-                    <i class="fa-solid fa-eye me-1" style="font-size: 0.8rem;"></i>
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5"
+                    style="font-size: 0.76rem; border-width: 1.5px; white-space: nowrap;">
+                    <i class="fa-solid fa-eye" style="font-size: 0.72rem;"></i>
                     <span>Detail</span>
                 </a>
             @endif
@@ -132,9 +132,9 @@
             @if ($notif->permalink && !in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']))
                 <a href="/notification/{{ $notif->id }}/detail?url={{ urlencode($notif->permalink) }}"
                     target="_blank"
-                    class="btn btn-outline-primary btn-sm rounded-pill fw-bold d-inline-flex align-items-center justify-content-center gap-2"
-                    style="font-size: 0.82rem; border-width: 2px; padding: 6px 18px; white-space: nowrap;">
-                    <i class="fa-solid fa-arrow-up-right-from-square me-1" style="font-size: 0.78rem;"></i>
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5"
+                    style="font-size: 0.76rem; border-width: 1.5px; white-space: nowrap;">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
                     <span>Lihat</span>
                 </a>
             @endif
