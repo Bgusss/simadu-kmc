@@ -138,32 +138,131 @@
     }
 
     .success-card {
-        background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
-        color: white;
+        background: white;
         border-radius: 20px;
-        padding: 2.5rem;
+        padding: 3rem 2.5rem;
         text-align: center;
-        box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+        box-shadow: 0 20px 50px rgba(13, 71, 161, 0.12);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
     }
-    .success-card .success-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
+    .success-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--kmc-blue) 0%, var(--kmc-orange) 100%);
+    }
+    .success-card .success-icon-wrap {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--kmc-blue) 0%, #1565c0 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
         animation: successPulse 2s ease infinite;
+    }
+    .success-card .success-icon-wrap i {
+        font-size: 2rem;
+        color: white;
     }
     @keyframes successPulse {
         0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+        50% { transform: scale(1.05); }
+    }
+    .success-card h3 {
+        font-weight: 800;
+        color: var(--kmc-blue-dark);
+        margin-bottom: 0.5rem;
+    }
+    .success-card .success-desc {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
     }
     .success-card .tracking-number {
-        background: rgba(255,255,255,0.2);
-        border-radius: 12px;
-        padding: 12px 24px;
+        background: linear-gradient(135deg, var(--kmc-blue) 0%, #1565c0 100%);
+        color: white;
+        border-radius: 14px;
+        padding: 14px 28px;
         display: inline-block;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         font-weight: 800;
-        letter-spacing: 1px;
-        margin: 15px 0;
-        backdrop-filter: blur(10px);
+        letter-spacing: 2px;
+        margin: 0 0 1rem;
+    }
+    .success-card .tracking-hint {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+    }
+    .success-card .btn-kmc-primary {
+        background: linear-gradient(135deg, var(--kmc-orange) 0%, var(--kmc-orange-hover) 100%);
+        border: none;
+        color: white;
+        border-radius: 12px;
+        padding: 10px 24px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3);
+    }
+    .success-card .btn-kmc-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(245, 124, 0, 0.4);
+        color: white;
+    }
+    .success-card .btn-kmc-outline {
+        background: transparent;
+        border: 2px solid var(--kmc-blue);
+        color: var(--kmc-blue);
+        border-radius: 12px;
+        padding: 10px 24px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+    .success-card .btn-kmc-outline:hover {
+        background: var(--kmc-blue);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Toast notification */
+    .upload-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 320px;
+        max-width: 420px;
+        padding: 16px 20px;
+        border-radius: 14px;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        transform: translateX(120%);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .upload-toast.show {
+        transform: translateX(0);
+    }
+    .upload-toast.toast-error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+    .upload-toast.toast-warning {
+        background: linear-gradient(135deg, var(--kmc-orange), var(--kmc-orange-hover));
+    }
+    .upload-toast i {
+        font-size: 1.3rem;
+        flex-shrink: 0;
     }
 
     .info-box {
@@ -292,6 +391,12 @@
 @endpush
 
 @section('content')
+    {{-- Toast Notification --}}
+    <div class="upload-toast" id="uploadToast">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
     {{-- Hero Section --}}
     <div class="complaint-hero">
         <div class="container">
@@ -313,23 +418,28 @@
             <div class="row justify-content-center" style="margin-top: -10px;">
                 <div class="col-lg-7">
                     <div class="success-card">
-                        <div class="success-icon">✅</div>
-                        <h3 style="font-weight: 800;">Laporan Berhasil Dikirim!</h3>
-                        <p style="opacity: 0.9;">Terima kasih telah melapor. Laporan Anda akan segera ditindaklanjuti oleh OPD terkait.</p>
+                        <div class="success-icon-wrap">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h3>Laporan Berhasil Dikirim!</h3>
+                        <p class="success-desc">
+                            Terima kasih telah melapor. Laporan Anda akan segera ditindaklanjuti oleh OPD terkait.
+                        </p>
 
                         <div class="tracking-number">
                             {{ session('tracking_number') }}
                         </div>
 
-                        <p style="opacity: 0.8; font-size: 0.9rem;">
+                        <p class="tracking-hint">
+                            <i class="fas fa-info-circle me-1"></i>
                             Simpan nomor tiket di atas untuk melacak status aduan Anda.
                         </p>
 
-                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
-                            <a href="{{ route('ticketing.show', session('tracking_number')) }}" class="btn btn-light px-4 py-2" style="border-radius: 12px; font-weight: 600;">
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                            <a href="{{ route('ticketing.show', session('tracking_number')) }}" class="btn btn-kmc-primary">
                                 <i class="fas fa-search me-1"></i> Lacak Status
                             </a>
-                            <a href="{{ route('public.complaint.create') }}" class="btn btn-outline-light px-4 py-2" style="border-radius: 12px; font-weight: 600;">
+                            <a href="{{ route('public.complaint.create') }}" class="btn btn-kmc-outline">
                                 <i class="fas fa-plus me-1"></i> Lapor Lagi
                             </a>
                         </div>
@@ -521,11 +631,39 @@
         return selectedFiles.filter(f => f.isVideo).length;
     }
 
+    // Toast notification
+    const toastEl = document.getElementById('uploadToast');
+    const toastMsg = document.getElementById('toastMessage');
+    let toastTimer = null;
+
+    function showToast(message, type = 'error') {
+        toastEl.className = 'upload-toast toast-' + type;
+        toastMsg.textContent = message;
+        // Force reflow for re-triggering animation
+        void toastEl.offsetWidth;
+        toastEl.classList.add('show');
+
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toastEl.classList.remove('show');
+        }, 4000);
+    }
+
+    const ALLOWED_EXTS = ['jpg','jpeg','png','webp','heic','heif','mp4','mov','avi','3gp'];
+
     function addFiles(files) {
         for (const file of files) {
+            // Format check
+            const ext = getExt(file.name);
+            if (!ALLOWED_EXTS.includes(ext)) {
+                showToast(`Format "${ext}" tidak didukung. Gunakan JPG, PNG, WEBP, MP4, MOV, atau 3GP.`, 'error');
+                continue;
+            }
+
             // Size check
+            const sizeMB = (file.size / 1024 / 1024).toFixed(1);
             if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-                alert(`File "${file.name}" melebihi batas ${MAX_SIZE_MB}MB.`);
+                showToast(`File "${file.name}" (${sizeMB}MB) melebihi batas maksimal ${MAX_SIZE_MB}MB.`, 'error');
                 continue;
             }
 
@@ -533,11 +671,11 @@
 
             // Limit check
             if (isVideo && countVideos() >= MAX_VIDEOS) {
-                alert(`Maksimal ${MAX_VIDEOS} video. Hapus video sebelumnya untuk mengganti.`);
+                showToast(`Maksimal ${MAX_VIDEOS} video. Hapus video sebelumnya untuk mengganti.`, 'warning');
                 continue;
             }
             if (!isVideo && countImages() >= MAX_IMAGES) {
-                alert(`Maksimal ${MAX_IMAGES} gambar. Hapus gambar sebelumnya untuk mengganti.`);
+                showToast(`Maksimal ${MAX_IMAGES} gambar tercapai. Hapus gambar untuk menambah yang baru.`, 'warning');
                 continue;
             }
 
