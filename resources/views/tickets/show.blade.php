@@ -239,7 +239,7 @@
                             ]);
                         }
                         $events = $events->sortByDesc(function($item) {
-                            return $item->date->timestamp;
+                            return $item->date ? $item->date->timestamp : 0;
                         })->values();
                     @endphp
 

@@ -382,7 +382,7 @@
                                 foreach($ticket->statusLogs->sortByDesc('id')->take(3) as $log) {
                                     $events->push((object)['type' => 'status', 'date' => $log->created_at, 'user' => $log->user?->name ?? 'Sistem', 'old' => $log->from_status, 'new' => $log->to_status, 'notes' => $log->note]);
                                 }
-                                $events = $events->sortByDesc(fn($e) => $e->date->timestamp)->take(5);
+                                $events = $events->sortByDesc(fn($e) => $e->date ? $e->date->timestamp : 0)->take(5);
                             @endphp
 
                             <div class="timeline position-relative ps-4 ms-2" style="border-left: 2px solid #e9ecef;">
