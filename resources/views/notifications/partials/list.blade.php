@@ -121,10 +121,9 @@
             {{-- Tombol Detail internal HANYA untuk WhatsApp / Web --}}
             @if (in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']) || str_contains($notif->title ?? '', 'WhatsApp') || str_contains($notif->title ?? '', 'Laporan Web'))
                 <a href="{{ route('notifications.show', $notif->id) }}"
-                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5"
-                    style="font-size: 0.76rem; border-width: 1.5px; white-space: nowrap;">
-                    <i class="fa-solid fa-eye" style="font-size: 0.72rem;"></i>
-                    <span>Detail</span>
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center"
+                    style="font-size: 0.78rem; border-width: 2px; white-space: nowrap;">
+                    <i class="fa-solid fa-eye" style="font-size: 0.74rem; margin-right: 6px;"></i> Detail
                 </a>
             @endif
 
@@ -132,10 +131,9 @@
             @if ($notif->permalink && !in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']))
                 <a href="/notification/{{ $notif->id }}/detail?url={{ urlencode($notif->permalink) }}"
                     target="_blank"
-                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center justify-content-center gap-1.5"
-                    style="font-size: 0.76rem; border-width: 1.5px; white-space: nowrap;">
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
-                    <span>Lihat</span>
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-bold d-inline-flex align-items-center justify-content-center"
+                    style="font-size: 0.78rem; border-width: 2px; white-space: nowrap;">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem; margin-right: 6px;"></i> Lihat
                 </a>
             @endif
         </div>
