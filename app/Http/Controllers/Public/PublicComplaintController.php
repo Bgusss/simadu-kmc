@@ -55,7 +55,7 @@ class PublicComplaintController extends Controller
 
             // 2. Create Notification
             $notification = Notification::create([
-                'title'   => 'Laporan Web SIMADU',
+                'title'   => 'WhatsApp',
                 'sender'  => $request->reporter_name,
                 'message' => $request->complaint,
             ]);
@@ -121,7 +121,7 @@ class PublicComplaintController extends Controller
                     'ticket_number'    => $trackingNumber,
                     'tracking_number'  => $trackingNumber,
                     'ticket_time'      => now(),
-                    'platform'         => 'Laporan Web SIMADU',
+                    'platform'         => 'WhatsApp',
                     'reporter_name'    => $request->reporter_name,
                     'reporter_link'    => "wa.me/" . FonnteService::formatPhone($request->reporter_phone),
                     'category'         => $category,

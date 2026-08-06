@@ -305,7 +305,6 @@
                             <option value="Facebook Comment Mention" {{ request('type') == 'Facebook Comment Mention' ? 'selected' : '' }}>Facebook Komentar</option>
                             <option value="Instagram DM" {{ request('type') == 'Instagram DM' ? 'selected' : '' }}>DM Instagram</option>
                             <option value="WhatsApp" {{ request('type') == 'WhatsApp' ? 'selected' : '' }}>WhatsApp</option>
-                            <option value="Laporan Web SIMADU" {{ request('type') == 'Laporan Web SIMADU' ? 'selected' : '' }}>Laporan Web</option>
                         </select>
                     </div>
 

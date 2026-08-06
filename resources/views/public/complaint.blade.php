@@ -213,18 +213,12 @@
     <div class="complaint-hero">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-8">
+                <div class="col-lg-12">
                     <h1><i class="fas fa-bullhorn me-2"></i> Lapor Aduan</h1>
                     <p class="mb-0">
                         Sampaikan keluhan atau aspirasi Anda kepada Pemerintah Kabupaten Ketapang.
                         Laporan Anda akan ditindaklanjuti oleh OPD terkait.
                     </p>
-                </div>
-                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <div class="wa-channel-badge">
-                        <i class="fab fa-whatsapp"></i>
-                        Lapor juga bisa via WhatsApp
-                    </div>
                 </div>
             </div>
         </div>
@@ -354,10 +348,20 @@
                                 <div class="mb-4">
                                     <label class="form-label">Lampiran <span class="text-muted">(Opsional)</span></label>
                                     <div class="upload-area" id="uploadArea" onclick="document.getElementById('attachment').click()">
-                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
                                         <p id="uploadText">Klik atau seret file untuk mengunggah</p>
                                         <p class="file-name d-none" id="fileName"></p>
-                                        <small class="text-muted d-block mt-1">JPG, PNG, WEBP, MP4, MOV, 3GP — Maks 20MB</small>
+                                        <small class="text-muted d-block mt-1" id="uploadHint">JPG, PNG, WEBP, MP4, MOV, 3GP — Maks 20MB</small>
+                                    </div>
+                                    {{-- Preview Lampiran --}}
+                                    <div id="previewContainer" class="d-none mt-3">
+                                        <div class="position-relative d-inline-block">
+                                            <img id="imagePreview" class="d-none rounded" style="max-width: 100%; max-height: 300px; border: 2px solid #e2e8f0; border-radius: 14px !important; object-fit: contain;" alt="Preview">
+                                            <video id="videoPreview" class="d-none rounded" controls style="max-width: 100%; max-height: 300px; border: 2px solid #e2e8f0; border-radius: 14px !important;"></video>
+                                            <button type="button" id="removeFile" class="btn btn-sm btn-danger position-absolute" style="top: 8px; right: 8px; border-radius: 50%; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <input type="file" class="d-none" id="attachment" name="attachment"
                                            accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.mp4,.mov,.avi,.3gp">
@@ -366,11 +370,7 @@
                                     @enderror
                                 </div>
 
-                                {{-- Info Box --}}
-                                <div class="info-box mb-4">
-                                    <i class="fas fa-robot"></i>
-                                    Laporan Anda akan diklasifikasi secara otomatis menggunakan AI dan diteruskan ke OPD terkait.
-                                </div>
+
 
                                 {{-- Submit --}}
                                 <div class="d-grid">
@@ -382,20 +382,7 @@
                         </div>
                     </div>
 
-                    {{-- Alternative Channel --}}
-                    <div class="text-center mt-4">
-                        <p class="text-muted mb-2" style="font-size: 0.9rem;">Anda juga bisa melapor melalui:</p>
-                        <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            <a href="https://wa.me/{{ config('services.fonnte.bot_number') }}?text=MENU" target="_blank"
-                               class="btn btn-outline-success px-4" style="border-radius: 12px; font-weight: 600;">
-                                <i class="fab fa-whatsapp me-1"></i> WhatsApp Bot
-                            </a>
-                            <a href="{{ route('ticketing.index') }}"
-                               class="btn btn-outline-primary px-4" style="border-radius: 12px; font-weight: 600;">
-                                <i class="fas fa-search me-1"></i> Lacak Aduan
-                            </a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         @endif
@@ -415,22 +402,70 @@
         charCount.textContent = complaintField.value.length;
     }
 
-    // File upload area
+    // File upload area with preview
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('attachment');
     const uploadText = document.getElementById('uploadText');
+    const uploadIcon = document.getElementById('uploadIcon');
+    const uploadHint = document.getElementById('uploadHint');
     const fileName = document.getElementById('fileName');
+    const previewContainer = document.getElementById('previewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const videoPreview = document.getElementById('videoPreview');
+    const removeFile = document.getElementById('removeFile');
+
+    function showPreview(file) {
+        const url = URL.createObjectURL(file);
+        const ext = file.name.split('.').pop().toLowerCase();
+        const isVideo = ['mp4', 'mov', 'avi', '3gp', 'webm'].includes(ext);
+
+        // Show file name
+        uploadText.classList.add('d-none');
+        uploadIcon.classList.add('d-none');
+        uploadHint.classList.add('d-none');
+        fileName.classList.remove('d-none');
+        fileName.textContent = '📎 ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
+
+        // Show preview
+        previewContainer.classList.remove('d-none');
+        if (isVideo) {
+            imagePreview.classList.add('d-none');
+            videoPreview.classList.remove('d-none');
+            videoPreview.src = url;
+        } else {
+            videoPreview.classList.add('d-none');
+            imagePreview.classList.remove('d-none');
+            imagePreview.src = url;
+        }
+    }
+
+    function resetUpload() {
+        fileInput.value = '';
+        uploadText.classList.remove('d-none');
+        uploadIcon.classList.remove('d-none');
+        uploadHint.classList.remove('d-none');
+        fileName.classList.add('d-none');
+        previewContainer.classList.add('d-none');
+        imagePreview.classList.add('d-none');
+        imagePreview.src = '';
+        videoPreview.classList.add('d-none');
+        videoPreview.src = '';
+    }
 
     if (fileInput) {
         fileInput.addEventListener('change', function() {
             if (this.files.length > 0) {
-                uploadText.classList.add('d-none');
-                fileName.classList.remove('d-none');
-                fileName.textContent = '📎 ' + this.files[0].name;
+                showPreview(this.files[0]);
             } else {
-                uploadText.classList.remove('d-none');
-                fileName.classList.add('d-none');
+                resetUpload();
             }
+        });
+    }
+
+    if (removeFile) {
+        removeFile.addEventListener('click', function(e) {
+            e.stopPropagation();
+            resetUpload();
         });
     }
 
