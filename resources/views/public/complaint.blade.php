@@ -205,6 +205,74 @@
         background: var(--kmc-orange);
         width: 60px;
     }
+
+    .preview-item {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 2px solid #e2e8f0;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+    }
+    .preview-item:hover {
+        border-color: var(--kmc-blue);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .preview-item img,
+    .preview-item video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .preview-item .remove-btn {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+        z-index: 5;
+    }
+    .preview-item .remove-btn:hover {
+        background: #dc2626;
+        transform: scale(1.1);
+    }
+    .preview-item .file-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.6);
+        color: white;
+        font-size: 0.65rem;
+        padding: 3px 6px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .preview-item .video-badge {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        font-size: 0.6rem;
+        padding: 2px 6px;
+        border-radius: 6px;
+    }
 </style>
 @endpush
 
@@ -346,26 +414,32 @@
 
                                 {{-- Lampiran --}}
                                 <div class="mb-4">
-                                    <label class="form-label">Lampiran <span class="text-muted">(Opsional)</span></label>
-                                    <div class="upload-area" id="uploadArea" onclick="document.getElementById('attachment').click()">
+                                    <label class="form-label">
+                                        Lampiran <span class="text-muted">(Opsional — Maks 5 gambar + 1 video)</span>
+                                    </label>
+                                    <div class="upload-area" id="uploadArea">
                                         <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
                                         <p id="uploadText">Klik atau seret file untuk mengunggah</p>
-                                        <p class="file-name d-none" id="fileName"></p>
-                                        <small class="text-muted d-block mt-1" id="uploadHint">JPG, PNG, WEBP, MP4, MOV, 3GP — Maks 20MB</small>
+                                        <small class="text-muted d-block mt-1" id="uploadHint">JPG, PNG, WEBP, MP4, MOV, 3GP — Maks 20MB per file</small>
+                                        <span class="badge bg-secondary mt-2 d-none" id="fileCountBadge"></span>
                                     </div>
-                                    {{-- Preview Lampiran --}}
-                                    <div id="previewContainer" class="d-none mt-3">
-                                        <div class="position-relative d-inline-block">
-                                            <img id="imagePreview" class="d-none rounded" style="max-width: 100%; max-height: 300px; border: 2px solid #e2e8f0; border-radius: 14px !important; object-fit: contain;" alt="Preview">
-                                            <video id="videoPreview" class="d-none rounded" controls style="max-width: 100%; max-height: 300px; border: 2px solid #e2e8f0; border-radius: 14px !important;"></video>
-                                            <button type="button" id="removeFile" class="btn btn-sm btn-danger position-absolute" style="top: 8px; right: 8px; border-radius: 50%; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-                                                <i class="fas fa-times"></i>
-                                            </button>
+
+                                    {{-- Preview Grid --}}
+                                    <div id="previewGrid" class="d-none mt-3">
+                                        <div class="d-flex flex-wrap justify-content-center gap-3" id="previewItems">
                                         </div>
                                     </div>
-                                    <input type="file" class="d-none" id="attachment" name="attachment"
-                                           accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.mp4,.mov,.avi,.3gp">
-                                    @error('attachment')
+
+                                    {{-- Hidden file inputs --}}
+                                    <input type="file" class="d-none" id="fileSelector"
+                                           accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.mp4,.mov,.avi,.3gp" multiple>
+                                    {{-- Dynamic inputs will be injected here --}}
+                                    <div id="fileInputsContainer"></div>
+
+                                    @error('attachments')
+                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                    @error('attachments.*')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -398,74 +472,144 @@
         complaintField.addEventListener('input', function() {
             charCount.textContent = this.value.length;
         });
-        // Init
         charCount.textContent = complaintField.value.length;
     }
 
-    // File upload area with preview
+    // ── Multi-file upload ──────────────────────────────
+    const MAX_IMAGES = 5;
+    const MAX_VIDEOS = 1;
+    const MAX_SIZE_MB = 20;
+    const VIDEO_EXTS = ['mp4', 'mov', 'avi', '3gp', 'webm'];
+
     const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('attachment');
-    const uploadText = document.getElementById('uploadText');
-    const uploadIcon = document.getElementById('uploadIcon');
-    const uploadHint = document.getElementById('uploadHint');
-    const fileName = document.getElementById('fileName');
-    const previewContainer = document.getElementById('previewContainer');
-    const imagePreview = document.getElementById('imagePreview');
-    const videoPreview = document.getElementById('videoPreview');
-    const removeFile = document.getElementById('removeFile');
+    const fileSelector = document.getElementById('fileSelector');
+    const previewGrid = document.getElementById('previewGrid');
+    const previewItems = document.getElementById('previewItems');
+    const fileInputsContainer = document.getElementById('fileInputsContainer');
+    const fileCountBadge = document.getElementById('fileCountBadge');
 
-    function showPreview(file) {
-        const url = URL.createObjectURL(file);
-        const ext = file.name.split('.').pop().toLowerCase();
-        const isVideo = ['mp4', 'mov', 'avi', '3gp', 'webm'].includes(ext);
+    let selectedFiles = []; // { file, id, isVideo }
 
-        // Show file name
-        uploadText.classList.add('d-none');
-        uploadIcon.classList.add('d-none');
-        uploadHint.classList.add('d-none');
-        fileName.classList.remove('d-none');
-        fileName.textContent = '📎 ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
-
-        // Show preview
-        previewContainer.classList.remove('d-none');
-        if (isVideo) {
-            imagePreview.classList.add('d-none');
-            videoPreview.classList.remove('d-none');
-            videoPreview.src = url;
-        } else {
-            videoPreview.classList.add('d-none');
-            imagePreview.classList.remove('d-none');
-            imagePreview.src = url;
-        }
+    function getExt(name) {
+        return name.split('.').pop().toLowerCase();
     }
 
-    function resetUpload() {
-        fileInput.value = '';
-        uploadText.classList.remove('d-none');
-        uploadIcon.classList.remove('d-none');
-        uploadHint.classList.remove('d-none');
-        fileName.classList.add('d-none');
-        previewContainer.classList.add('d-none');
-        imagePreview.classList.add('d-none');
-        imagePreview.src = '';
-        videoPreview.classList.add('d-none');
-        videoPreview.src = '';
+    function isVideoFile(name) {
+        return VIDEO_EXTS.includes(getExt(name));
     }
 
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                showPreview(this.files[0]);
-            } else {
-                resetUpload();
+    function countImages() {
+        return selectedFiles.filter(f => !f.isVideo).length;
+    }
+
+    function countVideos() {
+        return selectedFiles.filter(f => f.isVideo).length;
+    }
+
+    function addFiles(files) {
+        for (const file of files) {
+            // Size check
+            if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+                alert(`File "${file.name}" melebihi batas ${MAX_SIZE_MB}MB.`);
+                continue;
             }
+
+            const isVideo = isVideoFile(file.name);
+
+            // Limit check
+            if (isVideo && countVideos() >= MAX_VIDEOS) {
+                alert(`Maksimal ${MAX_VIDEOS} video. Hapus video sebelumnya untuk mengganti.`);
+                continue;
+            }
+            if (!isVideo && countImages() >= MAX_IMAGES) {
+                alert(`Maksimal ${MAX_IMAGES} gambar. Hapus gambar sebelumnya untuk mengganti.`);
+                continue;
+            }
+
+            const id = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            selectedFiles.push({ file, id, isVideo });
+        }
+
+        renderPreviews();
+    }
+
+    function removeFileById(id) {
+        selectedFiles = selectedFiles.filter(f => f.id !== id);
+        renderPreviews();
+    }
+
+    function renderPreviews() {
+        // Clear
+        previewItems.innerHTML = '';
+        fileInputsContainer.innerHTML = '';
+
+        if (selectedFiles.length === 0) {
+            previewGrid.classList.add('d-none');
+            fileCountBadge.classList.add('d-none');
+            return;
+        }
+
+        previewGrid.classList.remove('d-none');
+        fileCountBadge.classList.remove('d-none');
+        fileCountBadge.textContent = `${countImages()} gambar, ${countVideos()} video`;
+
+        selectedFiles.forEach((item, index) => {
+            const url = URL.createObjectURL(item.file);
+
+            // Preview card
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+
+            if (item.isVideo) {
+                div.innerHTML = `
+                    <video src="${url}" muted></video>
+                    <span class="video-badge"><i class="fas fa-video"></i> Video</span>
+                    <button type="button" class="remove-btn" data-id="${item.id}"><i class="fas fa-times"></i></button>
+                    <div class="file-label">${item.file.name}</div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <img src="${url}" alt="Preview">
+                    <button type="button" class="remove-btn" data-id="${item.id}"><i class="fas fa-times"></i></button>
+                    <div class="file-label">${item.file.name}</div>
+                `;
+            }
+
+            previewItems.appendChild(div);
+
+            // Hidden file input (using DataTransfer to set .files)
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.name = 'attachments[]';
+            input.style.display = 'none';
+            const dt = new DataTransfer();
+            dt.items.add(item.file);
+            input.files = dt.files;
+            fileInputsContainer.appendChild(input);
+        });
+
+        // Bind remove buttons
+        previewItems.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                removeFileById(this.dataset.id);
+            });
         });
     }
 
-    if (removeFile) {
-        removeFile.addEventListener('click', function(e) {
-            e.stopPropagation();
-            resetUpload();
+    // Click to upload
+    if (uploadArea) {
+        uploadArea.addEventListener('click', function() {
+            fileSelector.click();
+        });
+    }
+
+    if (fileSelector) {
+        fileSelector.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                addFiles(this.files);
+            }
+            this.value = ''; // reset so same file can be selected again
         });
     }
 
@@ -481,8 +625,7 @@
         uploadArea.addEventListener('drop', function(e) {
             e.preventDefault();
             this.classList.remove('dragover');
-            fileInput.files = e.dataTransfer.files;
-            fileInput.dispatchEvent(new Event('change'));
+            addFiles(e.dataTransfer.files);
         });
     }
 

@@ -32,32 +32,36 @@ class PublicComplaintController extends Controller
             'reporter_name' => 'required|string|max:255',
             'reporter_phone' => 'required|string|max:20',
             'complaint' => 'required|string|max:5000',
-            'attachment' => [
-                'nullable',
+            'attachments' => 'nullable|array|max:6',
+            'attachments.*' => [
                 'file',
                 'mimes:jpg,jpeg,png,webp,heic,heif,mp4,mov,avi,3gp',
-                'max:20480', // 20MB
+                'max:20480', // 20MB per file
             ],
         ], [
             'reporter_name.required'  => 'Nama lengkap wajib diisi.',
             'reporter_phone.required' => 'Nomor HP/WhatsApp wajib diisi.',
             'complaint.required'      => 'Isi pengaduan wajib diisi.',
-            'attachment.mimes'        => 'Format file tidak didukung. Gunakan JPG, PNG, WEBP, MP4, MOV, atau 3GP.',
-            'attachment.max'          => 'Ukuran file maksimal 20MB.',
+            'attachments.max'         => 'Maksimal 6 file (5 gambar + 1 video).',
+            'attachments.*.mimes'     => 'Format file tidak didukung. Gunakan JPG, PNG, WEBP, MP4, MOV, atau 3GP.',
+            'attachments.*.max'       => 'Ukuran file maksimal 20MB per file.',
         ]);
 
         try {
-            // 1. Simpan lampiran
-            $attachmentPath = null;
-            if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('complaints', 'public');
+            // 1. Simpan lampiran (multiple)
+            $attachmentPaths = [];
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $attachmentPaths[] = $file->store('complaints', 'public');
+                }
             }
 
             // 2. Create Notification
             $notification = Notification::create([
-                'title'   => 'WhatsApp',
-                'sender'  => $request->reporter_name,
-                'message' => $request->complaint,
+                'title'       => 'WhatsApp',
+                'sender'      => $request->reporter_name,
+                'message'     => $request->complaint,
+                'attachments' => !empty($attachmentPaths) ? $attachmentPaths : null,
             ]);
 
             // 3. Generate tracking number

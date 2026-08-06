@@ -14,12 +14,17 @@ class Notification extends Model
         'title',
         'sender',
         'message',
+        'attachments',
         'permalink',
         'comment_message',
         'is_read',
         'duplicate_of_id',
         'duplicate_similarity',
         'duplicate_status',
+    ];
+
+    protected $casts = [
+        'attachments' => 'array',
     ];
 
     /**
