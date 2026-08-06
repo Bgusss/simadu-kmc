@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Class Diagram" id="Class-Diagram">
+    <mxGraphModel dx="1200" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="User" value="User" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="50" y="50" width="240" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="User-a" value="- id: integer&lt;br&gt;- opd_id: integer&lt;br&gt;- name: string&lt;br&gt;- username: string&lt;br&gt;- email: string&lt;br&gt;- role: string&lt;br&gt;- profile_photo: string" vertex="1" parent="User" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="159" as="geometry" />
+        </mxCell>
+        <mxCell id="User-l" value="" vertex="1" parent="User" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="189" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="User-m" value="+ opd()&lt;br&gt;+ isAdmin()&lt;br&gt;+ isOpd()" vertex="1" parent="User" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="197" width="240" height="71" as="geometry" />
+        </mxCell>
+        <mxCell id="Opd" value="Opd" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="450" y="50" width="240" height="199" as="geometry" />
+        </mxCell>
+        <mxCell id="Opd-a" value="- id: integer&lt;br&gt;- name: string&lt;br&gt;- created_at: timestamp&lt;br&gt;- updated_at: timestamp" vertex="1" parent="Opd" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="Opd-l" value="" vertex="1" parent="Opd" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="123" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Opd-m" value="+ users()&lt;br&gt;+ tickets()&lt;br&gt;+ subCategories()" vertex="1" parent="Opd" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="131" width="240" height="71" as="geometry" />
+        </mxCell>
+        <mxCell id="SubCategory" value="SubCategory" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="850" y="50" width="240" height="177" as="geometry" />
+        </mxCell>
+        <mxCell id="SubCategory-a" value="- id: integer&lt;br&gt;- category_id: integer&lt;br&gt;- opd_id: integer&lt;br&gt;- name: string" vertex="1" parent="SubCategory" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="SubCategory-l" value="" vertex="1" parent="SubCategory" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="123" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="SubCategory-m" value="+ category()&lt;br&gt;+ opd()" vertex="1" parent="SubCategory" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="131" width="240" height="49" as="geometry" />
+        </mxCell>
+        <mxCell id="Category" value="Category" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="1250" y="50" width="240" height="111" as="geometry" />
+        </mxCell>
+        <mxCell id="Category-a" value="- id: integer&lt;br&gt;- name: string" vertex="1" parent="Category" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="49" as="geometry" />
+        </mxCell>
+        <mxCell id="Category-l" value="" vertex="1" parent="Category" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="79" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Category-m" value="+ subCategories()" vertex="1" parent="Category" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="87" width="240" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="Ticket" value="Ticket" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="450" y="380" width="240" height="397" as="geometry" />
+        </mxCell>
+        <mxCell id="Ticket-a" value="- id: integer&lt;br&gt;- notification_id: integer&lt;br&gt;- assigned_opd_id: integer&lt;br&gt;- ticket_number: string&lt;br&gt;- tracking_number: string&lt;br&gt;- platform: string&lt;br&gt;- reporter_name: string&lt;br&gt;- complaint: text&lt;br&gt;- priority: string&lt;br&gt;- status: string&lt;br&gt;- sla_deadline: timestamp" vertex="1" parent="Ticket" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="247" as="geometry" />
+        </mxCell>
+        <mxCell id="Ticket-l" value="" vertex="1" parent="Ticket" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="277" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Ticket-m" value="+ notification()&lt;br&gt;+ assignedOpd()&lt;br&gt;+ statusLogs()&lt;br&gt;+ responses()&lt;br&gt;+ updateStatus()" vertex="1" parent="Ticket" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="285" width="240" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="Notification" value="Notification" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="850" y="380" width="240" height="287" as="geometry" />
+        </mxCell>
+        <mxCell id="Notification-a" value="- id: integer&lt;br&gt;- duplicate_of_id: integer&lt;br&gt;- title: string&lt;br&gt;- message: text&lt;br&gt;- sender: string&lt;br&gt;- permalink: string&lt;br&gt;- is_read: boolean&lt;br&gt;- duplicate_status: string" vertex="1" parent="Notification" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="181" as="geometry" />
+        </mxCell>
+        <mxCell id="Notification-l" value="" vertex="1" parent="Notification" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="211" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="Notification-m" value="+ ticket()&lt;br&gt;+ aiClassification()&lt;br&gt;+ duplicates()" vertex="1" parent="Notification" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="219" width="240" height="71" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketStatusLog" value="TicketStatusLog" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="50" y="760" width="240" height="221" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketStatusLog-a" value="- id: integer&lt;br&gt;- ticket_id: integer&lt;br&gt;- changed_by: integer&lt;br&gt;- from_status: string&lt;br&gt;- to_status: string&lt;br&gt;- note: text" vertex="1" parent="TicketStatusLog" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="137" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketStatusLog-l" value="" vertex="1" parent="TicketStatusLog" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="167" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketStatusLog-m" value="+ ticket()&lt;br&gt;+ user()" vertex="1" parent="TicketStatusLog" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="175" width="240" height="49" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketResponse" value="TicketResponse" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="450" y="760" width="240" height="199" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketResponse-a" value="- id: integer&lt;br&gt;- ticket_id: integer&lt;br&gt;- user_id: integer&lt;br&gt;- message: text&lt;br&gt;- attachment: string" vertex="1" parent="TicketResponse" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketResponse-l" value="" vertex="1" parent="TicketResponse" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="145" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="TicketResponse-m" value="+ ticket()&lt;br&gt;+ user()" vertex="1" parent="TicketResponse" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="153" width="240" height="49" as="geometry" />
+        </mxCell>
+        <mxCell id="AIClassification" value="AIClassification" vertex="1" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;recursiveResize=0;bounds=[0,0,200,100];fillColor=#DAE8FC;strokeColor=#6C8EBF;fontFamily=Times New Roman;fontSize=15;shadow=1;">
+          <mxGeometry x="850" y="760" width="240" height="199" as="geometry" />
+        </mxCell>
+        <mxCell id="AIClassification-a" value="- id: integer&lt;br&gt;- notification_id: integer&lt;br&gt;- suggested_category: string&lt;br&gt;- suggested_opds: json&lt;br&gt;- priority: string&lt;br&gt;- confidence: float" vertex="1" parent="AIClassification" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="30" width="240" height="137" as="geometry" />
+        </mxCell>
+        <mxCell id="AIClassification-l" value="" vertex="1" parent="AIClassification" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;">
+          <mxGeometry y="167" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="AIClassification-m" value="+ notification()" vertex="1" parent="AIClassification" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry y="175" width="240" height="27" as="geometry" />
+        </mxCell>
+        <mxCell id="R1" edge="1" parent="1" source="Opd" target="User" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R1-s" value="1" vertex="1" parent="R1" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R1-t" value="0..*" vertex="1" parent="R1" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R2" edge="1" parent="1" source="Opd" target="SubCategory" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R2-s" value="1" vertex="1" parent="R2" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R2-t" value="0..*" vertex="1" parent="R2" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R3" edge="1" parent="1" source="Category" target="SubCategory" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R3-s" value="1" vertex="1" parent="R3" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R3-t" value="0..*" vertex="1" parent="R3" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R4" edge="1" parent="1" source="Opd" target="Ticket" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R4-s" value="1" vertex="1" parent="R4" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R4-t" value="0..*" vertex="1" parent="R4" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R5" edge="1" parent="1" source="Notification" target="Ticket" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R5-s" value="1" vertex="1" parent="R5" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R5-t" value="0..1" vertex="1" parent="R5" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R6" edge="1" parent="1" source="Notification" target="AIClassification" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;startArrow=diamondThin;startFill=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R6-s" value="1" vertex="1" parent="R6" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R6-t" value="0..1" vertex="1" parent="R6" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R7" edge="1" parent="1" source="Ticket" target="TicketResponse" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;startArrow=diamondThin;startFill=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R7-s" value="1" vertex="1" parent="R7" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R7-t" value="0..*" vertex="1" parent="R7" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R8" edge="1" parent="1" source="Ticket" target="TicketStatusLog" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;startArrow=diamondThin;startFill=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="525" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R8-s" value="1" vertex="1" parent="R8" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R8-t" value="0..*" vertex="1" parent="R8" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R9" edge="1" parent="1" source="User" target="TicketStatusLog" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R9-s" value="1" vertex="1" parent="R9" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R9-t" value="0..*" vertex="1" parent="R9" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R10" edge="1" parent="1" source="User" target="TicketResponse" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30" y="310" />
+              <mxPoint x="30" y="960" />
+              <mxPoint x="570" y="960" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R10-s" value="1" vertex="1" parent="R10" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R10-t" value="0..*" vertex="1" parent="R10" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R11" edge="1" parent="1" source="Notification" target="Notification" style="endArrow=none;html=1;rounded=1;fontFamily=Times New Roman;fontSize=14;strokeColor=#333333;strokeWidth=1.5;edgeStyle=orthogonalEdgeStyle;jumpStyle=arc;jumpSize=10;endArrow=open;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1180" y="480" />
+              <mxPoint x="1180" y="350" />
+              <mxPoint x="970" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="R11-s" value="1" vertex="1" parent="R11" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="-0.8" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="R11-t" value="0..*" vertex="1" parent="R11" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontFamily=Times New Roman;labelBackgroundColor=#ffffff;">
+          <mxGeometry x="0.8" relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

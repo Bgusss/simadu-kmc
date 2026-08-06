@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1850 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Activity Diagram Tindak Lanjut Tiket dan Eskalasi SLA</title>
+  <desc id="desc">Alur tiket dari pembuatan, respons OPD, proses disposisi, hingga eskalasi SLA.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#000"/></marker>
+  </defs>
+  <rect width="1850" height="1050" fill="#fff"/>
+  <rect x="15" y="15" width="1820" height="1020" fill="none" stroke="#000" stroke-width="1.5"/>
+
+  <!-- Alur utama -->
+  <g fill="none" stroke="#000" stroke-width="1.6" marker-end="url(#arrow)">
+    <path d="M135 230 H190"/>
+    <path d="M370 230 H470"/>
+    <path d="M670 230 H720"/>
+    <path d="M860 230 H950"/>
+    <path d="M1180 230 H1250"/>
+    <path d="M1390 230 H1480"/>
+    <path d="M1640 230 H1685"/>
+
+    <!-- Tidak ada respons pada SLA awal -->
+    <path d="M790 300 V470"/>
+    <!-- Respons pada SLA awal -->
+
+    <!-- SLA tahap kedua -->
+    <path d="M920 522 H990"/>
+    <path d="M1130 522 H1220"/>
+    <path d="M1060 452 V350 H1065 V290"/>
+
+    <!-- Loop eskalasi -->
+    <path d="M1335 575 V690 H810 V575"/>
+
+    <!-- Tiket belum selesai -->
+    <path d="M1320 300 V730"/>
+    <path d="M1220 782 H930 V230 H950"/>
+  </g>
+
+  <!-- Mulai -->
+  <ellipse cx="80" cy="230" rx="55" ry="28" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="80" y="236" text-anchor="middle" font-family="Arial, sans-serif" font-size="18">Mulai</text>
+
+  <!-- Tiket awal -->
+  <rect x="190" y="170" width="180" height="120" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="280" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Tiket Dibuat</text>
+  <text x="280" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Status: diterima</text>
+  <text x="280" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">OPD ditetapkan</text>
+
+  <rect x="470" y="170" width="200" height="120" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="570" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Tiket Diteruskan</text>
+  <text x="570" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">atau Dibaca oleh OPD</text>
+  <text x="570" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Batas waktu penanganan</text>
+
+  <polygon points="790,160 860,230 790,300 720,230" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="790" y="222" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Ada respons OPD</text>
+  <text x="790" y="244" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">sebelum SLA?</text>
+  <text x="900" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Ya</text>
+  <text x="815" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Tidak</text>
+
+  <rect x="950" y="170" width="230" height="120" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1065" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Simpan Tanggapan</text>
+  <text x="1065" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">dan Perbarui Status</text>
+  <text x="1065" y="256" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">Riwayat penanganan dicatat</text>
+
+  <polygon points="1320,160 1390,230 1320,300 1250,230" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1320" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Tiket selesai?</text>
+  <text x="1435" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Ya</text>
+  <text x="1345" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Tidak</text>
+
+  <rect x="1480" y="170" width="160" height="120" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1560" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Perbarui Status</text>
+  <text x="1560" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">selesai</text>
+
+  <ellipse cx="1740" cy="230" rx="55" ry="28" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1740" y="236" text-anchor="middle" font-family="Arial, sans-serif" font-size="18">Selesai</text>
+
+  <!-- Jalur SLA -->
+  <rect x="700" y="470" width="220" height="105" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="810" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Proses Disposisi</text>
+  <text x="810" y="532" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Tiket masuk proses disposisi</text>
+  <text x="810" y="556" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Batas waktu diperbarui</text>
+
+  <polygon points="1060,452 1130,522 1060,592 990,522" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1060" y="514" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Ada respons OPD</text>
+  <text x="1060" y="536" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">pada SLA baru?</text>
+  <text x="1088" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Ya</text>
+  <text x="1170" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Tidak</text>
+
+  <rect x="1220" y="470" width="230" height="105" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1335" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Eskalasi Tiket</text>
+  <text x="1335" y="532" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">Prioritas dinaikkan</text>
+  <text x="1335" y="556" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">SLA diatur kembali</text>
+
+  <!-- Tiket belum selesai -->
+  <rect x="1220" y="730" width="200" height="105" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1320" y="765" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Lanjut Tindak Lanjut</text>
+  <text x="1320" y="792" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">oleh OPD</text>
+  <text x="1320" y="816" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">hingga status selesai</text>
+
+  <text x="1075" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-style="italic">Jika belum ada respons, siklus disposisi dan eskalasi diulang.</text>
+</svg>

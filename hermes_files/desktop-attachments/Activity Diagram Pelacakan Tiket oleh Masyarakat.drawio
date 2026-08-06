@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="diagram-Page-1">
+    <mxGraphModel dx="2292" dy="1833" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lane-mas" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontSize=20;startSize=40;" value="Masyarakat" vertex="1">
+          <mxGeometry x="1250" y="30" width="320" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-sis" parent="1" style="swimlane;whiteSpace=wrap;html=1;fontSize=20;startSize=40;" value="Sistem" vertex="1">
+          <mxGeometry x="1570" y="30" width="450" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="mas-start" parent="lane-mas" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" value="" vertex="1">
+          <mxGeometry x="139" y="40" width="42" height="42" as="geometry" />
+        </mxCell>
+        <UserObject label="Mengakses Portal Publik&#10;SIMADU-KMC" id="mas-akses">
+          <mxCell parent="lane-mas" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry x="55" y="120" width="210" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Memasukkan Nomor&#10;Pelacakan (Resi)" id="mas-input">
+          <mxCell parent="lane-mas" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry x="60" y="220" width="200" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Mencari Data Tiket&#10;di Basis Data" id="sis-cari">
+          <mxCell parent="lane-sis" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry x="125" y="220" width="200" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Nomor pelacakan&#10;ditemukan?" id="sis-temu">
+          <mxCell parent="lane-sis" style="rhombus;html=1;strokeWidth=1;whiteSpace=wrap;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry x="155" y="330" width="140" height="140" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Menampilkan Pesan Tiket&#10;Tidak Ditemukan" id="sis-no-find">
+          <mxCell parent="lane-sis" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry x="115" y="520" width="220" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Menampilkan Informasi Tiket,&#10;Status, OPD, dan Riwayat" id="sis-find">
+          <mxCell parent="lane-sis" style="html=1;whiteSpace=wrap;strokeWidth=1;fillColor=light-dark(#ECECFF,#1f2020);strokeColor=light-dark(#9370DB,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry x="105" y="620" width="240" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="sis-end" parent="lane-sis" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" value="" vertex="1">
+          <mxGeometry x="204" y="720" width="42" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="mas-start" target="mas-akses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="mas-akses" target="mas-input" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="mas-input" target="sis-cari" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="sis-cari" target="sis-temu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <UserObject label="Tidak" id="e5">
+          <mxCell edge="1" parent="1" source="sis-temu" target="sis-no-find" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Ya" id="e6">
+          <mxCell edge="1" parent="1" source="sis-temu" target="sis-find" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="e7" edge="1" parent="1" source="sis-no-find" target="sis-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="sis-find" target="sis-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=16;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);strokeColor=light-dark(#333333,#cccccc);">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

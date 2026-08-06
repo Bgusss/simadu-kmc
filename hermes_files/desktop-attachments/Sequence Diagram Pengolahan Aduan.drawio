@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Pengolahan Aduan" id="diagram-Pengolahan-Aduan">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L1" value="Sistem Scraper" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Trebuchet MS;fontSize=14;fontStyle=1;">
+          <mxGeometry x="60" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="Pengontrol" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Trebuchet MS;fontSize=14;fontStyle=1;">
+          <mxGeometry x="260" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="Layanan AI" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Trebuchet MS;fontSize=14;fontStyle=1;">
+          <mxGeometry x="460" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" value="Basis Data" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Trebuchet MS;fontSize=14;fontStyle=1;">
+          <mxGeometry x="660" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="A1" value="" parent="L1" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="60" width="10" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="A2" value="" parent="L2" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="80" width="10" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="A3" value="" parent="L3" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="140" width="10" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="A4" value="" parent="L3" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="260" width="10" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="A5" value="" parent="L3" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="380" width="10" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="A6" value="" parent="L4" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="280" width="10" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="A7" value="" parent="L4" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;">
+          <mxGeometry x="55" y="480" width="10" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" value="1. Mengirim data aduan" parent="1" edge="1" source="A1" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="2. Meminta filter kelayakan" parent="1" edge="1" source="A2" target="A3" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3" value="3. Hasil (Layak)" parent="1" edge="1" source="A3" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" value="4. Meminta klasifikasi (Kategori, OPD, Prioritas)" parent="1" edge="1" source="A2" target="A4" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5" value="5. Hasil klasifikasi" parent="1" edge="1" source="A4" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6" value="6. Menyimpan notifikasi" parent="1" edge="1" source="A2" target="A6" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6_ret" value="7. Konfirmasi tersimpan" parent="1" edge="1" source="A6" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7" value="8. Memeriksa kemungkinan duplikasi" parent="1" edge="1" source="A2" target="A5" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="9. Hasil deteksi duplikasi" parent="1" edge="1" source="A5" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9" value="10. Menyimpan tiket (Jika bukan duplikat)" parent="1" edge="1" source="A2" target="A7" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9_ret" value="11. Konfirmasi tiket tersimpan" parent="1" edge="1" source="A7" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Trebuchet MS;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="0" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

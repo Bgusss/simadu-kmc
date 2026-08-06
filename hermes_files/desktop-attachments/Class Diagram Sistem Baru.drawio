@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Class Diagram" id="diagram-Class-Diagram">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c_opd" value="Opd" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="60" y="40" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c_opd_a" value="- id: int&#10;- name: string&#10;- created_at: datetime" parent="c_opd" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="c_opd_m" value="" parent="c_opd" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="74" width="160" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="c_user" value="User" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="60" y="200" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="c_user_a" value="- id: int&#10;- name: string&#10;- email: string&#10;- role: enum&#10;- opd_id: int" parent="c_user" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c_user_m" value="+ isAdmin(): bool&#10;+ isOpd(): bool" parent="c_user" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="106" width="160" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ticket" value="Ticket" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="320" y="200" width="220" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ticket_a" value="- id: int&#10;- notification_id: int&#10;- ticket_number: string&#10;- tracking_number: string&#10;- ticket_time: datetime&#10;- platform: string&#10;- category: string&#10;- sub_category: string&#10;- status: enum&#10;- priority: enum&#10;- assigned_opd_id: int&#10;- sla_deadline: datetime" parent="c_ticket" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="220" height="192" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ticket_m" value="+ updateStatus()" parent="c_ticket" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="218" width="220" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c_notification" value="Notification" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="620" y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="c_notification_a" value="- id: int&#10;- title: string&#10;- message: text&#10;- sender: string&#10;- permalink: string&#10;- is_read: bool&#10;- duplicate_status: enum" parent="c_notification" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="200" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="c_notification_m" value="" parent="c_notification" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="138" width="200" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ai" value="AIClassification" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="620" y="240" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ai_a" value="- id: int&#10;- notification_id: int&#10;- suggested_category: string&#10;- suggested_sub_category: string&#10;- priority: string&#10;- confidence: float" parent="c_ai" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="200" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ai_m" value="" parent="c_ai" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="122" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="c_log" value="TicketStatusLog" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="60" y="480" width="180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="c_log_a" value="- id: int&#10;- ticket_id: int&#10;- from_status: string&#10;- to_status: string&#10;- changed_by: int&#10;- note: text" parent="c_log" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="180" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="c_log_m" value="" parent="c_log" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="122" width="180" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="c_response" value="TicketResponse" parent="1" vertex="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;">
+          <mxGeometry x="620" y="480" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c_response_a" value="- id: int&#10;- ticket_id: int&#10;- user_id: int&#10;- message: text&#10;- attachment: string" parent="c_response" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry y="26" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c_response_m" value="" parent="c_response" vertex="1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[];portConstraint=eastwest;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;borderTop=1;borderStroke=1;">
+          <mxGeometry y="106" width="180" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" parent="1" edge="1" source="c_opd" target="c_user" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1_s" value="1" parent="e1" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1_t" value="0..*" parent="e1" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="" parent="1" edge="1" source="c_opd" target="c_ticket" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=1;exitY=0.5;entryX=0.25;entryY=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2_s" value="1" parent="e2" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2_t" value="0..*" parent="e2" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="" parent="1" edge="1" source="c_ticket" target="c_notification" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=0.75;exitY=0;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3_s" value="0..1" parent="e3" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3_t" value="1" parent="e3" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="" parent="1" edge="1" source="c_notification" target="c_ai" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4_s" value="1" parent="e4" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4_t" value="0..1" parent="e4" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="" parent="1" edge="1" source="c_ticket" target="c_log" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=0;exitY=0.75;entryX=1;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5_s" value="1" parent="e5" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5_t" value="0..*" parent="e5" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" value="" parent="1" edge="1" source="c_ticket" target="c_response" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=1;exitY=0.75;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6_s" value="1" parent="e6" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6_t" value="0..*" parent="e6" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" value="" parent="1" edge="1" source="c_user" target="c_log" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=0.25;exitY=1;entryX=0.25;entryY=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7_s" value="1" parent="e7" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7_t" value="0..*" parent="e7" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" value="" parent="1" edge="1" source="c_user" target="c_response" style="endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;fontFamily=Times New Roman;fontSize=12;fontColor=#333333;strokeColor=#333333;exitX=0.75;exitY=1;entryX=0.5;entryY=1;edgeStyle=orthogonalEdgeStyle;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8_s" value="1" parent="e8" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="-0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8_t" value="0..*" parent="e8" vertex="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Times New Roman;fontSize=12;fontColor=#333333;">
+          <mxGeometry x="0.8" y="15" relative="1" as="geometry">
+            <mxPoint x="0" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

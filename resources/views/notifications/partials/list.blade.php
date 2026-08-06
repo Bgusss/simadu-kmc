@@ -129,7 +129,7 @@
             {{-- Tombol Sumber untuk notif media sosial (FB/IG) --}}
             @if ($notif->permalink && !in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']))
                 <a href="/notification/{{ $notif->id }}/detail?url={{ urlencode($notif->permalink) }}"
-                    target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                    target="_blank" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
                     <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>Sumber
                 </a>
             @endif

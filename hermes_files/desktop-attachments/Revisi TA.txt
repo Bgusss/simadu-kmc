@@ -1,0 +1,42 @@
+Komentar Pak EKA, Pak razy dan Bu Qia:
+Bab 1 Rumusan Masalah harus terjawab tuntas pada Bab 5 di hasil penelitian
+Jawaban dari bagaimana
+Pertanyaan deskripsi dijawab dengan deskripsi, harus dijabarkan. Terjawab di Flowchart yang belum dibuat (Alur Sistem & Alur Penggunaan AI) Buat di Bab 3 Hasilnya di Bab 4 belum ada di laporan
+
+Prompt Harus di Buat juga perancangan nya di Bab 3 juga (Bisa berupa Deskripsi atau Flowchart)
+Permasalahan terlalu banyak
+
+Rumusan Masalah
+1. Bagaimana merancang bangun sistem
+2. Bagaimana menerapkan AI
+3. Bagaimana menentukan kategori, subkategori, tingkat prioritas, dan OPD terkait secara otomatis
+4. Gunakan Similiarity
+
+AGILE , lebih cocok sebagai model pengembangan itu menggunakan SCRUM. Sprint yang dikerjakan apa saja. Milestone nya apa. kita sudah punya backlog. Minimal variabel product.
+kalo pake scrum harus ada history. perancangan harus bisa mendefinisikan prompt dan product backlog nya apa. SEMUA HARUS TERDOKUMENTASI. berputar terus sampe backlog nya terpenuhi.
+
+Agile methodology, metode agile tu ada banyak contohnya scrum. berikan teori per tahapan dan gambar di bab 2, di bab 3 gunakan gambar yang kita buat sendiri.
+
+Usecase diagram, harus ada komunikasi/transaksi antar satu dengan yang lain. 
+
+Lifeline di sequence diagram tidak mesti sepanjang itu. Tergantung kapan dia dipanggil. jika aktif di 1 kegiatan kalau mau aktif lagi nyambung lifeline pendek lagi di bawah. Bisa jadi iya kalo selama itu aktif.
+
+Gambar 3.4 Activity Diagram. Perbaiki bahasa Sinkronisasi. 
+
+Komentar Mam Tiwi:
+Observasi butuh bukti di lampiran, dan tidak melihat proses bisnis sistem terdahulu lampirkan selengkap lengkapnya. 
+Aturan Penulisan Daftar Pustaka, Harus konsisten kalo judul buku atau artikel besar semua ya semua besar atau, Nama harus konsisten mau lengkap atau disingkat.
+Penulisan Tabel, Huruf 10 Spacing 1. Hal 41. Cetak miring. Tabel Lanjutan nomornya harus sama. Kalo ada kepala subtopik jangan dipisah sama badan.
+1 Paragraf mininimal terdiri dari 2 Kalimat, Utama dan Pendukung setidaknya. Konsisten Penulisan KMC besar kecilnya jangan Kmc terus KMC.
+
+Tambahan dari Bu Qia:
+- tambahkan teori agile, berikan gambar sdlc agile dan penjelasan dari tiap tahapan agile.
+- karena sistem dikembangkan dengan framework laravel yang mengimplementasikan arsitektur MVC di dalamnya, maka sebaiknya perancangan arsitektur sistemnya juga menggunakan arsitektur MVC.
+- alur perancangan klasifikasi AI perlu dimasukkan ke bab 3.
+- rumusan masalah harus terjawab di bagian kesimpulan.
+- perbaiki usecase diagramnya, model AI atau scrapper harusnya masuk ke usecase diagram.
+
+Penambahan Setelah Sidang:
+Menambahkan surat pernyataan AI setelah Orisinalitas
+Menambahkan Lampiran Penggunaan AI
+Membuat surat pernyataan revisi

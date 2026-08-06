@@ -1,0 +1,59 @@
+graph TB
+    subgraph Sumber["Sumber Aduan"]
+        FB["🔵 Facebook<br/>Mention postingan<br/>dan komentar"]
+        IG["📷 Instagram<br/>Pesan langsung"]
+    end
+
+    subgraph Lokal["Komputer Lokal"]
+        Scraper["🌐 Scraper Playwright<br/>Otomasi browser<br/>Menghasilkan data JSON<br/><i>Dijalankan secara lokal</i>"]
+        Scheduler["🕐 Laravel Scheduler<br/>Perintah Artisan<br/>Sinkronisasi notifikasi<br/>Cek SLA dan eskalasi<br/><i>Otomatis terjadwal</i>"]
+    end
+
+    subgraph Railway["Railway Cloud"]
+        subgraph Laravel["Aplikasi Laravel (MVC)"]
+            View["🖥️ View<br/>Blade, Bootstrap 5"]
+            Controller["&lt;/&gt; Controller<br/>Routing dan logika fitur"]
+            Model["🗃️ Model<br/>Eloquent ORM"]
+        end
+
+        AI["🧠 Google AI Studio<br/>LLM Gemma<br/>Klasifikasi, spam,<br/>dan duplikasi"]
+
+        DB[("💾 MySQL<br/>Basis data sistem")]
+    end
+
+    subgraph Users["Pengguna Sistem"]
+        Admin["🔵 Admin KMC"]
+        OPD["🟢 Pengguna OPD"]
+        Public["🟠 Masyarakat"]
+    end
+
+    %% Sumber aduan ke Scraper
+    FB -->|data aduan| Scraper
+    IG -->|data aduan| Scraper
+
+    %% Scraper ke Controller (JSON)
+    Scraper -->|JSON| Controller
+
+    %% Scheduler ke Controller (2-way)
+    Scheduler <-->|perintah| Controller
+
+    %% MVC internal
+    View <--> Controller
+    Controller <--> Model
+
+    %% Model ke AI dan DB
+    Model <-->|prompt / hasil| AI
+    Model -->|query| DB
+
+    %% View ke Pengguna (akses via browser)
+    View -->|akses| Admin
+    View -->|akses| OPD
+    View -->|akses| Public
+
+    %% Styling
+    style Sumber fill:#e8f4fd,stroke:#1565c0,stroke-width:2px
+    style Lokal fill:#fff3e0,stroke:#e65100,stroke-width:2px,stroke-dasharray: 6 4
+    style Railway fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,stroke-dasharray: 8 5
+    style Laravel fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Users fill:#fce4ec,stroke:#c62828,stroke-width:2px
+    style DB fill:#e3f2fd,stroke:#0d47a1

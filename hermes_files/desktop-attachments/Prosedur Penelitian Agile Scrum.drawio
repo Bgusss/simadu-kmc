@@ -1,0 +1,156 @@
+<mxfile host="app.diagrams.net" modified="2026-07-28T03:00:00.000Z" agent="Hermes" version="24.0.0">
+  <diagram name="Prosedur Penelitian Agile Scrum" id="scrum-flow">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- START TERMINATOR -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="start" value="Mulai" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="314" y="20" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- PRODUCT BACKLOG -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="backlog" value="Product Backlog&#xa;(Daftar Seluruh&#xa;Kebutuhan Fitur)" style="shape=document;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;size=0.15;" vertex="1" parent="1">
+          <mxGeometry x="289" y="90" width="150" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;fontSize=10;fontFamily=Times New Roman;" edge="1" source="start" target="backlog" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- SPRINT CONTAINER -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="sprint_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;dashed=1;dashPattern=8 4;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="164" y="200" width="400" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="sprint_label" value="SPRINT (Iterasi)" style="text;html=1;fontSize=12;fontFamily=Times New Roman;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="289" y="205" width="150" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow Backlog → Sprint -->
+        <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;fontSize=10;fontFamily=Times New Roman;" edge="1" source="backlog" target="req" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. Requirement -->
+        <mxCell id="req" value="1. Requirement&#xa;(Analisis Kebutuhan)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="289" y="240" width="150" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Design -->
+        <mxCell id="des" value="2. Design&#xa;(Perancangan)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="289" y="310" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="req" target="des" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 3. Development -->
+        <mxCell id="dev" value="3. Development&#xa;(Pengembangan)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="289" y="380" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="des" target="dev" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 4. Testing -->
+        <mxCell id="test" value="4. Testing&#xa;(Pengujian)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="289" y="450" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="dev" target="test" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- SPRINT REVIEW -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="review" value="Sprint Review&#xa;(Evaluasi Hasil)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="289" y="560" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a6" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="test" target="review" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- DECISION: Sesuai Kebutuhan? -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="dec1" value="Sesuai&#xa;Kebutuhan?" style="rhombus;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="314" y="640" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a7" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="review" target="dec1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Tidak → kembali ke Product Backlog (panah putus-putus ke kiri lalu ke atas) -->
+        <mxCell id="a_tidak1" value="Tidak" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;dashed=1;dashPattern=6 3;fontSize=9;fontFamily=Times New Roman;" edge="1" source="dec1" target="backlog" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="130" y="675"/>
+              <mxPoint x="130" y="125"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ya → Increment -->
+        <mxCell id="increment" value="Increment&#xa;(Produk Berfungsi)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="289" y="745" width="150" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a8" value="Ya" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;fontSize=9;fontFamily=Times New Roman;" edge="1" source="dec1" target="increment" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Milestone label -->
+        <mxCell id="milestone_label" value="Milestone&#xa;(Penanda Pencapaian)" style="text;html=1;fontSize=9;fontFamily=Times New Roman;fontStyle=2;align=left;verticalAlign=middle;fillColor=#F5F5F5;strokeColor=#000000;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="750" width="130" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_ms" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;dashed=1;dashPattern=4 2;endArrow=none;startArrow=none;" edge="1" source="increment" target="milestone_label" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- DECISION: Semua Backlog Terpenuhi? -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="dec2" value="Semua Backlog&#xa;Terpenuhi?" style="rhombus;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="299" y="825" width="130" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="a9" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="increment" target="dec2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Belum → Sprint Berikutnya (panah putus-putus kembali ke atas) -->
+        <mxCell id="a_belum" value="Belum" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;dashed=1;dashPattern=6 3;fontSize=9;fontFamily=Times New Roman;" edge="1" source="dec2" target="backlog" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="865"/>
+              <mxPoint x="600" y="125"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ya → Produk Final -->
+        <mxCell id="final" value="Produk Final&#xa;Selesai" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="314" y="940" width="100" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="a10" value="Ya" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;fontSize=9;fontFamily=Times New Roman;" edge="1" source="dec2" target="final" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- END TERMINATOR -->
+        <!-- ══════════════════════════════════════════ -->
+        <mxCell id="end" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Times New Roman;fillColor=#FFFFFF;strokeColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="314" y="1010" width="100" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="a11" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#000000;" edge="1" source="final" target="end" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,92 @@
+<mxfile host="app.diagrams.net" modified="2026-08-02T05:00:00.000Z" agent="Hermes" version="24.0.0">
+  <diagram id="uc-detail-ticket" name="Use Case Detail Transaksi Tiket">
+    <mxGraphModel dx="1900" dy="1250" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1350" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="boundary" value="Sistem Informasi Monitoring Aduan Multi Channel KMC" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=16;fontStyle=1;verticalAlign=top;align=center;spacingTop=12;fillColor=none;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="260" y="40" width="1370" height="1180" as="geometry"/></mxCell>
+
+        <!-- Aktor -->
+        <mxCell id="admin" value="Admin KMC" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="1"><mxGeometry x="85" y="280" width="55" height="90" as="geometry"/></mxCell>
+        <mxCell id="public" value="Masyarakat" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="1"><mxGeometry x="85" y="980" width="55" height="90" as="geometry"/></mxCell>
+        <mxCell id="opd" value="Pengguna OPD" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="1"><mxGeometry x="1710" y="250" width="55" height="90" as="geometry"/></mxCell>
+        <mxCell id="scraper" value="Scraper&#xa;Playwright" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="1"><mxGeometry x="1710" y="715" width="55" height="90" as="geometry"/></mxCell>
+        <mxCell id="ai" value="Layanan AI&#xa;(Gemma)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontFamily=Times New Roman;fontSize=13;fontStyle=1;strokeColor=#000000;fillColor=#FFFFFF;" vertex="1" parent="1"><mxGeometry x="1710" y="910" width="55" height="90" as="geometry"/></mxCell>
+
+        <!-- Admin module -->
+        <mxCell id="dashAdmin" value="Melihat Dashboard Admin" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="120" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="monitorNotif" value="Memantau Notifikasi dan&#xa;Hasil Klasifikasi" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="195" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="manageTicket" value="Mengelola Tiket" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="290" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="manualTicket" value="Membuat Tiket Manual" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="625" y="230" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="editTicket" value="Memperbarui Data Tiket" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="625" y="300" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="viewResponse" value="Meninjau Tanggapan OPD" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="625" y="375" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="status" value="Memperbarui Status Tiket" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="375" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="verifyDup" value="Memverifikasi Kemungkinan&#xa;Duplikasi" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="480" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="manageOpd" value="Mengelola Data dan Akun OPD" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="575" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="stats" value="Melihat Statistik Aduan" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="650" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="profileAdmin" value="Mengelola Profil Admin" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="725" width="230" height="50" as="geometry"/></mxCell>
+
+        <!-- OPD module -->
+        <mxCell id="dashOpd" value="Melihat Dashboard OPD" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="120" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="viewOpdTicket" value="Melihat Tiket OPD" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="195" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="respond" value="Memberikan Tanggapan Tiket" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="270" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="attach" value="Mengunggah Bukti&#xa;Tindak Lanjut" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1060" y="270" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="profileOpd" value="Mengelola Profil OPD" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="365" width="230" height="50" as="geometry"/></mxCell>
+
+        <!-- Public module -->
+        <mxCell id="track" value="Melacak Tiket" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="960" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="viewHistory" value="Melihat Status dan&#xa;Riwayat Tiket" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="625" y="960" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="publicInfo" value="Melihat Informasi Pemantauan&#xa;Aduan Publik" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="330" y="1050" width="230" height="60" as="geometry"/></mxCell>
+
+        <!-- Automated intake module -->
+        <mxCell id="collect" value="Mengambil Data Aduan" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="620" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="process" value="Memproses Aduan Masuk" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1020" y="680" width="250" height="50" as="geometry"/></mxCell>
+        <mxCell id="spam" value="Menyaring Spam" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="755" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="classify" value="Mengklasifikasikan Aduan" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1050" y="755" width="240" height="50" as="geometry"/></mxCell>
+        <mxCell id="detect" value="Mendeteksi Kemungkinan&#xa;Duplikasi (Cosine Similarity)" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1020" y="850" width="270" height="60" as="geometry"/></mxCell>
+        <mxCell id="createAuto" value="Membuat Tiket Otomatis" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="850" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="assignAuto" value="Mendisposisikan Tiket&#xa;Otomatis ke OPD" style="ellipse;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=12;fontStyle=1;fillColor=#FFFFFF;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1360" y="950" width="230" height="60" as="geometry"/></mxCell>
+
+        <!-- Actor associations -->
+        <mxCell id="a1" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="dashAdmin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a2" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="monitorNotif"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a3" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="manageTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a4" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="manualTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a5" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="status"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a6" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="viewResponse"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a7" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="verifyDup"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a8" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="manageOpd"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a9" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="stats"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="a10" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="admin" target="profileAdmin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="o1" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="opd" target="dashOpd"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="o2" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="opd" target="viewOpdTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="o3" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="opd" target="respond"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="o4" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="opd" target="profileOpd"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="m1" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="public" target="track"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="m2" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="public" target="publicInfo"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="s1" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="scraper" target="collect"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ai1" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="ai" target="spam"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ai2" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="ai" target="classify"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Generalization: specialized Admin ticket functions -->
+        <mxCell id="g1" style="endArrow=block;endFill=0;endSize=16;html=1;strokeColor=#000000;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="manualTicket" target="manageTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="g2" style="endArrow=block;endFill=0;endSize=16;html=1;strokeColor=#000000;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="editTicket" target="manageTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="g3" style="endArrow=block;endFill=0;endSize=16;html=1;strokeColor=#000000;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="status" target="manageTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Same-ticket transaction relations -->
+        <mxCell id="r1" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="respond" target="viewOpdTicket"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r2" value="«extend»&#xa;[dengan bukti]" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="attach" target="respond"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r3" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="status" target="viewResponse"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r4" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="track" target="viewHistory"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="r5" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="createAuto" target="assignAuto"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- Automated processing -->
+        <mxCell id="p1" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="process" target="collect"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p2" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="process" target="spam"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p3" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="process" target="classify"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p4" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="process" target="detect"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="x1" value="«extend»&#xa;[terdeteksi]" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="verifyDup" target="detect"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="925" y="510"/><mxPoint x="925" y="880"/></Array></mxGeometry></mxCell>
+        <mxCell id="x2" value="«extend»&#xa;[bukan duplikat]" style="endArrow=open;endFill=0;dashed=1;html=1;strokeColor=#000000;fontFamily=Times New Roman;fontSize=10;fontStyle=2;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="createAuto" target="detect"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

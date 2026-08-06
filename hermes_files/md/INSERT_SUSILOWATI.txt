@@ -1,0 +1,22 @@
+### 34. Susilowati & Pakusadewa (2023) ➕ TAMBAH
+**Judul:** *Rekayasa Perangkat Lunak dengan UML*  
+🏢 **Penerbit:** Andi Offset  
+🛒 **Beli di:** Tokopedia / Gramedia / Toko buku  
+⚠️ **Catatan:** Nama lengkap penulis perlu diverifikasi dari buku fisik  
+✅ **Status:** ASLI (buku cetak)
+
+**Dikutip di:** Tabel 2.1, 2.2, 2.3, 2.4, 2.5 (simbol UML Use Case, Activity, Sequence, Class Diagram, Flowchart)
+
+---
+
+**POSISI INSERT:**
+- Setelah: ### 33. Stallings, W. (2019)
+- Sebelum: ### 34. Sutanti, S., Wahyuningrum, T., & Anwar, M. T. (2020)
+
+**CARA INSERT MANUAL:**
+1. Buka DAFTAR_LENGKAP_42_SUMBER_DENGAN_LINK.md
+2. Cari "### 34. Sutanti"
+3. Copy entri Susilowati di atas
+4. Paste SEBELUM entri Sutanti
+5. Renumber: Sutanti jadi #35, Tailwind #36, dst sampai akhir
+6. Save

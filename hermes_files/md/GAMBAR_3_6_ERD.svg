@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Entity Relationship Diagram Sistem Informasi Manajemen Aduan Multi Channel KMC</title>
+  <desc id="desc">ERD entitas: opds, users, categories, sub_categories, notifications, ai_classifications, tickets, ticket_responses, ticket_status_logs.</desc>
+  <rect width="1800" height="1100" fill="#fff"/>
+  <rect x="15" y="15" width="1770" height="1070" fill="none" stroke="#000" stroke-width="1.5"/>
+
+  
+  
+  <rect x="60" y="80" width="220" height="140" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="60" y="80" width="220" height="36" fill="#000"/>
+  <text x="170" y="104" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">opds</text>
+  <text x="80" y="140" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="80" y="162" font-family="Arial,sans-serif" font-size="14">    name</text>
+  <text x="80" y="184" font-family="Arial,sans-serif" font-size="14">    timestamps</text>
+
+  
+  <rect x="60" y="290" width="220" height="200" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="60" y="290" width="220" height="36" fill="#000"/>
+  <text x="170" y="314" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">users</text>
+  <text x="80" y="352" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="80" y="374" font-family="Arial,sans-serif" font-size="14">FK  opd_id</text>
+  <text x="80" y="396" font-family="Arial,sans-serif" font-size="14">    name, username</text>
+  <text x="80" y="418" font-family="Arial,sans-serif" font-size="14">    email, role</text>
+  <text x="80" y="440" font-family="Arial,sans-serif" font-size="14">    timestamps</text>
+
+  
+  <rect x="400" y="80" width="240" height="140" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="400" y="80" width="240" height="36" fill="#000"/>
+  <text x="520" y="104" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">categories</text>
+  <text x="420" y="140" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="420" y="162" font-family="Arial,sans-serif" font-size="14">    name</text>
+  <text x="420" y="184" font-family="Arial,sans-serif" font-size="14">    timestamps</text>
+
+  
+  <rect x="400" y="360" width="280" height="180" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="400" y="360" width="280" height="36" fill="#000"/>
+  <text x="540" y="384" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">sub_categories</text>
+  <text x="420" y="422" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="420" y="444" font-family="Arial,sans-serif" font-size="14">FK  category_id</text>
+  <text x="420" y="466" font-family="Arial,sans-serif" font-size="14">FK  opd_id</text>
+  <text x="420" y="488" font-family="Arial,sans-serif" font-size="14">    name, timestamps</text>
+
+  
+  <rect x="780" y="80" width="300" height="290" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="780" y="80" width="300" height="36" fill="#000"/>
+  <text x="930" y="104" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">notifications</text>
+  <text x="800" y="142" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="800" y="164" font-family="Arial,sans-serif" font-size="14">FK  duplicate_of_id</text>
+  <text x="800" y="186" font-family="Arial,sans-serif" font-size="14">    title, sender</text>
+  <text x="800" y="208" font-family="Arial,sans-serif" font-size="14">    message, permalink</text>
+  <text x="800" y="230" font-family="Arial,sans-serif" font-size="14">    comment_message</text>
+  <text x="800" y="252" font-family="Arial,sans-serif" font-size="14">    is_read</text>
+  <text x="800" y="274" font-family="Arial,sans-serif" font-size="14">    duplicate_similarity</text>
+  <text x="800" y="296" font-family="Arial,sans-serif" font-size="14">    duplicate_status</text>
+  <text x="800" y="318" font-family="Arial,sans-serif" font-size="14">    timestamps</text>
+  <text x="800" y="340" font-family="Arial,sans-serif" font-size="14">    platform</text>
+
+  
+  <rect x="1180" y="80" width="310" height="240" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="1180" y="80" width="310" height="36" fill="#000"/>
+  <text x="1335" y="104" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">ai_classifications</text>
+  <text x="1200" y="142" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="1200" y="164" font-family="Arial,sans-serif" font-size="14">FK  notification_id</text>
+  <text x="1200" y="186" font-family="Arial,sans-serif" font-size="14">    suggested_category</text>
+  <text x="1200" y="208" font-family="Arial,sans-serif" font-size="14">    suggested_sub_category</text>
+  <text x="1200" y="230" font-family="Arial,sans-serif" font-size="14">    suggested_opds</text>
+  <text x="1200" y="252" font-family="Arial,sans-serif" font-size="14">    priority, confidence</text>
+  <text x="1200" y="274" font-family="Arial,sans-serif" font-size="14">    reasoning, timestamps</text>
+
+  
+  <rect x="1050" y="460" width="340" height="290" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="1050" y="460" width="340" height="36" fill="#000"/>
+  <text x="1220" y="484" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">tickets</text>
+  <text x="1070" y="522" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="1070" y="544" font-family="Arial,sans-serif" font-size="14">FK  notification_id</text>
+  <text x="1070" y="566" font-family="Arial,sans-serif" font-size="14">FK  assigned_opd_id</text>
+  <text x="1070" y="588" font-family="Arial,sans-serif" font-size="14">    ticket_number, tracking_number</text>
+  <text x="1070" y="610" font-family="Arial,sans-serif" font-size="14">    category, sub_category</text>
+  <text x="1070" y="632" font-family="Arial,sans-serif" font-size="14">    opd_related, complaint</text>
+  <text x="1070" y="654" font-family="Arial,sans-serif" font-size="14">    status, priority</text>
+  <text x="1070" y="676" font-family="Arial,sans-serif" font-size="14">    sla_deadline, escalation_count</text>
+  <text x="1070" y="698" font-family="Arial,sans-serif" font-size="14">    ai_confidence, timestamps</text>
+
+  
+  <rect x="700" y="820" width="300" height="170" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="700" y="820" width="300" height="36" fill="#000"/>
+  <text x="850" y="844" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">ticket_responses</text>
+  <text x="720" y="882" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="720" y="904" font-family="Arial,sans-serif" font-size="14">FK  ticket_id</text>
+  <text x="720" y="926" font-family="Arial,sans-serif" font-size="14">FK  user_id</text>
+  <text x="720" y="948" font-family="Arial,sans-serif" font-size="14">    message, attachment</text>
+  <text x="720" y="970" font-family="Arial,sans-serif" font-size="14">    timestamps</text>
+
+  
+  <rect x="1100" y="820" width="340" height="180" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="1100" y="820" width="340" height="36" fill="#000"/>
+  <text x="1270" y="844" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="bold" fill="#fff">ticket_status_logs</text>
+  <text x="1120" y="882" font-family="Arial,sans-serif" font-size="14">PK  id</text>
+  <text x="1120" y="904" font-family="Arial,sans-serif" font-size="14">FK  ticket_id</text>
+  <text x="1120" y="926" font-family="Arial,sans-serif" font-size="14">FK  changed_by (user_id)</text>
+  <text x="1120" y="948" font-family="Arial,sans-serif" font-size="14">    from_status, to_status</text>
+  <text x="1120" y="970" font-family="Arial,sans-serif" font-size="14">    note, attachment, created_at</text>
+
+  
+  
+  <line x1="170" y1="220" x2="170" y2="290" stroke="#000" stroke-width="1.5"/>
+  <text x="178" y="238" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="178" y="282" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="280" y1="150" x2="400" y2="450" stroke="#000" stroke-width="1.5"/>
+  <text x="296" y="170" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="382" y="444" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="520" y1="220" x2="520" y2="360" stroke="#000" stroke-width="1.5"/>
+  <text x="528" y="238" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="528" y="352" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="1080" y1="200" x2="1180" y2="200" stroke="#000" stroke-width="1.5"/>
+  <text x="1092" y="192" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="1148" y="192" font-family="Arial,sans-serif" font-size="14" font-weight="bold">0..1</text>
+
+  
+  <line x1="930" y1="370" x2="930" y2="500" stroke="#000" stroke-width="1.5"/>
+  <line x1="930" y1="500" x2="1050" y2="500" stroke="#000" stroke-width="1.5"/>
+  <text x="938" y="390" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="1030" y="492" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="280" y1="150" x2="1050" y2="600" stroke="#000" stroke-width="1.5"/>
+  <text x="296" y="160" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="1030" y="596" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="1070" y1="700" x2="1070" y2="780" stroke="#000" stroke-width="1.5"/>
+  <line x1="850" y1="780" x2="1070" y2="780" stroke="#000" stroke-width="1.5"/>
+  <line x1="850" y1="780" x2="850" y2="820" stroke="#000" stroke-width="1.5"/>
+  <text x="1078" y="720" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="856" y="812" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="1270" y1="750" x2="1270" y2="820" stroke="#000" stroke-width="1.5"/>
+  <text x="1278" y="770" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="1278" y="814" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="170" y1="490" x2="170" y2="970" stroke="#000" stroke-width="1.5"/>
+  <line x1="170" y1="970" x2="700" y2="970" stroke="#000" stroke-width="1.5"/>
+  <text x="178" y="510" font-family="Arial,sans-serif" font-size="14" font-weight="bold">1</text>
+  <text x="684" y="962" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <line x1="170" y1="490" x2="170" y2="1010" stroke="#000" stroke-width="1.5"/>
+  <line x1="170" y1="1010" x2="1100" y2="1010" stroke="#000" stroke-width="1.5"/>
+  <line x1="1100" y1="1010" x2="1100" y2="1000" stroke="#000" stroke-width="1.5"/>
+  <text x="1084" y="1002" font-family="Arial,sans-serif" font-size="14" font-weight="bold">*</text>
+
+  
+  <rect x="60" y="570" width="250" height="130" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="80" y="600" font-family="Arial,sans-serif" font-size="15" font-weight="bold">Keterangan</text>
+  <text x="80" y="628" font-family="Arial,sans-serif" font-size="14">PK : Primary Key</text>
+  <text x="80" y="652" font-family="Arial,sans-serif" font-size="14">FK : Foreign Key</text>
+  <text x="80" y="676" font-family="Arial,sans-serif" font-size="14">1 / * / 0..1 : kardinalitas</text>
+</svg>

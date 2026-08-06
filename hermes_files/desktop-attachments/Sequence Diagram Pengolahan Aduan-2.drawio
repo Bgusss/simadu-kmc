@@ -1,0 +1,133 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Pengolahan Aduan" id="diagram-Pengolahan-Aduan">
+    <mxGraphModel dx="1077" dy="705" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L1" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;" value="Sistem Scraper" vertex="1">
+          <mxGeometry height="610" width="120" x="60" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="A1" parent="L1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="550" width="10" x="55" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;" value="Controller" vertex="1">
+          <mxGeometry height="610" width="120" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="A2" parent="L2" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="530" width="10" x="55" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;" value="Layanan AI" vertex="1">
+          <mxGeometry height="600" width="120" x="540" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="A3" parent="L3" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="60" width="10" x="55" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="A4" parent="L3" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="60" width="10" x="55" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="A5" parent="L3" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="60" width="10" x="55" y="448" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;" value="Basis Data" vertex="1">
+          <mxGeometry height="600" width="120" x="700" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="A6" parent="L4" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="40" width="10" x="55" y="368" as="geometry" />
+        </mxCell>
+        <mxCell id="A7" parent="L4" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;" value="" vertex="1">
+          <mxGeometry height="40" width="10" x="55" y="552" as="geometry" />
+        </mxCell>
+        <mxCell id="m6_ret" edge="1" parent="L4" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;entryX=1.07;entryY=0.62;entryDx=0;entryDy=0;entryPerimeter=0;" target="A2" value="7. Konfirmasi tersimpan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-169.93" y="408" />
+            </Array>
+            <mxPoint x="55" y="408" as="sourcePoint" />
+            <mxPoint x="-334.37000000000006" y="408" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9" edge="1" parent="L4" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;entryX=-0.031;entryY=-0.003;entryDx=0;entryDy=0;entryPerimeter=0;" target="A7" value="10. Menyimpan tiket (Jika bukan duplikat)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="70.5" y="552" />
+            </Array>
+            <mxPoint x="-374.5" y="552.96" as="sourcePoint" />
+            <mxPoint x="50" y="552" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1" edge="1" parent="1" source="A1" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;" target="A2" value="1. Mengirim data aduan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="130" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" edge="1" parent="1" source="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;" target="A3" value="2. Meminta filter kelayakan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3" edge="1" parent="1" source="A3" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;" target="A2" value="3. Hasil (Layak)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" edge="1" parent="1" source="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;" target="A4" value="4. Meminta klasifikasi (Kategori, OPD, Prioritas)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;entryX=-0.056;entryY=-0.007;entryDx=0;entryDy=0;entryPerimeter=0;" target="A5" value="8. Memeriksa kemungkinan duplikasi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="488" />
+            </Array>
+            <mxPoint x="325" y="480" as="sourcePoint" />
+            <mxPoint x="584.27" y="487.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;entryX=1.051;entryY=0.8;entryDx=0;entryDy=0;entryPerimeter=0;" value="9. Hasil deteksi duplikasi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="548" />
+            </Array>
+            <mxPoint x="600" y="548" as="sourcePoint" />
+            <mxPoint x="325.51" y="548" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9_ret" edge="1" parent="1" source="L4" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;" value="11. Konfirmasi tiket tersimpan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="632" />
+            </Array>
+            <mxPoint x="715" y="632" as="sourcePoint" />
+            <mxPoint x="325" y="632" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6" edge="1" parent="1" source="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;entryX=-0.023;entryY=0.017;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.982;exitY=0.544;exitDx=0;exitDy=0;exitPerimeter=0;" target="A6" value="6. Menyimpan notifikasi">
+          <mxGeometry relative="1" x="0.0511" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="507.5" y="408" />
+            </Array>
+            <mxPoint x="330" y="408" as="sourcePoint" />
+            <mxPoint x="724.3499999999999" y="414.31999999999994" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5" edge="1" parent="1" source="A4" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;dashed=1;endArrow=open;endSize=8;exitX=0.03;exitY=0.999;exitDx=0;exitDy=0;exitPerimeter=0;" target="A2" value="5. Hasil klasifikasi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="590" y="360" as="sourcePoint" />
+            <mxPoint x="335.59000000000003" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

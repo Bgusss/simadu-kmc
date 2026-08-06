@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Verifikasi Duplikasi" id="Verifikasi-Duplikasi">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L1" value="Admin KMC" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;">
+          <mxGeometry x="60" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="Antarmuka" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;">
+          <mxGeometry x="260" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="Pengontrol" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;">
+          <mxGeometry x="460" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" value="Basis Data" parent="1" vertex="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ECECFF;strokeColor=#9370DB;fontColor=#333333;fontFamily=Times New Roman;fontSize=14;fontStyle=1;">
+          <mxGeometry x="660" y="40" width="120" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="A1" value="" parent="L1" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;">
+          <mxGeometry x="55" y="60" width="10" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="A2" value="" parent="L2" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;">
+          <mxGeometry x="55" y="80" width="10" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="A3" value="" parent="L3" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;">
+          <mxGeometry x="55" y="100" width="10" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="A4" value="" parent="L4" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;">
+          <mxGeometry x="55" y="140" width="10" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="A5" value="" parent="L4" vertex="1" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#E8E8E8;strokeColor=#333333;fontFamily=Times New Roman;">
+          <mxGeometry x="55" y="360" width="10" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="m1" value="1. Membuka notifikasi kandidat duplikat" parent="1" edge="1" source="A1" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=1.0;exitY=0.0870;entryX=0.0;entryY=0.0455;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" value="2. Meminta data perbandingan" parent="1" edge="1" source="A2" target="A3" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=1.0;exitY=0.1364;entryX=0.0;entryY=0.1053;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="3. Mengambil aduan baru &amp; pembanding" parent="1" edge="1" source="A3" target="A4" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=1.0;exitY=0.1579;entryX=0.0;entryY=0.3333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="4. Mengembalikan data aduan" parent="1" edge="1" source="A4" target="A3" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=0.0;exitY=1.0000;entryX=1.0;entryY=0.2632;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m5" value="5. Menampilkan halaman perbandingan" parent="1" edge="1" source="A3" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=0.0;exitY=0.3684;entryX=1.0;entryY=0.3636;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m6" value="6. Konfirmasi status aduan" parent="1" edge="1" source="A1" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=1.0;exitY=0.5217;entryX=0.0;entryY=0.5000;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m7" value="7. Mengirim keputusan verifikasi" parent="1" edge="1" source="A2" target="A3" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=1.0;exitY=0.5909;entryX=0.0;entryY=0.6316;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m8" value="8. Mengupdate status notifikasi" parent="1" edge="1" source="A3" target="A5" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=1.0;exitY=0.7368;entryX=0.0;entryY=0.3333;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m9" value="9. Konfirmasi data tersimpan" parent="1" edge="1" source="A5" target="A3" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=0.0;exitY=1.0000;entryX=1.0;entryY=0.8421;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="m10" value="10. Menampilkan pesan berhasil" parent="1" edge="1" source="A3" target="A2" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;fontFamily=Times New Roman;fontSize=13;fontColor=#333333;strokeColor=#333333;exitX=0.0;exitY=0.9474;entryX=1.0;entryY=0.8636;dashed=1;endArrow=open;endSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

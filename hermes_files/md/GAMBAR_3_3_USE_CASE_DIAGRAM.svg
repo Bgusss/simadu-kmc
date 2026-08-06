@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Use Case Diagram Sistem Informasi Manajemen Aduan Multi Channel KMC</title>
+  <desc id="desc">Diagram use case Admin KMC, Pengguna OPD, Masyarakat, dan Sistem Scraper.</desc>
+  <rect width="1700" height="1080" fill="#fff"/>
+  <rect x="15" y="15" width="1670" height="1050" fill="none" stroke="#000" stroke-width="1.5"/>
+
+  <!-- System boundary -->
+  <rect x="330" y="65" width="1040" height="900" fill="none" stroke="#000" stroke-width="1.5"/>
+  <text x="360" y="98" font-family="Arial, sans-serif" font-size="21" font-weight="bold">Sistem Informasi Manajemen Aduan Multi Channel KMC</text>
+
+  <!-- Association lines: Admin KMC -->
+  <g fill="none" stroke="#000" stroke-width="1.3">
+    <path d="M150 450 H300 V150 H670"/>
+    <path d="M150 450 H300 V250 H410"/>
+    <path d="M150 450 H290 V365 H410"/>
+    <path d="M150 450 H280 V480 H410"/>
+    <path d="M150 450 H270 V595 H410"/>
+    <path d="M150 450 H260 V710 H410"/>
+    <path d="M150 450 H250 V825 H410"/>
+  </g>
+
+  <!-- Association lines: Pengguna OPD -->
+  <g fill="none" stroke="#000" stroke-width="1.3">
+    <path d="M1550 450 H1400 V150 H930"/>
+    <path d="M1550 450 H1400 V250 H1190"/>
+    <path d="M1550 450 H1410 V365 H1190"/>
+    <path d="M1550 450 H1420 V480 H1190"/>
+    <path d="M1550 450 H1430 V595 H1190"/>
+  </g>
+
+  <!-- Association lines: Masyarakat dan Sistem Scraper -->
+  <g fill="none" stroke="#000" stroke-width="1.3">
+    <path d="M150 895 H410"/>
+    <path d="M1550 895 H1190"/>
+  </g>
+
+  <!-- Login -->
+  <ellipse cx="800" cy="150" rx="130" ry="38" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="800" y="156" text-anchor="middle" font-family="Arial, sans-serif" font-size="17">Login</text>
+
+  <!-- Admin use cases -->
+  <g fill="#fff" stroke="#000" stroke-width="1.5">
+    <ellipse cx="560" cy="250" rx="150" ry="38"/>
+    <ellipse cx="560" cy="365" rx="150" ry="43"/>
+    <ellipse cx="560" cy="480" rx="150" ry="43"/>
+    <ellipse cx="560" cy="595" rx="150" ry="43"/>
+    <ellipse cx="560" cy="710" rx="150" ry="43"/>
+    <ellipse cx="560" cy="825" rx="150" ry="43"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="17" text-anchor="middle">
+    <text x="560" y="256">Melihat Dashboard</text>
+    <text x="560" y="359">Memantau Notifikasi</text>
+    <text x="560" y="379">dan Hasil Klasifikasi</text>
+    <text x="560" y="474">Memverifikasi</text>
+    <text x="560" y="494">Kemungkinan Duplikasi</text>
+    <text x="560" y="589">Mengelola Tiket</text>
+    <text x="560" y="609">dan Penugasan OPD</text>
+    <text x="560" y="704">Mengelola OPD</text>
+    <text x="560" y="724">dan Akun OPD</text>
+    <text x="560" y="819">Melihat Statistik</text>
+    <text x="560" y="839">Pengelolaan Aduan</text>
+  </g>
+
+  <!-- OPD use cases -->
+  <g fill="#fff" stroke="#000" stroke-width="1.5">
+    <ellipse cx="1040" cy="250" rx="150" ry="38"/>
+    <ellipse cx="1040" cy="365" rx="150" ry="43"/>
+    <ellipse cx="1040" cy="480" rx="150" ry="43"/>
+    <ellipse cx="1040" cy="595" rx="150" ry="43"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="17" text-anchor="middle">
+    <text x="1040" y="256">Melihat Tiket OPD</text>
+    <text x="1040" y="359">Memberi Tanggapan</text>
+    <text x="1040" y="379">pada Tiket</text>
+    <text x="1040" y="474">Memperbarui</text>
+    <text x="1040" y="494">Status Tiket</text>
+    <text x="1040" y="589">Mengelola Profil</text>
+    <text x="1040" y="609">Pengguna OPD</text>
+  </g>
+
+  <!-- Public and scraper use cases -->
+  <ellipse cx="560" cy="895" rx="150" ry="43" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="560" y="889" text-anchor="middle" font-family="Arial, sans-serif" font-size="17">Melacak Tiket dengan</text>
+  <text x="560" y="909" text-anchor="middle" font-family="Arial, sans-serif" font-size="17">Nomor Pelacakan</text>
+
+  <ellipse cx="1040" cy="895" rx="150" ry="43" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="1040" y="889" text-anchor="middle" font-family="Arial, sans-serif" font-size="17">Sinkronisasi Aduan</text>
+  <text x="1040" y="909" text-anchor="middle" font-family="Arial, sans-serif" font-size="17">Media Sosial</text>
+
+  <!-- Actors -->
+  <g fill="#fff" stroke="#000" stroke-width="1.5">
+    <!-- Admin KMC -->
+    <circle cx="150" cy="360" r="22"/>
+    <line x1="150" y1="382" x2="150" y2="460"/>
+    <line x1="110" y1="410" x2="190" y2="410"/>
+    <line x1="150" y1="460" x2="115" y2="500"/>
+    <line x1="150" y1="460" x2="185" y2="500"/>
+
+    <!-- Pengguna OPD -->
+    <circle cx="1550" cy="360" r="22"/>
+    <line x1="1550" y1="382" x2="1550" y2="460"/>
+    <line x1="1510" y1="410" x2="1590" y2="410"/>
+    <line x1="1550" y1="460" x2="1515" y2="500"/>
+    <line x1="1550" y1="460" x2="1585" y2="500"/>
+
+    <!-- Masyarakat -->
+    <circle cx="150" cy="810" r="22"/>
+    <line x1="150" y1="832" x2="150" y2="910"/>
+    <line x1="110" y1="860" x2="190" y2="860"/>
+    <line x1="150" y1="910" x2="115" y2="950"/>
+    <line x1="150" y1="910" x2="185" y2="950"/>
+
+    <!-- Sistem Scraper -->
+    <circle cx="1550" cy="810" r="22"/>
+    <line x1="1550" y1="832" x2="1550" y2="910"/>
+    <line x1="1510" y1="860" x2="1590" y2="860"/>
+    <line x1="1550" y1="910" x2="1515" y2="950"/>
+    <line x1="1550" y1="910" x2="1585" y2="950"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="19" font-weight="bold" text-anchor="middle">
+    <text x="150" y="530">Admin KMC</text>
+    <text x="1550" y="530">Pengguna OPD</text>
+    <text x="150" y="980">Masyarakat</text>
+    <text x="1550" y="980">Sistem Scraper</text>
+  </g>
+</svg>

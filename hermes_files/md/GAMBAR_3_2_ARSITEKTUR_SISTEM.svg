@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600" role="img">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#000"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="600" fill="#fff"/>
+  <rect x="10" y="10" width="1080" height="580" fill="none" stroke="#000" stroke-width="1.5"/>
+
+  <!-- ===== SUMBER ADUAN (kiri) ===== -->
+  <rect x="30" y="200" width="130" height="60" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="95" y="225" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold">Facebook</text>
+  <text x="95" y="245" text-anchor="middle" font-family="Arial" font-size="11">Mention &amp; Komentar</text>
+
+  <rect x="30" y="310" width="130" height="60" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="95" y="335" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold">Instagram</text>
+  <text x="95" y="355" text-anchor="middle" font-family="Arial" font-size="11">Pesan Langsung</text>
+
+  <text x="95" y="165" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold">Sumber Aduan</text>
+  <rect x="25" y="175" width="140" height="215" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- ===== INTERNET (tengah) ===== -->
+  <!-- Globe shape sederhana -->
+  <ellipse cx="430" cy="290" rx="60" ry="60" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <ellipse cx="430" cy="290" rx="30" ry="60" fill="none" stroke="#000" stroke-width="1"/>
+  <line x1="370" y1="290" x2="490" y2="290" stroke="#000" stroke-width="1"/>
+  <line x1="375" y1="265" x2="485" y2="265" stroke="#000" stroke-width="1"/>
+  <line x1="375" y1="315" x2="485" y2="315" stroke="#000" stroke-width="1"/>
+  <text x="430" y="375" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Internet</text>
+
+  <!-- ===== WEB SERVER (kanan-atas) ===== -->
+  <rect x="650" y="160" width="150" height="70" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="725" y="191" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Web Server</text>
+  <text x="725" y="213" text-anchor="middle" font-family="Arial" font-size="11">(Laravel)</text>
+
+  <!-- ===== DATABASE (kanan-bawah) ===== -->
+  <!-- Cylinder shape -->
+  <ellipse cx="725" cy="370" rx="55" ry="16" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <rect x="670" y="370" width="110" height="70" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <ellipse cx="725" cy="440" rx="55" ry="16" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <text x="725" y="412" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Database</text>
+  <text x="725" y="432" text-anchor="middle" font-family="Arial" font-size="11">(MySQL)</text>
+
+  <!-- ===== PENGGUNA (bawah) ===== -->
+  <!-- Admin KMC -->
+  <circle cx="230" cy="510" r="16" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <line x1="230" y1="526" x2="230" y2="560" stroke="#000" stroke-width="1.5"/>
+  <line x1="210" y1="542" x2="250" y2="542" stroke="#000" stroke-width="1.5"/>
+  <line x1="230" y1="560" x2="212" y2="580" stroke="#000" stroke-width="1.5"/>
+  <line x1="230" y1="560" x2="248" y2="580" stroke="#000" stroke-width="1.5"/>
+  <text x="230" y="500" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Admin KMC</text>
+
+  <!-- Pengguna OPD -->
+  <circle cx="430" cy="510" r="16" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <line x1="430" y1="526" x2="430" y2="560" stroke="#000" stroke-width="1.5"/>
+  <line x1="410" y1="542" x2="450" y2="542" stroke="#000" stroke-width="1.5"/>
+  <line x1="430" y1="560" x2="412" y2="580" stroke="#000" stroke-width="1.5"/>
+  <line x1="430" y1="560" x2="448" y2="580" stroke="#000" stroke-width="1.5"/>
+  <text x="430" y="500" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Pengguna OPD</text>
+
+  <!-- Masyarakat -->
+  <circle cx="630" cy="510" r="16" fill="#fff" stroke="#000" stroke-width="1.5"/>
+  <line x1="630" y1="526" x2="630" y2="560" stroke="#000" stroke-width="1.5"/>
+  <line x1="610" y1="542" x2="650" y2="542" stroke="#000" stroke-width="1.5"/>
+  <line x1="630" y1="560" x2="612" y2="580" stroke="#000" stroke-width="1.5"/>
+  <line x1="630" y1="560" x2="648" y2="580" stroke="#000" stroke-width="1.5"/>
+  <text x="630" y="500" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Masyarakat</text>
+
+  <!-- ===== PANAH ===== -->
+  <!-- Facebook -> Internet -->
+  <path d="M160 225 H350 Q380 225 390 255" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <!-- Instagram -> Internet -->
+  <path d="M160 340 H350 Q380 340 393 320" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Internet -> Web Server: Request -->
+  <path d="M487 272 H650" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="568" y="263" text-anchor="middle" font-family="Arial" font-size="11">Request</text>
+  <!-- Web Server -> Internet: Respon -->
+  <path d="M650 215 H487" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="568" y="208" text-anchor="middle" font-family="Arial" font-size="11">Respon</text>
+
+  <!-- Web Server -> Database: Data -->
+  <path d="M725 230 V354" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="743" y="295" font-family="Arial" font-size="11">Data</text>
+  <!-- Database -> Web Server: Data -->
+  <path d="M705 354 V230" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="660" y="295" font-family="Arial" font-size="11">Data</text>
+
+  <!-- Admin KMC -> Internet: Request -->
+  <path d="M230 494 V450 H372" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="290" y="445" text-anchor="middle" font-family="Arial" font-size="11">Request</text>
+  <!-- Internet -> Admin KMC: Respon -->
+  <path d="M380 460 H240 V494" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="300" y="475" text-anchor="middle" font-family="Arial" font-size="11">Respon</text>
+
+  <!-- Pengguna OPD -> Internet: Request -->
+  <path d="M430 494 V455" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="450" y="478" font-family="Arial" font-size="11">Request</text>
+  <!-- Internet -> Pengguna OPD: Respon -->
+  <path d="M418 455 V494" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="378" y="478" font-family="Arial" font-size="11">Respon</text>
+
+  <!-- Masyarakat -> Internet: Request -->
+  <path d="M630 494 V460 H488" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="560" y="455" text-anchor="middle" font-family="Arial" font-size="11">Request</text>
+  <!-- Internet -> Masyarakat: Respon -->
+  <path d="M480 470 H620 V494" fill="none" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="550" y="483" text-anchor="middle" font-family="Arial" font-size="11">Respon</text>
+
+  <!-- Label sumber aduan panah -->
+  <text x="260" y="210" text-anchor="middle" font-family="Arial" font-size="11">data aduan</text>
+  <text x="260" y="330" text-anchor="middle" font-family="Arial" font-size="11">data aduan</text>
+
+</svg>
