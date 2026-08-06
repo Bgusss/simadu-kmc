@@ -118,19 +118,19 @@
                 <span class="status-badge status-badge-read">Terbaca</span>
             @endif
 
-            {{-- Tombol Detail internal HANYA untuk WhatsApp --}}
+            {{-- Tombol Detail internal HANYA untuk WhatsApp / Web --}}
             @if (in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']) || str_contains($notif->title ?? '', 'WhatsApp') || str_contains($notif->title ?? '', 'Laporan Web'))
                 <a href="{{ route('notifications.show', $notif->id) }}"
-                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; border-width: 2px;">
                     <i class="fa-solid fa-eye" style="font-size: 0.72rem;"></i>Detail
                 </a>
             @endif
 
-            {{-- Tombol Sumber untuk notif media sosial (FB/IG) --}}
+            {{-- Tombol Lihat untuk notif media sosial (FB/IG) --}}
             @if ($notif->permalink && !in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']))
                 <a href="/notification/{{ $notif->id }}/detail?url={{ urlencode($notif->permalink) }}"
-                    target="_blank" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>Sumber
+                    target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; border-width: 2px;">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>Lihat
                 </a>
             @endif
         </div>
