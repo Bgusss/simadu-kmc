@@ -178,7 +178,7 @@
                             $events->push((object)[
                                 'type' => 'response',
                                 'date' => $resp->created_at,
-                                'user' => $resp->user->name ?? 'User',
+                                'user' => $resp->user?->name ?? 'User',
                                 'content' => $resp->message,
                                 'attachment' => $resp->attachment
                             ]);
@@ -187,7 +187,7 @@
                             $events->push((object)[
                                 'type' => 'status',
                                 'date' => $log->created_at,
-                                'user' => $log->user->name ?? 'Sistem',
+                                'user' => $log->user?->name ?? 'Sistem',
                                 'old' => $log->from_status,
                                 'new' => $log->to_status,
                                 'notes' => $log->note,

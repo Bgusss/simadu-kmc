@@ -253,7 +253,7 @@
                             'date' => $resp->created_at,
                             'content' => $resp->message,
                             'attachment' => $resp->attachment,
-                            'user' => $resp->user->name ?? 'OPD'
+                            'user' => $resp->user?->name ?? 'OPD'
                         ]);
                     }
 

@@ -76,8 +76,8 @@
                         <tr>
                             <td class="py-3 px-4">{{ $opds->firstItem() + $loop->index }}</td>
                             <td class="py-3 px-4 fw-medium">{{ $opd->name }}</td>
-                            <td class="py-3 px-4 text-muted">{{ $opd->user->username ?? '-' }}</td>
-                            <td class="py-3 px-4 text-muted">{{ $opd->user->email ?? '-' }}</td>
+                            <td class="py-3 px-4 text-muted">{{ $opd->user?->username ?? '-' }}</td>
+                            <td class="py-3 px-4 text-muted">{{ $opd->user?->email ?? '-' }}</td>
                             <td class="py-3 px-4 text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="{{ route('admin.opd.edit', $opd->id) }}" class="btn btn-sm btn-outline-warning rounded-pill px-3">

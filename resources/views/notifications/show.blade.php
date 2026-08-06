@@ -377,10 +377,10 @@
                             @php
                                 $events = collect();
                                 foreach($ticket->responses->take(3) as $resp) {
-                                    $events->push((object)['type' => 'response', 'date' => $resp->created_at, 'user' => $resp->user->name ?? 'User', 'content' => $resp->message]);
+                                    $events->push((object)['type' => 'response', 'date' => $resp->created_at, 'user' => $resp->user?->name ?? 'User', 'content' => $resp->message]);
                                 }
                                 foreach($ticket->statusLogs->sortByDesc('id')->take(3) as $log) {
-                                    $events->push((object)['type' => 'status', 'date' => $log->created_at, 'user' => $log->user->name ?? 'Sistem', 'old' => $log->from_status, 'new' => $log->to_status, 'notes' => $log->note]);
+                                    $events->push((object)['type' => 'status', 'date' => $log->created_at, 'user' => $log->user?->name ?? 'Sistem', 'old' => $log->from_status, 'new' => $log->to_status, 'notes' => $log->note]);
                                 }
                                 $events = $events->sortByDesc(fn($e) => $e->date->timestamp)->take(5);
                             @endphp
