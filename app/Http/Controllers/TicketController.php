@@ -211,8 +211,13 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
-        $ticket->load(['statusLogs.user', 'responses.user']);
-        return view('tickets.show', compact('ticket'));
+        try {
+            $ticket->load(['statusLogs.user', 'responses.user']);
+            return view('tickets.show', compact('ticket'))->render();
+        } catch (\Throwable $e) {
+            return response($e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() . "\n\nStack Trace:\n" . $e->getTraceAsString(), 500)
+                   ->header('Content-Type', 'text/plain');
+        }
     }
 
     public function edit(Ticket $ticket)
