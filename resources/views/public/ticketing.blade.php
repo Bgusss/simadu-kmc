@@ -448,7 +448,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="fw-medium text-dark">{{ $t->assignedOpd->name ?? ($t->opd_related ?? '-') }}</td>
+                            <td class="fw-medium text-dark">{{ $t->assignedOpd?->name ?? ($t->opd_related ?? '-') }}</td>
                             <td style="max-width: 300px;">
                                 <div class="text-truncate text-muted" title="{{ $t->complaint }}">{{ $t->complaint }}</div>
                             </td>

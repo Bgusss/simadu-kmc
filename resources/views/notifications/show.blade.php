@@ -242,36 +242,36 @@
                             <i class="fas fa-robot me-1 text-warning"></i> Hasil Klasifikasi AI
                         </div>
                         <div class="d-flex flex-wrap gap-2">
-                            @if($notification->ai->suggested_category)
+                            @if($notification->ai?->suggested_category)
                                 <span class="ai-tag" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">
-                                    <i class="fas fa-building"></i> {{ $notification->ai->suggested_category }}
+                                    <i class="fas fa-building"></i> {{ $notification->ai?->suggested_category }}
                                 </span>
                             @endif
-                            @if($notification->ai->suggested_sub_category)
+                            @if($notification->ai?->suggested_sub_category)
                                 <span class="ai-tag" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0;">
-                                    <i class="fas fa-tag"></i> {{ $notification->ai->suggested_sub_category }}
+                                    <i class="fas fa-tag"></i> {{ $notification->ai?->suggested_sub_category }}
                                 </span>
                             @endif
-                            @if($notification->ai->priority)
+                            @if($notification->ai?->priority)
                                 @php
                                     $priBg = '#f1f5f9'; $priColor = '#475569';
-                                    if (strtolower($notification->ai->priority) === 'tinggi') { $priBg = '#fef2f2'; $priColor = '#dc2626'; }
-                                    elseif (strtolower($notification->ai->priority) === 'sedang') { $priBg = '#fffbeb'; $priColor = '#d97706'; }
+                                    if (strtolower($notification->ai?->priority ?? '') === 'tinggi') { $priBg = '#fef2f2'; $priColor = '#dc2626'; }
+                                    elseif (strtolower($notification->ai?->priority ?? '') === 'sedang') { $priBg = '#fffbeb'; $priColor = '#d97706'; }
                                     else { $priBg = '#f0fdf4'; $priColor = '#16a34a'; }
                                 @endphp
                                 <span class="ai-tag" style="background: {{ $priBg }}; color: {{ $priColor }}; border: 1px solid currentColor;">
-                                    <i class="fas fa-exclamation-circle"></i> {{ $notification->ai->priority }}
+                                    <i class="fas fa-exclamation-circle"></i> {{ $notification->ai?->priority }}
                                 </span>
                             @endif
-                            @if($notification->ai->confidence)
+                            @if($notification->ai?->confidence)
                                 <span class="ai-tag" style="background: #ede9fe; color: #7c3aed; border: 1px solid #c4b5fd;">
-                                    <i class="fas fa-chart-line"></i> {{ $notification->ai->confidence }}% confidence
+                                    <i class="fas fa-chart-line"></i> {{ $notification->ai?->confidence }}% confidence
                                 </span>
                             @endif
                         </div>
-                        @if($notification->ai->reasoning)
+                        @if($notification->ai?->reasoning)
                             <div class="mt-2 small text-muted fst-italic" style="font-size: 0.82rem;">
-                                <i class="fas fa-lightbulb me-1 text-warning"></i> {{ $notification->ai->reasoning }}
+                                <i class="fas fa-lightbulb me-1 text-warning"></i> {{ $notification->ai?->reasoning }}
                             </div>
                         @endif
                     </div>
@@ -284,7 +284,7 @@
                         <div>
                             <strong>Terdeteksi Duplikat</strong> — {{ round($notification->duplicate_similarity) }}% mirip
                             @if($notification->duplicateOf)
-                                dengan laporan dari <strong>{{ $notification->duplicateOf->sender_name }}</strong>
+                                dengan laporan dari <strong>{{ $notification->duplicateOf?->sender_name }}</strong>
                             @endif
                             <div class="mt-2 d-flex gap-2">
                                 <form method="POST" action="{{ route('notifications.not-duplicate', $notification->id) }}" class="d-inline">
@@ -343,7 +343,7 @@
                         <div class="col-6">
                             <div class="info-cell h-100">
                                 <div class="info-label"><i class="fas fa-building me-1"></i> OPD</div>
-                                <div class="info-value" style="font-size: 0.85rem;">{{ $ticket->assignedOpd->name ?? '-' }}</div>
+                                <div class="info-value" style="font-size: 0.85rem;">{{ $ticket->assignedOpd?->name ?? '-' }}</div>
                             </div>
                         </div>
                         <div class="col-6">

@@ -94,7 +94,7 @@
                     <div class="col-sm-6">
                         <div class="p-3 bg-light rounded-4 border border-opacity-50 h-100 transition-all hover-shadow">
                             <div class="text-muted small fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;"><i class="fas fa-building me-1"></i> Instansi Terkait</div>
-                            <div class="fw-bold text-dark fs-6">{{ $ticket->assignedOpd->name ?? 'Belum Ditugaskan' }}</div>
+                            <div class="fw-bold text-dark fs-6">{{ $ticket->assignedOpd?->name ?? 'Belum Ditugaskan' }}</div>
                         </div>
                     </div>
                     <div class="col-sm-6">

@@ -180,10 +180,10 @@
                         <label class="form-label fw-semibold">Kategori</label>
                         @if ($notification)
                             <input type="text" class="form-control readonly-field"
-                                value="{{ old('category', $notification->ai->suggested_category ?? 'Belum ada') }}" readonly
+                                value="{{ old('category', $notification->ai?->suggested_category ?? 'Belum ada') }}" readonly
                                 tabindex="-1">
                             <input type="hidden" name="category"
-                                value="{{ old('category', $notification->ai->suggested_category ?? '') }}">
+                                value="{{ old('category', $notification->ai?->suggested_category ?? '') }}">
                         @else
                             <select name="category" id="category_select" class="form-select" required>
                                 <option value="">-- Pilih Kategori --</option>
@@ -201,10 +201,10 @@
                         <label class="form-label fw-semibold">Sub Kategori</label>
                         @if ($notification)
                             <input type="text" class="form-control readonly-field"
-                                value="{{ old('sub_category', $notification->ai->suggested_sub_category ?? 'Belum ada') }}"
+                                value="{{ old('sub_category', $notification->ai?->suggested_sub_category ?? 'Belum ada') }}"
                                 readonly tabindex="-1">
                             <input type="hidden" name="sub_category"
-                                value="{{ old('sub_category', $notification->ai->suggested_sub_category ?? '') }}">
+                                value="{{ old('sub_category', $notification->ai?->suggested_sub_category ?? '') }}">
                         @else
                             <select name="sub_category" id="subcategory_select" class="form-select" required>
                                 <option value="">-- Pilih Sub Kategori --</option>

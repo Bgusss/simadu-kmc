@@ -152,7 +152,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted small mb-1 fw-medium text-uppercase tracking-wider">Instansi / PD Terkait</div>
-                            <div class="fw-bold text-dark" style="font-size: 1.1rem;">{{ $ticket->assignedOpd->name ?? 'Belum Ditugaskan' }}</div>
+                            <div class="fw-bold text-dark" style="font-size: 1.1rem;">{{ $ticket->assignedOpd?->name ?? 'Belum Ditugaskan' }}</div>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted small mb-1 fw-medium text-uppercase tracking-wider">Prioritas</div>

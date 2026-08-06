@@ -70,12 +70,12 @@
             <div class="d-flex align-items-center gap-2 mt-2 flex-wrap">
                 @if ($notif->ai?->suggested_category)
                     <span class="category-tag">
-                        <i class="fa-solid fa-building me-1"></i>{{ $notif->ai->suggested_category }}
+                        <i class="fa-solid fa-building me-1"></i>{{ $notif->ai?->suggested_category }}
                     </span>
                 @endif
                 @if ($notif->ai?->suggested_sub_category)
                     <span class="subcategory-tag">
-                        <i class="fa-solid fa-tag me-1"></i>{{ $notif->ai->suggested_sub_category }}
+                        <i class="fa-solid fa-tag me-1"></i>{{ $notif->ai?->suggested_sub_category }}
                     </span>
                 @endif
             </div>
@@ -86,7 +86,7 @@
                     <i class="fa-solid fa-triangle-exclamation me-1"></i>
                     <span>Duplikat {{ round($notif->duplicate_similarity) }}% mirip</span>
                     @if ($notif->duplicateOf)
-                        <span class="text-muted"> — mirip dengan <strong>{{ $notif->duplicateOf->sender_name }}</strong></span>
+                        <span class="text-muted"> — mirip dengan <strong>{{ $notif->duplicateOf?->sender_name }}</strong></span>
                     @endif
                     <div class="d-inline-flex gap-1 ms-2">
                         <form method="POST" action="{{ route('notifications.not-duplicate', $notif->id) }}" class="d-inline">
