@@ -179,7 +179,9 @@
                         <p class="mb-0 fs-5" style="color: #334155; line-height: 1.6;">{{ $ticket->complaint ?? 'Detail laporan tidak tersedia.' }}</p>
                     </div>
 
-                    @php($reportAttachments = $ticket->notification?->attachments ?? [])
+                    @php
+                        $reportAttachments = $ticket->notification?->attachments ?? [];
+                    @endphp
                     @if(is_array($reportAttachments) && count($reportAttachments))
                         <div class="mt-4">
                             <div class="text-muted small mb-2 fw-bold text-uppercase"><i class="fa-solid fa-paperclip me-2 text-primary"></i>Lampiran Pelapor ({{ count($reportAttachments) }})</div>

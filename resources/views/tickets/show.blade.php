@@ -123,7 +123,9 @@
                     </div>
                 </div>
 
-                @php($reportAttachments = $ticket->notification?->attachments ?? [])
+                @php
+                    $reportAttachments = $ticket->notification?->attachments ?? [];
+                @endphp
                 @if(is_array($reportAttachments) && count($reportAttachments))
                     <div class="mt-4">
                         <div class="text-muted small fw-bold text-uppercase tracking-wide mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
