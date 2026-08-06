@@ -121,16 +121,21 @@
             {{-- Tombol Detail internal HANYA untuk WhatsApp / Web --}}
             @if (in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']) || str_contains($notif->title ?? '', 'WhatsApp') || str_contains($notif->title ?? '', 'Laporan Web'))
                 <a href="{{ route('notifications.show', $notif->id) }}"
-                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; border-width: 2px;">
-                    <i class="fa-solid fa-eye" style="font-size: 0.72rem;"></i>Detail
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center justify-content-center gap-1.5"
+                    style="font-size: 0.8rem; border-width: 2px; line-height: 1.2; padding: 4px 14px;">
+                    <i class="fa-solid fa-eye" style="font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center;"></i>
+                    <span>Detail</span>
                 </a>
             @endif
 
             {{-- Tombol Lihat untuk notif media sosial (FB/IG) --}}
             @if ($notif->permalink && !in_array($notif->title, ['WhatsApp', 'Laporan Web SIMADU']))
                 <a href="/notification/{{ $notif->id }}/detail?url={{ urlencode($notif->permalink) }}"
-                    target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; border-width: 2px;">
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem;"></i>Lihat
+                    target="_blank"
+                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center justify-content-center gap-1.5"
+                    style="font-size: 0.8rem; border-width: 2px; line-height: 1.2; padding: 4px 14px;">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center;"></i>
+                    <span>Lihat</span>
                 </a>
             @endif
         </div>
