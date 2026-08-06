@@ -122,6 +122,32 @@
                         <p class="mb-0 text-dark fw-medium" style="white-space: pre-line; font-size: 1.05rem; line-height: 1.6;">{{ $ticket->complaint }}</p>
                     </div>
                 </div>
+
+                @php($reportAttachments = $ticket->notification?->attachments ?? [])
+                @if(is_array($reportAttachments) && count($reportAttachments))
+                    <div class="mt-4">
+                        <div class="text-muted small fw-bold text-uppercase tracking-wide mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                            <i class="fas fa-paperclip me-1"></i>Lampiran Pelapor ({{ count($reportAttachments) }})
+                        </div>
+                        <div class="row g-3">
+                            @foreach($reportAttachments as $index => $path)
+                                @php
+                                    $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                                    $isVideo = in_array($extension, ['mp4', 'mov', 'avi', '3gp', 'webm']);
+                                @endphp
+                                <div class="col-md-6">
+                                    <div class="border rounded-4 overflow-hidden bg-light p-2">
+                                        @if($isVideo)
+                                            <video controls class="w-100 rounded-3" style="max-height: 360px;"><source src="{{ asset('storage/' . $path) }}" type="video/{{ $extension }}">Browser Anda tidak mendukung video.</video>
+                                        @else
+                                            <a href="{{ asset('storage/' . $path) }}" target="_blank"><img src="{{ asset('storage/' . $path) }}" alt="Lampiran pelapor {{ $index + 1 }}" class="w-100 rounded-3" style="max-height: 360px; object-fit: contain;"></a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 

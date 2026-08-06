@@ -119,7 +119,8 @@
 
 <div class="row">
     {{-- Kolom Kiri: Detail Notifikasi --}}
-    <div class="col-lg-7 mb-4">
+    {{-- Untuk WhatsApp/Web: full width (tanpa Tiket Terkait & Riwayat). Untuk FB/IG: 7 kolom --}}
+    <div class="{{ ($isWhatsApp || $isWebReport) ? 'col-lg-12' : 'col-lg-7' }} mb-4">
         <div class="card card-premium overflow-hidden">
             <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
@@ -173,8 +174,44 @@
                     <p class="mb-0 text-dark fw-medium" style="white-space: pre-line; font-size: 1.05rem; line-height: 1.7; padding-left: 2rem;">{{ $notification->display_message }}</p>
                 </div>
 
-                {{-- Lampiran (jika ticket ada attachment) --}}
-                @if($ticket && $ticket->attachment)
+                {{-- Lampiran dari Notifikasi (untuk WhatsApp/Web form dengan multiple files) --}}
+                @if($notification->attachments && is_array($notification->attachments) && count($notification->attachments) > 0)
+                    <div class="mb-4">
+                        <div class="text-muted small fw-bold text-uppercase mb-3" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                            <i class="fas fa-paperclip me-1"></i> Lampiran ({{ count($notification->attachments) }})
+                        </div>
+                        <div class="row g-3">
+                            @foreach($notification->attachments as $index => $attachmentPath)
+                                @php
+                                    $ext = pathinfo($attachmentPath, PATHINFO_EXTENSION);
+                                    $isVideo = in_array(strtolower($ext), ['mp4', 'mov', 'avi', '3gp', 'webm']);
+                                    $isImage = in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'gif']);
+                                @endphp
+                                <div class="col-md-6">
+                                    <div class="attachment-preview">
+                                        @if($isVideo)
+                                            <video controls class="w-100 rounded" style="max-height: 300px;">
+                                                <source src="{{ asset('storage/' . $attachmentPath) }}" type="video/{{ $ext }}">
+                                                Browser Anda tidak mendukung video.
+                                            </video>
+                                        @elseif($isImage)
+                                            <a href="{{ asset('storage/' . $attachmentPath) }}" target="_blank" class="d-block">
+                                                <img src="{{ asset('storage/' . $attachmentPath) }}" alt="Lampiran {{ $index + 1 }}" class="w-100 rounded" style="max-height: 300px; object-fit: cover;">
+                                            </a>
+                                        @else
+                                            <a href="{{ asset('storage/' . $attachmentPath) }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                                <i class="fas fa-file me-1"></i> Unduh File {{ $index + 1 }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Lampiran dari Ticket (legacy single attachment) --}}
+                @if($ticket && $ticket->attachment && (!$notification->attachments || count($notification->attachments) == 0))
                     <div class="mb-4">
                         <div class="text-muted small fw-bold text-uppercase mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
                             <i class="fas fa-paperclip me-1"></i> Lampiran
@@ -275,7 +312,8 @@
         </div>
     </div>
 
-    {{-- Kolom Kanan: Info Tiket (jika sudah dibuat) --}}
+    {{-- Tiket Terkait & Riwayat hanya untuk notifikasi media sosial --}}
+    @if(!$isWhatsApp && !$isWebReport)
     <div class="col-lg-5 mb-4">
         @if($ticket)
             <div class="card card-premium overflow-hidden mb-4">
@@ -383,5 +421,6 @@
             </div>
         @endif
     </div>
+    @endif
 </div>
 @endsection

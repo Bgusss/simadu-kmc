@@ -714,6 +714,7 @@
                         // Show a toast for each new notification
                         newNotifications.forEach((notif, index) => {
                             setTimeout(() => {
+                                // Gunakan nama pengirim untuk judul toast
                                 let senderText = notif.sender_name ? notif.sender_name : (notif.sender ? notif.sender : 'Sistem');
                                 let bodyText = notif.comment_message ? notif.comment_message : (notif.message ? notif.message : 'Ada pembaruan baru');
                                 
@@ -725,7 +726,7 @@
                                 let platformIcon = '<i class="fa-solid fa-bell"></i>';
                                 let iconColor = '#0d47a1'; 
                                 let platformClass = 'default';
-                                let platformName = 'SIMODU KMC';
+                                let platformName = 'Sistem';
 
                                 if (notif.title && notif.title.toLowerCase().includes('facebook')) {
                                     platformIcon = '<i class="fa-brands fa-facebook-f"></i>';
@@ -751,6 +752,7 @@
 
                                 let targetUrl = notif.permalink ? notif.permalink : '/notifications';
                                 let url = `/notification/${notif.id}/detail?url=${encodeURIComponent(targetUrl)}`;
+                                // Parameter kelima dipakai sebagai judul toast: tampilkan nama pelapor.
                                 showIosToast(platformName, platformClass, platformIcon, iconColor, senderText, bodyText, url);
                             }, index * 1200);  
                         });
