@@ -11,4 +11,4 @@ cmds = [
 cmds = ["npm run build"]
 
 [start]
-cmd = "mkdir -p storage/app/public/profiles storage/app/public/attachments storage/framework/{cache/data,sessions,views} storage/logs && rm -rf public/storage 2>/dev/null; php artisan migrate --force && php artisan storage:seed && echo 'FILES AFTER SEED:' && ls -la storage/app/public/profiles/ && ls -la storage/app/public/attachments/ && php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
+cmd = "mkdir -p storage/app/public/profiles storage/app/public/attachments storage/app/public/complaints storage/framework/{cache/data,sessions,views} storage/logs && rm -rf public/storage 2>/dev/null; php artisan migrate --force && php artisan storage:seed && echo 'FILES AFTER SEED:' && ls -la storage/app/public/profiles/ && ls -la storage/app/public/attachments/ && php artisan config:cache && php artisan route:cache && php -d upload_max_filesize=25M -d post_max_size=130M -d memory_limit=256M -d max_file_uploads=10 artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
