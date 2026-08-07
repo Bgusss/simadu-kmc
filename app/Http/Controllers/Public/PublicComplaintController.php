@@ -158,21 +158,25 @@ class PublicComplaintController extends Controller
                 return $ticket;
             });
 
-            // 6. Kirim konfirmasi WA (jika Fonnte tersedia)
-            $phone = FonnteService::formatPhone($request->reporter_phone);
-            $linkCek = config('app.url') . "/ticketing/{$trackingNumber}";
+            // 6. Kirim konfirmasi WA (jika Fonnte tersedia) — non-blocking
+            try {
+                $phone = FonnteService::formatPhone($request->reporter_phone);
+                $linkCek = config('app.url') . "/ticketing/{$trackingNumber}";
 
-            $pesan = "✅ *LAPORAN ANDA TELAH DITERIMA*\n\n"
-                . "Halo *{$request->reporter_name}*, terima kasih telah melapor ke Ketapang Media Center.\n\n"
-                . "📋 *Detail:*\n"
-                . "• Nomor Tiket: *{$trackingNumber}*\n"
-                . "• Kategori: {$category}\n"
-                . "• Status: Diterima\n\n"
-                . "🔍 *Lacak status:*\n{$linkCek}\n\n"
-                . "Atau ketik CEK#{$trackingNumber} di WhatsApp ini.\n\n"
-                . "Laporan Anda akan segera ditindaklanjuti. 🙏";
+                $pesan = "✅ *LAPORAN ANDA TELAH DITERIMA*\n\n"
+                    . "Halo *{$request->reporter_name}*, terima kasih telah melapor ke Ketapang Media Center.\n\n"
+                    . "📋 *Detail:*\n"
+                    . "• Nomor Tiket: *{$trackingNumber}*\n"
+                    . "• Kategori: {$category}\n"
+                    . "• Status: Diterima\n\n"
+                    . "🔍 *Lacak status:*\n{$linkCek}\n\n"
+                    . "Atau ketik CEK#{$trackingNumber} di WhatsApp ini.\n\n"
+                    . "Laporan Anda akan segera ditindaklanjuti. 🙏";
 
-            FonnteService::send($phone, $pesan);
+                FonnteService::send($phone, $pesan);
+            } catch (\Exception $e) {
+                Log::warning('PublicComplaint: Gagal kirim WA konfirmasi', ['error' => $e->getMessage()]);
+            }
 
             return redirect()
                 ->route('public.complaint.create')
@@ -180,12 +184,15 @@ class PublicComplaintController extends Controller
                 ->with('tracking_number', $trackingNumber);
 
         } catch (\Exception $e) {
-            Log::error('PublicComplaint: Gagal menyimpan', ['error' => $e->getMessage()]);
+            Log::error('PublicComplaint: Gagal menyimpan', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
             return redirect()
                 ->route('public.complaint.create')
                 ->with('error', 'Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.')
-                ->withInput();
+                ->withInput($request->except('attachments'));
         }
     }
 }
