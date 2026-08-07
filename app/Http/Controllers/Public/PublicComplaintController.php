@@ -20,7 +20,7 @@ class PublicComplaintController extends Controller
      */
     public function create()
     {
-        return view('public.complaint');
+        return view('public.complaint', ['hideFlashToast' => true]);
     }
 
     /**

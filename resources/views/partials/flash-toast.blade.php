@@ -14,7 +14,7 @@
 </style>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    @if(session('success') && session('success') !== true)
+    @if(session('success'))
     Swal.fire({
         toast: true,
         position: 'top-end',
