@@ -789,21 +789,7 @@
     if (form && submitBtn) {
         form.addEventListener('submit', function() {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengirim laporan...';
-
-            // Progress text updates
-            setTimeout(function() {
-                if (submitBtn.disabled) submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menganalisis laporan dengan AI...';
-            }, 3000);
-            setTimeout(function() {
-                if (submitBtn.disabled) submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menentukan kategori & OPD...';
-            }, 8000);
-            setTimeout(function() {
-                if (submitBtn.disabled) submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengirim konfirmasi WhatsApp...';
-            }, 15000);
-            setTimeout(function() {
-                if (submitBtn.disabled) submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Hampir selesai...';
-            }, 25000);
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Mengirim Laporan...';
 
             // Safety: re-enable button after 90 seconds
             setTimeout(function() {
