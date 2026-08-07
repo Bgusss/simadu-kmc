@@ -314,16 +314,15 @@
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
             padding: 14px 16px !important;
-            width: 100% !important;
-            max-width: 420px !important;
+            width: 380px !important;
+            max-width: 380px !important;
+            min-width: 380px !important;
             cursor: pointer !important;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
             font-family: 'Plus Jakarta Sans', sans-serif !important;
             box-sizing: border-box !important;
             overflow: hidden !important;
             animation: iosSlideIn 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-        }
-
         }
 
         .ios-toast-popup.toast-leaving {
@@ -429,6 +428,11 @@
             color: #3a3a3c !important;
             line-height: 1.4 !important;
             word-break: break-word !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
         }
 
         /* Custom Timer Progress Bar (KMC Theme) */
@@ -505,7 +509,7 @@
             .content { padding: 16px 16px 0 16px !important; }
             .content > div:last-child { margin-left: -16px !important; margin-right: -16px !important; }
             #ios-toast-container { right: 10px !important; left: 10px !important; max-width: 100% !important; }
-            .ios-toast-popup { max-width: 100% !important; border-radius: 16px !important; }
+            .ios-toast-popup { width: auto !important; min-width: 0 !important; max-width: 100% !important; border-radius: 16px !important; }
         }
 
         @media (max-width: 575.98px) {
