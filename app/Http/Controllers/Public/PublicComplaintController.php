@@ -70,49 +70,14 @@ class PublicComplaintController extends Controller
             $sequence   = str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
             $trackingNumber = "KMC-{$today}-{$sequence}";
 
-            // 4. AI Classification
+            // 4. Kategori default (AI Classification dinonaktifkan untuk form /lapor)
             $category    = 'Pengaduan Umum';
-            $subCategory = 'Lain-lain';
+            $subCategory = 'Aduan Masyarakat';
             $opdName     = null;
             $opdId       = null;
             $priority    = 'sedang';
             $aiConfidence = null;
             $aiReasoning  = null;
-
-            try {
-                $aiService = app(AIClassificationService::class);
-                $aiResult  = $aiService->classify($request->complaint);
-
-                if ($aiResult && is_array($aiResult)) {
-                    $category     = $aiResult['suggested_category'] ?? $category;
-                    $subCategory  = $aiResult['suggested_sub_category'] ?? $subCategory;
-                    $priority     = strtolower($aiResult['priority'] ?? 'Sedang');
-                    $aiConfidence = $aiResult['confidence'] ?? null;
-                    $aiReasoning  = $aiResult['reasoning'] ?? null;
-
-                    $suggestedOpds = $aiResult['suggested_opds'] ?? [];
-                    if (is_array($suggestedOpds) && count($suggestedOpds) > 0) {
-                        $opdName = $suggestedOpds[0];
-                        $opd = Opd::where('name', $opdName)->first();
-
-                        if (!$opd) {
-                            $allOpds = Opd::all();
-                            foreach ($allOpds as $o) {
-                                similar_text(strtolower($opdName), strtolower($o->name), $percent);
-                                if ($percent > 70) {
-                                    $opd = $o;
-                                    $opdName = $o->name;
-                                    break;
-                                }
-                            }
-                        }
-
-                        $opdId = $opd?->id;
-                    }
-                }
-            } catch (\Exception $e) {
-                Log::warning('PublicComplaint: AI Classification gagal', ['error' => $e->getMessage()]);
-            }
 
             // 5. Create Ticket
             $ticket = DB::transaction(function () use (
