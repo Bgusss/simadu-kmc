@@ -254,6 +254,9 @@ Route::middleware(['auth', 'role:admin|opd'])->group(function () {
                         'sender' =>
                             $sender,
 
+                        'sender_name' =>
+                            $notif->sender_name,
+
                         'message' =>
                             $notif->message,
 

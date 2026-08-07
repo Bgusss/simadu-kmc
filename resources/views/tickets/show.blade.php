@@ -142,7 +142,7 @@
                                         @if($isVideo)
                                             <video controls class="w-100 rounded-3" style="max-height: 360px;"><source src="{{ asset('storage/' . $path) }}" type="video/{{ $extension }}">Browser Anda tidak mendukung video.</video>
                                         @else
-                                            <a href="{{ asset('storage/' . $path) }}" target="_blank"><img src="{{ asset('storage/' . $path) }}" alt="Lampiran pelapor {{ $index + 1 }}" class="w-100 rounded-3" style="max-height: 360px; object-fit: contain;"></a>
+                                            <img src="{{ asset('storage/' . $path) }}" alt="Lampiran pelapor {{ $index + 1 }}" class="w-100 rounded-3 lightbox-img" style="max-height: 360px; object-fit: contain;">
                                         @endif
                                     </div>
                                 </div>
@@ -166,6 +166,10 @@
                 </button>
             </form>
         </div>
+    </div>
+
+    <!-- Kolom Kanan: Perbarui Status & Timeline -->
+    <div class="col-lg-5">
 
         {{-- Perbarui Status Tiket (Admin Only) --}}
         <div class="card card-premium overflow-hidden mb-4">
@@ -205,10 +209,6 @@
                 </form>
             </div>
         </div>
-    </div>
-
-    <!-- Kolom Kanan: Timeline & Tanggapan -->
-    <div class="col-lg-5">
 
         <div class="card card-premium overflow-hidden">
             <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 fw-bold">
@@ -280,9 +280,9 @@
                                     
                                     @if(isset($event->attachment) && $event->attachment)
                                         <div class="mt-3">
-                                            <a href="{{ asset('storage/' . $event->attachment) }}" target="_blank" class="d-inline-block rounded overflow-hidden border">
-                                                <img src="{{ asset('storage/' . $event->attachment) }}" style="height: 80px; object-fit: cover;" alt="Lampiran">
-                                            </a>
+                                            <div class="d-inline-block rounded overflow-hidden border">
+                                                <img src="{{ asset('storage/' . $event->attachment) }}" class="lightbox-img" style="height: 80px; object-fit: cover;" alt="Lampiran">
+                                            </div>
                                         </div>
                                     @endif
                                 </div>

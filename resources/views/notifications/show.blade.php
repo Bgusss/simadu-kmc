@@ -156,8 +156,21 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="info-cell h-100">
-                            <div class="info-label"><i class="fas fa-hashtag me-1"></i> Sumber</div>
-                            <div class="info-value">{{ $notification->sender ?? '-' }}</div>
+                            <div class="info-label"><i class="fas fa-phone me-1"></i> Nomor HP</div>
+                            <div class="info-value">
+                                @php
+                                    $phoneNumber = '-';
+                                    if ($isWhatsApp && $ticket && $ticket->reporter_link) {
+                                        $phoneNumber = str_replace('wa.me/', '', $ticket->reporter_link);
+                                        $phoneNumber = '+' . $phoneNumber;
+                                    } elseif ($isWhatsApp && $notification->sender) {
+                                        $phoneNumber = $notification->sender;
+                                    } elseif (!$isWhatsApp) {
+                                        $phoneNumber = $notification->sender ?? '-';
+                                    }
+                                @endphp
+                                {{ $phoneNumber }}
+                            </div>
                             @if($notification->permalink)
                                 <a href="{{ $notification->permalink }}" target="_blank" class="small text-primary text-decoration-none mt-1 d-inline-block">
                                     <i class="fas fa-external-link-alt me-1"></i> Buka Sumber
@@ -195,9 +208,7 @@
                                                 Browser Anda tidak mendukung video.
                                             </video>
                                         @elseif($isImage)
-                                            <a href="{{ asset('storage/' . $attachmentPath) }}" target="_blank" class="d-block">
-                                                <img src="{{ asset('storage/' . $attachmentPath) }}" alt="Lampiran {{ $index + 1 }}" class="w-100 rounded" style="max-height: 300px; object-fit: cover;">
-                                            </a>
+                                            <img src="{{ asset('storage/' . $attachmentPath) }}" alt="Lampiran {{ $index + 1 }}" class="w-100 rounded lightbox-img" style="max-height: 300px; object-fit: contain;">
                                         @else
                                             <a href="{{ asset('storage/' . $attachmentPath) }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
                                                 <i class="fas fa-file me-1"></i> Unduh File {{ $index + 1 }}
@@ -227,9 +238,7 @@
                                     Browser Anda tidak mendukung video.
                                 </video>
                             @else
-                                <a href="{{ asset('storage/' . $ticket->attachment) }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $ticket->attachment) }}" alt="Lampiran" class="rounded">
-                                </a>
+                                <img src="{{ asset('storage/' . $ticket->attachment) }}" alt="Lampiran" class="rounded lightbox-img" style="max-height: 300px; object-fit: contain;">
                             @endif
                         </div>
                     </div>

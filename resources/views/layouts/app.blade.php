@@ -770,4 +770,57 @@
     </script>
 </body>
 
+<!-- Lightbox Preview Modal -->
+<div id="globalLightbox" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); cursor:zoom-out; align-items:center; justify-content:center;">
+    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; width:44px; height:44px; border-radius:50%; font-size:1.4rem; cursor:pointer; z-index:100000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:all 0.2s;">
+        <i class="fas fa-times"></i>
+    </button>
+    <img id="lightboxImg" src="" alt="Preview" style="max-width:92vw; max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
+</div>
+<style>
+    @keyframes lightboxIn {
+        from { opacity:0; transform:scale(0.92); }
+        to { opacity:1; transform:scale(1); }
+    }
+    .lightbox-img {
+        cursor: zoom-in !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .lightbox-img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    #globalLightbox button:hover {
+        background: rgba(255,255,255,0.3) !important;
+        transform: scale(1.1);
+    }
+</style>
+<script>
+    function openLightbox(src) {
+        var lb = document.getElementById('globalLightbox');
+        document.getElementById('lightboxImg').src = src;
+        lb.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        var lb = document.getElementById('globalLightbox');
+        lb.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    document.getElementById('globalLightbox').addEventListener('click', function(e) {
+        if (e.target === this) closeLightbox();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
+    document.addEventListener('click', function(e) {
+        var img = e.target.closest('.lightbox-img');
+        if (img) {
+            e.preventDefault();
+            e.stopPropagation();
+            openLightbox(img.src);
+        }
+    });
+</script>
+
 </html>

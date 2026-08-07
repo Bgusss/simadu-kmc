@@ -234,9 +234,9 @@
                                     
                                     @if(isset($event->attachment) && $event->attachment)
                                         <div class="mt-3">
-                                            <a href="{{ asset('storage/' . $event->attachment) }}" target="_blank" class="d-inline-block rounded overflow-hidden border">
-                                                <img src="{{ asset('storage/' . $event->attachment) }}" style="height: 80px; object-fit: cover;" alt="Lampiran">
-                                            </a>
+                                            <div class="d-inline-block rounded overflow-hidden border">
+                                                <img src="{{ asset('storage/' . $event->attachment) }}" class="lightbox-img" style="height: 80px; object-fit: cover;" alt="Lampiran">
+                                            </div>
                                         </div>
                                     @endif
                                 </div>

@@ -196,7 +196,7 @@
                                             @if($isVideo)
                                                 <video controls class="w-100 rounded-3" style="max-height: 360px;"><source src="{{ asset('storage/' . $path) }}" type="video/{{ $extension }}">Browser Anda tidak mendukung video.</video>
                                             @else
-                                                <a href="{{ asset('storage/' . $path) }}" target="_blank"><img src="{{ asset('storage/' . $path) }}" alt="Lampiran pelapor {{ $index + 1 }}" class="w-100 rounded-3" style="max-height: 360px; object-fit: contain;"></a>
+                                                <img src="{{ asset('storage/' . $path) }}" alt="Lampiran pelapor {{ $index + 1 }}" class="w-100 rounded-3 lightbox-img" style="max-height: 360px; object-fit: contain;">
                                             @endif
                                         </div>
                                     </div>
@@ -319,9 +319,7 @@
                                 @endif
                                 @if($event->attachment)
                                     <div class="mt-2">
-                                        <a href="{{ asset('storage/' . $event->attachment) }}" target="_blank">
-                                            <img src="{{ asset('storage/' . $event->attachment) }}" class="img-thumbnail shadow-sm rounded" style="max-height: 200px;" alt="Bukti Dokumentasi">
-                                        </a>
+                                        <img src="{{ asset('storage/' . $event->attachment) }}" class="img-thumbnail shadow-sm rounded lightbox-img" style="max-height: 200px;" alt="Bukti Dokumentasi">
                                     </div>
                                 @endif
                             </div>
@@ -339,9 +337,7 @@
                                 </div>
                                 @if($event->attachment)
                                     <div class="mt-2">
-                                        <a href="{{ asset('storage/' . $event->attachment) }}" target="_blank">
-                                            <img src="{{ asset('storage/' . $event->attachment) }}" class="img-thumbnail shadow-sm rounded" style="max-height: 200px;" alt="Bukti Dokumentasi">
-                                        </a>
+                                        <img src="{{ asset('storage/' . $event->attachment) }}" class="img-thumbnail shadow-sm rounded lightbox-img" style="max-height: 200px;" alt="Bukti Dokumentasi">
                                     </div>
                                 @endif
                             </div>
