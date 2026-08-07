@@ -441,14 +441,14 @@ PROMPT;
 
     private function callGemini(string $prompt): string
     {
-        $maxRetries = 3;
-        $retryDelay = 5; // detik
+        $maxRetries = 2;
+        $retryDelay = 2; // detik
 
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
                 $url = rtrim(config('gemini.base_url'), '/') . '/' . config('gemini.model') . ':generateContent?key=' . config('gemini.api_key');
 
-                $response = Http::timeout(config('gemini.timeout', 30))
+                $response = Http::timeout(15)
                     ->post($url, [
                         'contents' => [
                             [
