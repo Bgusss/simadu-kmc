@@ -271,7 +271,7 @@
                                     <div class="fw-bold">
                                         {{ $ticket->reporter_name ?? '-' }}
                                     </div>
-                                    @if($ticket->reporter_link)
+                                    @if($ticket->reporter_link && strtolower($ticket->platform ?? '') !== 'whatsapp')
                                         <a href="{{ $ticket->reporter_link }}"
                                            target="_blank"
                                            class="text-decoration-none small text-truncate d-inline-block"

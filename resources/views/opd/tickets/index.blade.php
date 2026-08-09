@@ -108,7 +108,7 @@
                             </td>
                             <td class="py-3">
                                 <div class="fw-medium text-dark">{{ $ticket->reporter_name ?? 'Anonim' }}</div>
-                                @if($ticket->reporter_link && !str_contains($ticket->reporter_link, 'instagram.com/direct/'))
+                                @if($ticket->reporter_link && strtolower($ticket->platform ?? '') !== 'whatsapp' && !str_contains($ticket->reporter_link, 'instagram.com/direct/'))
                                     <a href="{{ $ticket->reporter_link }}" target="_blank" class="text-decoration-none small text-primary fw-medium"><i class="fas fa-link"></i> Lihat Postingan</a>
                                 @endif
                             </td>
