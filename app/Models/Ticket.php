@@ -149,7 +149,7 @@ class Ticket extends Model
             'status' => $newStatus,
         ]);
 
-        return TicketStatusLog::create([
+        $log = TicketStatusLog::create([
             'ticket_id'   => $this->id,
             'from_status' => $fromStatus,
             'to_status'   => $newStatus,
@@ -157,6 +157,53 @@ class Ticket extends Model
             'changed_by'  => $changedBy,
             'attachment'  => $attachment,
         ]);
+
+        // --- Kirim notifikasi WhatsApp ke pelapor ---
+        try {
+            $phone = null;
+            if ($this->reporter_link) {
+                $phone = str_replace('wa.me/', '', $this->reporter_link);
+            }
+
+            if ($phone && $this->reporter_name) {
+                $statusLabels = [
+                    'baru' => 'Baru',
+                    'diterima' => 'Diterima',
+                    'proses_disposisi' => 'Proses Disposisi',
+                    'diteruskan' => 'Diteruskan',
+                    'diproses' => 'Diproses',
+                    'dijawab' => 'Dijawab',
+                    'selesai' => 'Selesai',
+                    'eskalasi' => 'Eskalasi',
+                    'ditolak' => 'Ditolak',
+                ];
+
+                $fromLabel = $statusLabels[$fromStatus] ?? ucfirst($fromStatus);
+                $toLabel = $statusLabels[$newStatus] ?? ucfirst($newStatus);
+                $trackingNumber = $this->tracking_number ?? $this->ticket_number;
+                $linkCek = config('app.url') . "/ticketing/{$trackingNumber}";
+
+                $pesan = "📢 *UPDATE STATUS LAPORAN*\n\n"
+                    . "Halo *{$this->reporter_name}*, status laporan Anda *{$trackingNumber}* telah diperbarui:\n\n"
+                    . "🔄 {$fromLabel} → *{$toLabel}*\n";
+
+                if ($note) {
+                    $pesan .= "\nCatatan: \"{$note}\"\n";
+                }
+
+                $pesan .= "\n🔍 Lacak: {$linkCek}\n\n"
+                    . "Terima kasih atas kesabaran Anda. 🙏";
+
+                \App\Services\FonnteService::send($phone, $pesan);
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Ticket::updateStatus WA notification gagal', [
+                'ticket_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return $log;
     }
 
 }
