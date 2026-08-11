@@ -6,7 +6,7 @@ use App\Models\Notification;
 use App\Models\Ticket;
 use App\Models\Opd;
 use App\Models\TicketStatusLog;
-use App\Services\AIClassificationService;
+use App\Services\WhatsAppKeywordClassificationService;
 use App\Services\FonnteService;
 use App\Services\TicketingService;
 use Illuminate\Http\Request;
@@ -474,53 +474,28 @@ class WhatsappController extends Controller
             $sequence   = str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
             $trackingNumber = "KMC-{$today}-{$sequence}";
 
-            // 3. Coba AI Classification (jika service tersedia)
-            $category    = 'Pengaduan Umum';
-            $subCategory = 'Lain-lain';
-            $opdName     = null;
-            $opdId       = null;
-            $priority    = 'sedang';
+            // 3. Klasifikasi keyword khusus laporan WhatsApp (tanpa AI/API)
+            $classification = app(WhatsAppKeywordClassificationService::class)->classify($isiLaporan);
+            $category = $classification['category'];
+            $subCategory = $classification['sub_category'];
+            $opdName = $classification['opd'];
+            $priority = $classification['priority'];
             $aiConfidence = null;
-            $aiReasoning  = null;
+            $aiReasoning = $classification['reasoning'];
 
-            try {
-                $aiService = app(AIClassificationService::class);
-                $aiResult  = $aiService->classify($isiLaporan);
-
-                if ($aiResult && is_array($aiResult)) {
-                    $category     = $aiResult['suggested_category'] ?? $category;
-                    $subCategory  = $aiResult['suggested_sub_category'] ?? $subCategory;
-                    $priority     = strtolower($aiResult['priority'] ?? 'Sedang');
-                    $aiConfidence = $aiResult['confidence'] ?? null;
-                    $aiReasoning  = $aiResult['reasoning'] ?? null;
-
-                    // Resolve OPD dari AI suggestion
-                    $suggestedOpds = $aiResult['suggested_opds'] ?? [];
-                    if (is_array($suggestedOpds) && count($suggestedOpds) > 0) {
-                        $opdName = $suggestedOpds[0];
-                        $opd = Opd::where('name', $opdName)->first();
-
-                        if (!$opd) {
-                            // Fuzzy match
-                            $allOpds = Opd::all();
-                            foreach ($allOpds as $o) {
-                                similar_text(strtolower($opdName), strtolower($o->name), $percent);
-                                if ($percent > 70) {
-                                    $opd = $o;
-                                    $opdName = $o->name;
-                                    break;
-                                }
-                            }
-                        }
-
-                        $opdId = $opd?->id;
+            // Resolve OPD keyword ke data OPD sistem
+            $opd = Opd::where('name', $opdName)->first();
+            if (!$opd) {
+                foreach (Opd::all() as $candidate) {
+                    similar_text(mb_strtolower($opdName), mb_strtolower($candidate->name), $percent);
+                    if ($percent > 70) {
+                        $opd = $candidate;
+                        $opdName = $candidate->name;
+                        break;
                     }
                 }
-            } catch (\Exception $e) {
-                Log::warning('WhatsApp: AI Classification gagal, menggunakan default', [
-                    'error' => $e->getMessage(),
-                ]);
             }
+            $opdId = $opd?->id;
 
             // 4. Create Ticket
             $ticket = DB::transaction(function () use (
