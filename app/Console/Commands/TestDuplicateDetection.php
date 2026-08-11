@@ -69,6 +69,18 @@ class TestDuplicateDetection extends Command
         $this->info('');
 
         // 3. Jalankan cosine similarity
+        // Debug: pastikan tiket notif 1 ada
+        $ticketExists = \App\Models\Ticket::where('notification_id', $notif1->id)->exists();
+        $this->info("Tiket notif 1 ada di DB: " . ($ticketExists ? 'YA' : 'TIDAK'));
+
+        // Debug: cek berapa notifikasi pembanding ditemukan
+        $comparables = Notification::where('created_at', '>=', now()->subDays(30))
+            ->whereHas('ticket')
+            ->where('id', '!=', $notif2->id)
+            ->whereNull('duplicate_status')
+            ->count();
+        $this->info("Notifikasi pembanding ditemukan: {$comparables}");
+
         $this->info('Menjalankan CosineSimilarityService...');
         $result = app(CosineSimilarityService::class)->checkDuplicate($message2, $notif2->id);
 
