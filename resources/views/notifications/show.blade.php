@@ -160,11 +160,11 @@
                             <div class="info-value">
                                 @php
                                     $phoneNumber = '-';
-                                    if ($isWhatsApp && $ticket && $ticket->reporter_link) {
-                                        $phoneNumber = str_replace('wa.me/', '', $ticket->reporter_link);
-                                        $phoneNumber = '+' . $phoneNumber;
-                                    } elseif ($isWhatsApp && $notification->sender) {
-                                        $phoneNumber = $notification->sender;
+                                    if ($isWhatsApp && $notification->permalink) {
+                                        $whatsAppLink = preg_replace('/^https?:\/\/wa\.me\//', '', $notification->permalink);
+                                        $phoneNumber = '+' . preg_replace('/#.*$/', '', $whatsAppLink);
+                                    } elseif ($isWhatsApp && $ticket?->reporter_link) {
+                                        $phoneNumber = '+' . preg_replace('/^https?:\/\/wa\.me\//', '', $ticket->reporter_link);
                                     } elseif (!$isWhatsApp) {
                                         $phoneNumber = $notification->sender ?? '-';
                                     }
@@ -244,8 +244,8 @@
                     </div>
                 @endif
 
-                {{-- AI Classification --}}
-                @if($notification->ai)
+                {{-- Klasifikasi ditampilkan untuk notifikasi sosial; laporan WhatsApp diproses admin tanpa panel klasifikasi. --}}
+                @if($notification->ai && !$isWhatsApp)
                     <div class="p-3 rounded-4 border mb-3" style="background: #fefce8; border-color: #fde68a !important;">
                         <div class="text-muted small fw-bold text-uppercase mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
                             <i class="fas fa-robot me-1 text-warning"></i> Hasil Klasifikasi AI
