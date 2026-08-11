@@ -30,6 +30,17 @@ class PublicComplaintController extends Controller
      */
     public function store(Request $request)
     {
+        foreach ((array) $request->file('attachments', []) as $index => $attachment) {
+            if (!$attachment->isValid()) {
+                Log::warning('PublicComplaint: Lampiran gagal ditransfer oleh PHP', [
+                    'index' => $index,
+                    'client_name' => $attachment->getClientOriginalName(),
+                    'error_code' => $attachment->getError(),
+                    'error_message' => $attachment->getErrorMessage(),
+                ]);
+            }
+        }
+
         $request->validate([
             'reporter_name' => 'required|string|max:255',
             'reporter_phone' => 'required|string|max:20',
