@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\TicketStatusLog;
 use App\Models\AIClassification;
 use App\Services\CosineSimilarityService;
+use App\Services\TfIdfClassificationService;
 use App\Services\FonnteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -78,22 +79,23 @@ class PublicComplaintController extends Controller
             $sequence   = str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
             $trackingNumber = "KMC-{$today}-{$sequence}";
 
-            // 4. Kategori default (AI Classification dinonaktifkan untuk form /lapor)
-            $category    = 'Pengaduan Umum';
-            $subCategory = 'Aduan Masyarakat';
-            $opdName     = null;
-            $opdId       = null;
-            $priority    = 'sedang';
-            $aiConfidence = 0;
-            $aiReasoning  = 'Klasifikasi default laporan publik.';
+            // 4. Klasifikasi TF-IDF lokal untuk laporan dari WhatsApp → /lapor.
+            $classification = app(TfIdfClassificationService::class)->classify($request->complaint);
+            $category = $classification['category'] ?? 'Pengaduan Umum';
+            $subCategory = $classification['sub_category'] ?? 'Aduan Masyarakat';
+            $opdName = $classification['opd'] ?? null;
+            $opdId = Opd::where('name', $opdName)->value('id');
+            $priority = $classification['priority'] ?? 'sedang';
+            $aiConfidence = $classification['confidence'] ?? 0;
+            $aiReasoning = $classification['reasoning'] ?? 'Kategori default laporan publik karena tidak ada kecocokan TF-IDF yang cukup kuat.';
 
-            // Simpan klasifikasi default agar verifikasi "Bukan Duplikat" dapat membuat tiket.
+            // Simpan hasil klasifikasi agar verifikasi "Bukan Duplikat" dapat membuat tiket.
             AIClassification::create([
                 'notification_id'        => $notification->id,
                 'suggested_category'     => $category,
                 'suggested_sub_category' => $subCategory,
-                'suggested_opds'         => [],
-                'priority'               => 'Sedang',
+                'suggested_opds'         => $opdName ? [$opdName] : [],
+                'priority'               => ucfirst($priority),
                 'confidence'             => $aiConfidence,
                 'reasoning'              => $aiReasoning,
             ]);
