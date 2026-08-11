@@ -180,6 +180,43 @@
                     </div>
                 </div>
 
+                {{-- Ringkasan laporan WhatsApp: tampil tanpa panel Hasil Klasifikasi AI. --}}
+                @if($isWhatsApp)
+                    @php
+                        $reportCategory = $ticket?->category ?? $notification->ai?->suggested_category;
+                        $reportSubCategory = $ticket?->sub_category ?? $notification->ai?->suggested_sub_category;
+                        $reportPriority = $ticket?->priority ?? $notification->ai?->priority;
+                        $priorityLabel = $reportPriority ? ucfirst(strtolower($reportPriority)) : null;
+                        $priorityClass = match (strtolower($reportPriority ?? '')) {
+                            'tinggi' => 'text-danger bg-danger-subtle border-danger-subtle',
+                            'sedang' => 'text-warning-emphasis bg-warning-subtle border-warning-subtle',
+                            default => 'text-success bg-success-subtle border-success-subtle',
+                        };
+                    @endphp
+                    @if($reportCategory || $reportSubCategory || $priorityLabel)
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+                            <span class="text-muted small fw-bold text-uppercase me-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                                <i class="fas fa-list-check me-1"></i> Detail Laporan
+                            </span>
+                            @if($reportCategory)
+                                <span class="ai-tag" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">
+                                    <i class="fas fa-building"></i> {{ $reportCategory }}
+                                </span>
+                            @endif
+                            @if($reportSubCategory)
+                                <span class="ai-tag" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0;">
+                                    <i class="fas fa-tag"></i> {{ $reportSubCategory }}
+                                </span>
+                            @endif
+                            @if($priorityLabel)
+                                <span class="ai-tag border {{ $priorityClass }}">
+                                    <i class="fas fa-exclamation-circle"></i> Prioritas {{ $priorityLabel }}
+                                </span>
+                            @endif
+                        </div>
+                    @endif
+                @endif
+
                 {{-- Isi Aduan --}}
                 <div class="complaint-box mb-4">
                     <i class="fas fa-quote-left quote-icon"></i>
