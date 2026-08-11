@@ -33,7 +33,7 @@ class TestDuplicateDetection extends Command
         }
 
         $message1 = 'Jalan rusak berlubang di Jl. Sudirman depan pasar, sangat membahayakan pengendara motor dan sudah lama tidak diperbaiki';
-        $message2 = 'Jalan berlubang dan rusak di Jl. Sudirman dekat pasar, bahaya untuk pengendara motor, mohon segera diperbaiki';
+        $message2 = 'Jalan rusak berlubang di Jl. Sudirman depan pasar, sangat membahayakan pengendara motor dan sudah lama tidak diperbaiki';
 
         $this->info('=== Test Deteksi Duplikasi ===');
         $this->info('');
