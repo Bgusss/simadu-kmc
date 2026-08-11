@@ -73,11 +73,8 @@ class PublicComplaintController extends Controller
                 'permalink' => "https://wa.me/{$phone}#laporan-{$notification->id}",
             ]);
 
-            // 3. Generate tracking number
-            $today      = now()->format('Ymd');
-            $countToday = Ticket::whereDate('created_at', now()->toDateString())->count();
-            $sequence   = str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
-            $trackingNumber = "KMC-{$today}-{$sequence}";
+            // 3. Generate tracking number yang belum dipakai pada tanggal ini.
+            $trackingNumber = $this->generateTrackingNumber();
 
             // 4. Klasifikasi TF-IDF lokal untuk laporan dari WhatsApp → /lapor.
             $classification = app(TfIdfClassificationService::class)->classify($request->complaint);
@@ -197,5 +194,22 @@ class PublicComplaintController extends Controller
                 ->with('error', 'Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.')
                 ->withInput($request->except('attachments'));
         }
+    }
+
+    /**
+     * Buat nomor tiket harian yang belum dipakai.
+     */
+    private function generateTrackingNumber(): string
+    {
+        $date = now()->format('Ymd');
+
+        for ($sequence = 1; $sequence <= 9999; $sequence++) {
+            $number = sprintf('KMC-%s-%04d', $date, $sequence);
+            if (!Ticket::where('ticket_number', $number)->exists()) {
+                return $number;
+            }
+        }
+
+        throw new \RuntimeException('Nomor tiket harian telah mencapai batas maksimum.');
     }
 }

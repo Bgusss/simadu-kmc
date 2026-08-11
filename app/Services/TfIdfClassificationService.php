@@ -8,7 +8,7 @@ namespace App\Services;
  */
 class TfIdfClassificationService
 {
-    private const MIN_CONFIDENCE = 0.28;
+    private const MIN_CONFIDENCE = 0.18;
 
     private const CORPUS = [
         ['Layanan PDAM', 'Air Bersih', 'PDAM Ketapang', 'pdam air tidak mengalir air tidak jalan air asin air keruh abonemen idpel tirta pawan perumdam pipa pecah sanyo pemasangan baru'],
