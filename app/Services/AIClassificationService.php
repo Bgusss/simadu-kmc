@@ -785,9 +785,10 @@ PROMPT;
         $map = [
             'Layanan PDAM' => [
                 'pdam', 'air bersih',
-                'air dak jalan', 'air ngk jalan', 'dak ngalir', 'dak pakai jalan',
-                'air tidak mengalir', 'air tidak jalan', 'abonemen', 'id pelanggan',
-                'idpel', 'id pdam', 'perumdam', 'tirta pawan', 'aik teh',
+                'air dak jalan', 'air ngk jalan', 'dak ngalir', 'ngk ngalir', 'nggak ngalir', 'dak pakai jalan',
+                'air tidak mengalir', 'air tidak jalan', 'air ngk jalan', 'abonemen', 'id pelanggan',
+                'idpel', 'id pdam', 'perumdam', 'tirta pawan', 'aik teh', 'sanyo',
+                'pemasangan baru pdam', 'pipa pecah', 'tagihan pdam',
             ],
             'Layanan PLN' => [
                 'pln', 'listrik', 'mati lampu', 'padam',
@@ -795,9 +796,10 @@ PROMPT;
             ],
             'Infrastruktur dan Pekerjaan Umum' => [
                 'jalan', 'lampu jalan', 'jembatan', 'drainase',
-                'irigasi', 'fasilitas umum', 'pju', 'lampu pju', 'solar sell',
+                'irigasi', 'fasilitas umum', 'pju', 'lpju', 'lampu pju', 'solar sell', 'solar cell',
                 'lampu merah', 'lampu lalu lintas', 'traffic light', 'gorong-gorong', 'gorong gorong', 'rambat beton',
                 'jalan berlubang', 'jalan rusak', 'jembatan gantung', 'jembatan rusak',
+                'parit tersumbat', 'normalisasi parit', 'pintu air',
             ],
             'Administrasi Kependudukan' => [
                 'ktp', 'kk', 'akta kelahiran', 'akta kematian', 'kependudukan', 'disdukcapil', 'skbm',
@@ -882,19 +884,18 @@ PROMPT;
 
         $map = [
             'Air Bersih' => [
-                'air bersih', 'air keruh', 'air macet', 'pdam', 'air pdam',
-                'dak ngalir', 'ngk jalan', 'dak pakai jalan',
-                'air dak jalan', 'air ngk jalan', 'air tidak jalan',
-                'air tidak mengalir', 'air tidak ngalir',
-                'aik teh', 'abonemen', 'id pelanggan', 'idpel', 'id pdam',
-                'no pelanggan', 'pemasangan baru pdam', 'sanyo',
-                'perumdam', 'tirta pawan',
+                'air bersih', 'air keruh', 'air asin', 'air macet', 'pdam', 'air pdam',
+                'dak ngalir', 'ngk ngalir', 'nggak ngalir', 'ngk jalan', 'dak pakai jalan',
+                'air dak jalan', 'air ngk jalan', 'air tidak jalan', 'air tidak mengalir',
+                'air tidak ngalir', 'aik teh', 'abonemen', 'id pelanggan', 'idpel',
+                'id pdam', 'no pelanggan', 'pemasangan baru pdam', 'sanyo', 'pipa pecah',
+                'perumdam', 'tirta pawan', 'tagihan pdam',
             ],
             'Lampu Jalan' => [
-                'lampu jalan', 'penerangan', 'pju', 'lampu mati', 'lampu pju',
+                'lampu jalan', 'penerangan', 'pju', 'lpju', 'lampu mati', 'lampu pju',
                 'solar sell', 'solar cell', 'lampu gang', 'lampu jembatan',
-                'lpju', 'gelap gulita', 'lampu',
-                'lampu tidak hidup', 'lampu tidak menyala', 'lampu padam', 'bola lampu',
+                'gelap gulita', 'lampu tidak hidup', 'lampu tidak menyala', 'lampu padam',
+                'bola lampu', 'mati total', 'lampu penerangan',
             ],
             'Lampu Lalu Lintas' => [
                 'lampu merah', 'lampu lalu lintas', 'traffic light', 'lampu pengatur jalan', 'lampu lalin',
@@ -910,10 +911,14 @@ PROMPT;
             ],
             'Drainase' => [
                 'drainase', 'saluran', 'selokan', 'gorong-gorong', 'gorong gorong',
-                'parit', 'parit sumbat', 'parit tersumbat', 'air tersumbat',
-                'normalisasi parit', 'pintu air',
+                'parit', 'parit sumbat', 'parit tersumbat', 'air tersumbat', 'air nye sumbat',
+                'normalisasi parit', 'pintu air', 'saluran air tidak jalan', 'tertutup tanah',
             ],
-            'Sampah' => ['sampah', 'tumpukan sampah', 'kebersihan', 'berserakan', 'bau tidak sedap', 'sampah berserakan', 'mengotori jalan'],
+            'Sampah' => [
+                'sampah', 'sarap', 'tumpukan sampah', 'menumpuk', 'numpuk', 'kebersihan',
+                'berserakan', 'bau tidak sedap', 'bau menyengat', 'sampah berserakan',
+                'mengotori jalan',
+            ],
             'Banjir' => ['banjir', 'terendam', 'banjir tidak surut', 'air pasang'],
             'Listrik' => [
                 'listrik', 'pln', 'mati lampu', 'padam listrik', 'kabel listrik',
@@ -1042,11 +1047,12 @@ PROMPT;
         if (
             str_contains($message, 'lampu jalan') ||
             str_contains($message, 'lampu mati') ||
-            str_contains($message, 'pju') ||
+            str_contains($message, 'pju') || str_contains($message, 'lpju') ||
             str_contains($message, 'lampu pju') ||
             str_contains($message, 'penerangan jalan') ||
-            str_contains($message, 'solar sell') ||
-            str_contains($message, 'lampu gang')
+            str_contains($message, 'lampu penerangan') ||
+            str_contains($message, 'solar sell') || str_contains($message, 'solar cell') ||
+            str_contains($message, 'lampu gang') || str_contains($message, 'lampu jembatan')
         ) {
             $fallback[] = 'Dinas Perhubungan';
         }
@@ -1078,8 +1084,9 @@ PROMPT;
 
         if (
             str_contains($message, 'listrik') || str_contains($message, 'pln') ||
+            str_contains($message, 'kwh') || str_contains($message, 'arus listrik') ||
             str_contains($message, 'mati lampu') || str_contains($message, 'kabel listrik') ||
-            str_contains($message, 'tiang listrik')
+            str_contains($message, 'tiang listrik') || str_contains($message, 'nyentrum')
         ) {
             $fallback[] = 'PLN';
         }
@@ -1127,7 +1134,7 @@ PROMPT;
             'kebakaran', 'banjir', 'longsor', 'jalan putus', 'pohon tumbang',
             'kecelakaan', 'mati total', 'listrik padam', 'padam total', 'darurat',
             'korban jiwa', 'korban', 'membahayakan', 'bahaya', 'rawan kecelakaan',
-            'rawan celaka', 'berbahaya',
+            'rawan celaka', 'berbahaya', 'kabel menjuntai', 'kabel putus', 'konslet', 'nyentrum',
             'jembatan rusak', 'jembatan tidak layak', 'goyang tiang', 'ngerendap',
             'kdrt', 'kekerasan', 'orang terlantar', 'terlantar',
             'sudah berbulan', 'sudah bertahun', 'berbulan bulan', 'bertahun tahun',

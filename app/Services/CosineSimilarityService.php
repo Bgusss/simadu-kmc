@@ -16,23 +16,28 @@ class CosineSimilarityService
     /** Pemetaan dialek, typo dan singkatan laporan masyarakat. */
     private const NORMALIZATION_MAP = [
         'aik' => 'air', 'aiq' => 'air', 'aek' => 'air', 'ayek' => 'air', 'ayik' => 'air',
-        'dak' => 'tidak', 'ndak' => 'tidak', 'dek' => 'tidak', 'ngalir' => 'mengalir',
+        'dak' => 'tidak', 'ndak' => 'tidak', 'dek' => 'tidak', 'idak' => 'tidak', 'ngk' => 'tidak', 'ngga' => 'tidak', 'nggak' => 'tidak',
+        'ngalir' => 'mengalir', 'smpai' => 'sampai', 'sdh' => 'sudah', 'blm' => 'belum', 'dgn' => 'dengan', 'yg' => 'yang', 'sy' => 'saya',
         'galap' => 'gelap', 'parit' => 'drainase', 'pokok' => 'pohon',
-        'pju' => 'lampu jalan', 'odgj' => 'gangguan jiwa', 'gg' => 'gang',
-        'jl' => 'jalan', 'jln' => 'jalan', 'kel' => 'kelurahan', 'ds' => 'desa', 'kec' => 'kecamatan',
-        'mampet' => 'tersumbat', 'macet' => 'tersumbat', 'lobang' => 'kerusakan_jalan',
+        'pju' => 'lampu_jalan', 'lpju' => 'lampu_jalan', 'odgj' => 'gangguan_jiwa', 'gg' => 'gang',
+        'jl' => 'jalan', 'jln' => 'jalan', 'pwn' => 'pawan', 'kel' => 'kelurahan', 'ds' => 'desa', 'kec' => 'kecamatan',
+        'mampet' => 'tersumbat', 'macet' => 'tersumbat', 'saluran' => 'drainase', 'selokan' => 'drainase', 'lobang' => 'kerusakan_jalan',
         'belubang' => 'kerusakan_jalan', 'berlubang' => 'kerusakan_jalan', 'bolong' => 'kerusakan_jalan', 'rusak' => 'kerusakan_jalan', 'ancur' => 'kerusakan_jalan',
         'sarap' => 'sampah', 'numpuk' => 'menumpuk', 'numpek' => 'menumpuk',
-        'ade' => 'ada', 'idak' => 'tidak', 'nggak' => 'tidak',
     ];
 
     /** Kata searti dikonversi menjadi token konsep yang sama. */
     private const CONCEPTS = [
-        'masalah_jalan' => ['jalan', 'kerusakan_jalan', 'aspal', 'jembatan', 'trotoar'],
-        'masalah_air' => ['air', 'pdam', 'asin', 'keruh', 'mengalir', 'pipa', 'ledeng'],
-        'masalah_sampah' => ['sampah', 'menumpuk', 'limbah', 'tps', 'tpa'],
-        'masalah_listrik' => ['listrik', 'lampu', 'padam', 'mati', 'pln', 'kabel'],
-        'masalah_banjir' => ['banjir', 'meluap', 'terendam', 'genangan'],
+        'masalah_jalan' => ['jalan', 'kerusakan_jalan', 'aspal', 'trotoar', 'rambat', 'beton'],
+        'masalah_jembatan' => ['jembatan', 'goyang', 'tiang', 'ngerendap'],
+        'masalah_drainase' => ['drainase', 'saluran', 'selokan', 'gorong', 'tersumbat', 'pintu_air'],
+        'masalah_air' => ['air', 'pdam', 'asin', 'keruh', 'mengalir', 'pipa', 'ledeng', 'perumdam', 'abonemen', 'idpel'],
+        'masalah_lampu_jalan' => ['lampu_jalan', 'penerangan', 'solar', 'gelap'],
+        'masalah_listrik' => ['listrik', 'padam', 'mati', 'pln', 'kabel', 'kwh', 'nyentrum'],
+        'masalah_sampah' => ['sampah', 'menumpuk', 'limbah', 'tps', 'tpa', 'kebersihan'],
+        'masalah_pohon' => ['pohon', 'dahan', 'tumbang', 'miring'],
+        'masalah_banjir' => ['banjir', 'meluap', 'terendam', 'genangan', 'pasang'],
+        'masalah_sosial' => ['bansos', 'blt', 'pkh', 'terlantar', 'lansia', 'gangguan_jiwa', 'kdrt'],
     ];
 
     public function checkDuplicate(string $newMessage, ?int $excludeId = null): ?array
@@ -103,10 +108,17 @@ class CosineSimilarityService
     {
         $text = preg_replace('/@?simadu\s*kmc/iu', '', mb_strtolower($text));
         $text = preg_replace('/https?:\/\/\S+/i', '', $text);
+        // Normalisasi frasa masalah yang setara dari data aduan lapangan.
+        $text = preg_replace('/\b(lampu\s+jalan|lampu\s+penerangan|penerangan\s+jalan|lampu\s+pju)\b/iu', ' lampu_jalan ', $text);
+        $text = preg_replace('/\b(padam|mati\s+total|mati)\b/iu', ' gangguan_lampu ', $text);
+        $text = preg_replace('/\b(dak|tidak|ngk|ngga|nggak)\s+(ngalir|jalan)\b/iu', ' gangguan_air ', $text);
+        $text = preg_replace('/\b(tertutup\s+tanah|parit\s+sumbat|parit\s+tersumbat|air\s+(nye\s+)?sumbat)\b/iu', ' tersumbat ', $text);
+        $text = str_ireplace(['delapan', 'tujuh', 'enam', 'lima', 'empat', 'tiga', 'dua', 'satu'], ['8', '7', '6', '5', '4', '3', '2', '1'], $text);
         // Angka Romawi umum pada nama jalan/lokasi.
         $text = preg_replace('/\b(viii|vii|vi|iv|iii|ii|ix|v)\b/u', ' $0 ', $text);
         $text = str_ireplace(['viii','vii','vi','iv','iii','ii','ix','v'], ['8','7','6','4','3','2','9','5'], $text);
-        $text = preg_replace('/[^a-z0-9\s]/u', ' ', $text);
+        $text = preg_replace('/\b([a-z]+)(\d+)\b/iu', '$1 $2', $text);
+        $text = preg_replace('/[^a-z0-9_\s]/u', ' ', $text);
         $tokens = preg_split('/\s+/', trim($text), -1, PREG_SPLIT_NO_EMPTY);
 
         $normalized = [];
