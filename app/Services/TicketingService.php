@@ -66,10 +66,13 @@ class TicketingService
             // Platform
             $platform = 'Facebook';
             $logNote = 'Tiket otomatis dibuat dari notifikasi Facebook';
-            
+
             if ($notification->title === 'Instagram DM') {
                 $platform = 'Instagram';
                 $logNote = 'Tiket otomatis dibuat dari notifikasi Instagram DM';
+            } elseif ($notification->title === 'WhatsApp') {
+                $platform = 'WhatsApp';
+                $logNote = 'Tiket dibuat setelah verifikasi bukan duplikat dari laporan publik';
             }
 
             // 4. Create Ticket

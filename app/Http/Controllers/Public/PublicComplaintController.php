@@ -7,7 +7,8 @@ use App\Models\Notification;
 use App\Models\Opd;
 use App\Models\Ticket;
 use App\Models\TicketStatusLog;
-use App\Services\AIClassificationService;
+use App\Models\AIClassification;
+use App\Services\CosineSimilarityService;
 use App\Services\FonnteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,11 +57,14 @@ class PublicComplaintController extends Controller
                 }
             }
 
+            $phone = FonnteService::formatPhone($request->reporter_phone);
+
             // 2. Create Notification
             $notification = Notification::create([
                 'title'       => 'WhatsApp',
                 'sender'      => $request->reporter_name,
                 'message'     => $request->complaint,
+                'permalink'   => "wa.me/{$phone}",
                 'attachments' => !empty($attachmentPaths) ? $attachmentPaths : null,
             ]);
 
@@ -76,10 +80,39 @@ class PublicComplaintController extends Controller
             $opdName     = null;
             $opdId       = null;
             $priority    = 'sedang';
-            $aiConfidence = null;
-            $aiReasoning  = null;
+            $aiConfidence = 0;
+            $aiReasoning  = 'Klasifikasi default laporan publik.';
 
-            // 5. Create Ticket
+            // Simpan klasifikasi default agar verifikasi "Bukan Duplikat" dapat membuat tiket.
+            AIClassification::create([
+                'notification_id'        => $notification->id,
+                'suggested_category'     => $category,
+                'suggested_sub_category' => $subCategory,
+                'suggested_opds'         => [],
+                'priority'               => 'Sedang',
+                'confidence'             => $aiConfidence,
+                'reasoning'              => $aiReasoning,
+            ]);
+
+            // 5. Deteksi duplikasi sebelum tiket dibuat.
+            $duplicate = app(CosineSimilarityService::class)->checkDuplicate(
+                $request->complaint,
+                $notification->id
+            );
+
+            if ($duplicate) {
+                $notification->update([
+                    'duplicate_of_id'      => $duplicate['notification_id'],
+                    'duplicate_similarity' => $duplicate['similarity'],
+                    'duplicate_status'     => 'terdeteksi',
+                ]);
+
+                return redirect()
+                    ->route('public.complaint.create')
+                    ->with('duplicate_review', true);
+            }
+
+            // 6. Create Ticket
             $ticket = DB::transaction(function () use (
                 $notification, $trackingNumber, $request,
                 $category, $subCategory, $opdName, $opdId, $priority,
@@ -123,9 +156,8 @@ class PublicComplaintController extends Controller
                 return $ticket;
             });
 
-            // 6. Kirim konfirmasi WA (jika Fonnte tersedia) — non-blocking
+            // 7. Kirim konfirmasi WA (jika Fonnte tersedia) — non-blocking
             try {
-                $phone = FonnteService::formatPhone($request->reporter_phone);
                 $linkCek = config('app.url') . "/ticketing/{$trackingNumber}";
 
                 $pesan = "✅ *LAPORAN ANDA TELAH DITERIMA*\n\n"

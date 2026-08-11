@@ -414,35 +414,50 @@
 
     <div class="container pb-5">
         {{-- Success State --}}
-        @if(session('success'))
+        @if(session('success') || session('duplicate_review'))
             <div class="row justify-content-center" style="margin-top: -10px;">
                 <div class="col-lg-7">
                     <div class="success-card">
-                        <div class="success-icon-wrap">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <h3>Laporan Berhasil Dikirim!</h3>
-                        <p class="success-desc">
-                            Terima kasih telah melapor. Laporan Anda akan segera ditindaklanjuti oleh OPD terkait.
-                        </p>
+                        @if(session('duplicate_review'))
+                            <div class="success-icon-wrap" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <i class="fas fa-copy"></i>
+                            </div>
+                            <h3>Laporan Sedang Diverifikasi</h3>
+                            <p class="success-desc">
+                                Laporan Anda mirip dengan laporan yang sudah ada. Admin KMC akan memverifikasi terlebih dahulu agar tidak terjadi tiket ganda.
+                            </p>
+                            <div class="d-flex justify-content-center">
+                                <a href="{{ route('public.complaint.create') }}" class="btn btn-kmc-outline">
+                                    <i class="fas fa-plus me-1"></i> Buat Laporan Lain
+                                </a>
+                            </div>
+                        @else
+                            <div class="success-icon-wrap">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3>Laporan Berhasil Dikirim!</h3>
+                            <p class="success-desc">
+                                Terima kasih telah melapor. Laporan Anda akan segera ditindaklanjuti oleh OPD terkait.
+                            </p>
 
-                        <div class="tracking-number">
-                            {{ session('tracking_number') }}
-                        </div>
+                            <div class="tracking-number">
+                                {{ session('tracking_number') }}
+                            </div>
 
-                        <p class="tracking-hint">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Simpan nomor tiket di atas untuk melacak status aduan Anda.
-                        </p>
+                            <p class="tracking-hint">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Simpan nomor tiket di atas untuk melacak status aduan Anda.
+                            </p>
 
-                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                            <a href="{{ route('ticketing.show', session('tracking_number')) }}" class="btn btn-kmc-primary">
-                                <i class="fas fa-search me-1"></i> Lacak Status
-                            </a>
-                            <a href="{{ route('public.complaint.create') }}" class="btn btn-kmc-outline">
-                                <i class="fas fa-plus me-1"></i> Lapor Lagi
-                            </a>
-                        </div>
+                            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                                <a href="{{ route('ticketing.show', session('tracking_number')) }}" class="btn btn-kmc-primary">
+                                    <i class="fas fa-search me-1"></i> Lacak Status
+                                </a>
+                                <a href="{{ route('public.complaint.create') }}" class="btn btn-kmc-outline">
+                                    <i class="fas fa-plus me-1"></i> Lapor Lagi
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
