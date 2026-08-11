@@ -414,17 +414,17 @@
 
     <div class="container pb-5">
         {{-- Success State --}}
-        @if(session('success') || session('duplicate_review'))
+        @if(session('success') || session('submitted'))
             <div class="row justify-content-center" style="margin-top: -10px;">
                 <div class="col-lg-7">
                     <div class="success-card">
-                        @if(session('duplicate_review'))
-                            <div class="success-icon-wrap" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                                <i class="fas fa-copy"></i>
+                        @if(session('submitted'))
+                            <div class="success-icon-wrap" style="background: linear-gradient(135deg, #2563a8, #0f4c81);">
+                                <i class="fas fa-paper-plane"></i>
                             </div>
-                            <h3>Laporan Sedang Diverifikasi</h3>
+                            <h3>Laporan Berhasil Dikirim</h3>
                             <p class="success-desc">
-                                Laporan Anda mirip dengan laporan yang sudah ada. Admin KMC akan memverifikasi terlebih dahulu agar tidak terjadi tiket ganda.
+                                Terima kasih telah menyampaikan laporan. Laporan Anda telah diterima dan sedang diproses oleh Ketapang Media Center.
                             </p>
                             <div class="d-flex justify-content-center">
                                 <a href="{{ route('public.complaint.create') }}" class="btn btn-kmc-outline">

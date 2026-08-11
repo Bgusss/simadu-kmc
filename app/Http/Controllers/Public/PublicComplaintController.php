@@ -113,7 +113,7 @@ class PublicComplaintController extends Controller
 
                 return redirect()
                     ->route('public.complaint.create')
-                    ->with('duplicate_review', true);
+                    ->with('submitted', true);
             }
 
             // 6. Create Ticket
