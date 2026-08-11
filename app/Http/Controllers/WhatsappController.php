@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
 use App\Models\Ticket;
 use App\Models\Opd;
-use App\Models\TicketStatusLog;
-use App\Services\WhatsAppKeywordClassificationService;
 use App\Services\FonnteService;
-use App\Services\TicketingService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WhatsappController extends Controller
@@ -204,16 +199,6 @@ class WhatsappController extends Controller
 
             /*
             |------------------------------------------------------------------
-            | LAPOR — format dimulai dengan "LAPOR#"
-            | Contoh: LAPOR#Nama#Isi laporan
-            |------------------------------------------------------------------
-            */
-            if (preg_match('/^lapor#(.+)$/i', $message, $matches)) {
-                return $this->handleLapor($number, trim($matches[1]));
-            }
-
-            /*
-            |------------------------------------------------------------------
             | PERTANYAAN SEPUTAR PERKEMBANGAN LAPORAN
             | (tidak pakai format CEK#, tapi bermaksud sama)
             |------------------------------------------------------------------
@@ -328,12 +313,6 @@ class WhatsappController extends Controller
             "📋 Setelah laporan dikirim, Anda akan menerima *nomor tiket* sebagai bukti laporan.\n" .
             "Simpan nomor tiket tersebut untuk memantau status laporan Anda.\n\n" .
 
-            "Atau langsung lapor via WA dengan format:\n" .
-            "LAPOR#Nama Lengkap#Isi laporan\n\n" .
-
-            "📌 *Contoh:*\n" .
-            "LAPOR#Budi Santoso#Jalan berlubang di Jl. Merdeka depan kantor pos\n\n" .
-
             "Balas *3* untuk mengetahui cara cek status laporan.\n\n" .
 
             "🙏 Terima kasih telah berpartisipasi dalam meningkatkan pelayanan publik.\n\n" .
@@ -434,164 +413,6 @@ class WhatsappController extends Controller
         FonnteService::send($number, $pesan);
 
         return response()->json(['success' => true, 'action' => 'tanya_laporan']);
-    }
-
-    /**
-     * Handle laporan masuk via WhatsApp.
-     * Format: LAPOR#Nama#Isi Laporan
-     */
-    private function handleLapor(string $number, string $data)
-    {
-        // Parse: Nama#Isi Laporan
-        $parts = explode('#', $data, 2);
-
-        if (count($parts) < 2 || empty(trim($parts[0])) || empty(trim($parts[1]))) {
-            $pesan = "⚠️ *Format tidak lengkap!*\n\n" .
-                "Format yang benar:\n" .
-                "LAPOR#Nama Lengkap#Isi laporan\n\n" .
-                "📌 *Contoh:*\n" .
-                "LAPOR#Budi Santoso#Jalan berlubang di Jl. Merdeka\n\n" .
-                "Balas *0* untuk kembali ke Menu Utama.";
-
-            FonnteService::send($number, $pesan);
-            return response()->json(['success' => false, 'action' => 'format_salah']);
-        }
-
-        $namaLengkap = trim($parts[0]);
-        $isiLaporan  = trim($parts[1]);
-
-        try {
-            // 1. Create Notification (agar masuk di feed admin)
-            $notification = Notification::create([
-                'title'   => 'WhatsApp',
-                'sender'  => $namaLengkap,
-                'message' => $isiLaporan,
-            ]);
-
-            // 2. Generate tracking number
-            $today      = now()->format('Ymd');
-            $countToday = Ticket::whereDate('created_at', now()->toDateString())->count();
-            $sequence   = str_pad($countToday + 1, 4, '0', STR_PAD_LEFT);
-            $trackingNumber = "KMC-{$today}-{$sequence}";
-
-            // 3. Klasifikasi keyword khusus laporan WhatsApp (tanpa AI/API)
-            $classification = app(WhatsAppKeywordClassificationService::class)->classify($isiLaporan);
-            $category = $classification['category'];
-            $subCategory = $classification['sub_category'];
-            $opdName = $classification['opd'];
-            $priority = $classification['priority'];
-            $aiConfidence = null;
-            $aiReasoning = $classification['reasoning'];
-
-            // Resolve OPD keyword ke data OPD sistem
-            $opd = Opd::where('name', $opdName)->first();
-            if (!$opd) {
-                foreach (Opd::all() as $candidate) {
-                    similar_text(mb_strtolower($opdName), mb_strtolower($candidate->name), $percent);
-                    if ($percent > 70) {
-                        $opd = $candidate;
-                        $opdName = $candidate->name;
-                        break;
-                    }
-                }
-            }
-            $opdId = $opd?->id;
-
-            // 4. Create Ticket
-            $ticket = DB::transaction(function () use (
-                $notification, $trackingNumber, $namaLengkap, $number,
-                $category, $subCategory, $opdName, $opdId, $priority,
-                $isiLaporan, $aiConfidence, $aiReasoning
-            ) {
-                $ticket = Ticket::create([
-                    'notification_id'  => $notification->id,
-                    'ticket_number'    => $trackingNumber,
-                    'tracking_number'  => $trackingNumber,
-                    'ticket_time'      => now(),
-                    'platform'         => 'WhatsApp',
-                    'reporter_name'    => $namaLengkap,
-                    'reporter_link'    => "wa.me/{$number}",
-                    'category'         => $category,
-                    'sub_category'     => $subCategory,
-                    'opd_related'      => $opdName,
-                    'assigned_opd_id'  => $opdId,
-                    'priority'         => $priority,
-                    'complaint'        => $isiLaporan,
-                    'status'           => 'diterima',
-                    'sla_deadline'     => now()->addHours(24),
-                    'ai_confidence'    => $aiConfidence,
-                    'ai_reasoning'     => $aiReasoning,
-                ]);
-
-                TicketStatusLog::create([
-                    'ticket_id'   => $ticket->id,
-                    'from_status' => null,
-                    'to_status'   => 'diterima',
-                    'note'        => 'Tiket otomatis dibuat dari laporan WhatsApp',
-                ]);
-
-                // Langsung teruskan ke OPD
-                if ($opdName) {
-                    $ticket->updateStatus(
-                        'diteruskan',
-                        null,
-                        'Diteruskan ke OPD: ' . $opdName
-                    );
-                }
-
-                return $ticket;
-            });
-
-            // 5. Kirim konfirmasi ke pelapor
-            $linkCek    = config('app.url') . "/ticketing/{$trackingNumber}";
-            $nomorBot   = config('services.fonnte.bot_number', '');
-            $linkWaCek  = !empty($nomorBot)
-                ? "https://wa.me/{$nomorBot}?text=" . urlencode("CEK#{$trackingNumber}")
-                : '';
-
-            $pesan = "✅ *LAPORAN ANDA TELAH DITERIMA*\n\n" .
-                "Halo *{$namaLengkap}*, terima kasih telah melapor ke Ketapang Media Center.\n\n" .
-                "📋 *Detail Laporan:*\n" .
-                "• Nomor Tiket: *{$trackingNumber}*\n" .
-                "• Kategori: {$category}\n" .
-                "• Status: Diterima\n" .
-                "• Prioritas: " . ucfirst($priority) . "\n" .
-                ($opdName ? "• OPD Tujuan: {$opdName}\n" : '') .
-                "\n" .
-                "🔍 *Cek Status Aduan:*\n" .
-                "Ketik: CEK#{$trackingNumber}\n" .
-                "\n" .
-                "🌐 *Atau lacak online:*\n" .
-                "{$linkCek}\n" .
-                ($linkWaCek ? "\n📱 *Klik untuk cek:*\n{$linkWaCek}\n" : '') .
-                "\nLaporan Anda akan segera ditindaklanjuti. Mohon kesabarannya. 🙏\n\n" .
-                "*Ketapang Media Center (KMC)*";
-
-            FonnteService::send($number, $pesan);
-
-            // 6. Notifikasi WA ke OPD (jika ada nomor WA OPD)
-            $this->notifyOpd($ticket);
-
-            return response()->json([
-                'success'  => true,
-                'action'   => 'laporan_dibuat',
-                'ticket'   => $trackingNumber,
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('WhatsApp: Gagal membuat laporan', [
-                'error'  => $e->getMessage(),
-                'number' => $number,
-            ]);
-
-            $pesan = "❌ *Maaf, terjadi kesalahan saat memproses laporan Anda.*\n\n" .
-                "Silakan coba lagi nanti atau hubungi admin KMC.\n\n" .
-                "Balas *0* untuk kembali ke Menu Utama.";
-
-            FonnteService::send($number, $pesan);
-
-            return response()->json(['success' => false, 'action' => 'error']);
-        }
     }
 
     /**
