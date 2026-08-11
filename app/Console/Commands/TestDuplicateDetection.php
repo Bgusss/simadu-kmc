@@ -15,6 +15,23 @@ class TestDuplicateDetection extends Command
 
     public function handle()
     {
+        // Hapus data test sebelumnya
+        $oldTests = Notification::whereIn('sender', ['Test User A', 'Test User B'])->get();
+        if ($oldTests->isNotEmpty()) {
+            $this->info("Menghapus {$oldTests->count()} notifikasi test lama...");
+            foreach ($oldTests as $old) {
+                // Hapus tiket + status logs + responses
+                if ($old->ticket) {
+                    \App\Models\TicketStatusLog::where('ticket_id', $old->ticket->id)->delete();
+                    \App\Models\TicketResponse::where('ticket_id', $old->ticket->id)->delete();
+                    $old->ticket->delete();
+                }
+                AIClassification::where('notification_id', $old->id)->delete();
+                $old->delete();
+            }
+            $this->info('Data test lama dihapus.');
+        }
+
         $message1 = 'Jalan rusak berlubang di Jl. Sudirman depan pasar, sangat membahayakan pengendara motor dan sudah lama tidak diperbaiki';
         $message2 = 'Jalan berlubang dan rusak di Jl. Sudirman dekat pasar, bahaya untuk pengendara motor, mohon segera diperbaiki';
 
