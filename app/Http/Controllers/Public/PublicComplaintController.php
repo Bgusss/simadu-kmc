@@ -59,13 +59,17 @@ class PublicComplaintController extends Controller
 
             $phone = FonnteService::formatPhone($request->reporter_phone);
 
-            // 2. Create Notification
+            // 2. Buat notifikasi. Permalink sosial bersifat unik, sehingga tautan
+            // WhatsApp ditambahkan setelah ID tersedia agar satu nomor boleh melapor lagi.
             $notification = Notification::create([
                 'title'       => 'WhatsApp',
                 'sender'      => $request->reporter_name,
                 'message'     => $request->complaint,
-                'permalink'   => "wa.me/{$phone}",
                 'attachments' => !empty($attachmentPaths) ? $attachmentPaths : null,
+            ]);
+
+            $notification->update([
+                'permalink' => "https://wa.me/{$phone}#laporan-{$notification->id}",
             ]);
 
             // 3. Generate tracking number
