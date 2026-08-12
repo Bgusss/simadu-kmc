@@ -81,7 +81,7 @@ class PublicComplaintController extends Controller
             ]);
 
             $notification->update([
-                'permalink' => "https://wa.me/{$phone}#laporan-{$notification->id}",
+                'permalink' => "https://api.whatsapp.com/send?phone={$phone}&text=".urlencode('Halo, saya ingin menanyakan laporan saya.')."#laporan-{$notification->id}",
             ]);
 
             // 3. Generate tracking number yang belum dipakai pada tanggal ini.
@@ -139,7 +139,7 @@ class PublicComplaintController extends Controller
                     'ticket_time'      => now(),
                     'platform'         => 'WhatsApp',
                     'reporter_name'    => $request->reporter_name,
-                    'reporter_link'    => "wa.me/" . FonnteService::formatPhone($request->reporter_phone),
+                    'reporter_link'    => "https://api.whatsapp.com/send?phone=" . FonnteService::formatPhone($request->reporter_phone),
                     'category'         => $category,
                     'sub_category'     => $subCategory,
                     'opd_related'      => $opdName,

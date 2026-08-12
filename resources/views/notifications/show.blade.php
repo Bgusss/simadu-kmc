@@ -161,10 +161,18 @@
                                 @php
                                     $phoneNumber = '-';
                                     if ($isWhatsApp && $notification->permalink) {
-                                        $whatsAppLink = preg_replace('/^https?:\/\/wa\.me\//', '', $notification->permalink);
-                                        $phoneNumber = '+' . preg_replace('/#.*$/', '', $whatsAppLink);
+                                        if (preg_match('/phone=(\d+)/', $notification->permalink, $m)) {
+                                            $phoneNumber = '+' . $m[1];
+                                        } else {
+                                            $whatsAppLink = preg_replace('/^https?:\/\/wa\.me\//', '', $notification->permalink);
+                                            $phoneNumber = '+' . preg_replace('/#.*$/', '', $whatsAppLink);
+                                        }
                                     } elseif ($isWhatsApp && $ticket?->reporter_link) {
-                                        $phoneNumber = '+' . preg_replace('/^https?:\/\/wa\.me\//', '', $ticket->reporter_link);
+                                        if (preg_match('/phone=(\d+)/', $ticket->reporter_link, $m)) {
+                                            $phoneNumber = '+' . $m[1];
+                                        } else {
+                                            $phoneNumber = '+' . preg_replace('/^https?:\/\/wa\.me\//', '', $ticket->reporter_link);
+                                        }
                                     } elseif (!$isWhatsApp) {
                                         $phoneNumber = $notification->sender ?? '-';
                                     }

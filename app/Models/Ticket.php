@@ -162,7 +162,11 @@ class Ticket extends Model
         try {
             $phone = null;
             if ($this->reporter_link) {
-                $phone = str_replace('wa.me/', '', $this->reporter_link);
+                if (preg_match('/phone=(\d+)/', $this->reporter_link, $m)) {
+                    $phone = $m[1];
+                } else {
+                    $phone = preg_replace('#^https?://wa\.me/#', '', $this->reporter_link);
+                }
             }
 
             if ($phone && $this->reporter_name) {
