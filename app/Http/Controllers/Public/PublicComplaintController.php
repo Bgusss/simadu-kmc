@@ -81,7 +81,7 @@ class PublicComplaintController extends Controller
             ]);
 
             $notification->update([
-                'permalink' => "https://web.whatsapp.com/send?phone={$phone}#laporan-{$notification->id}",
+                'permalink' => "https://web.whatsapp.com/send?phone={$phone}&ref=laporan-{$notification->id}",
             ]);
 
             // 3. Generate tracking number yang belum dipakai pada tanggal ini.
