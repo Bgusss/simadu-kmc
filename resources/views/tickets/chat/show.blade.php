@@ -5,69 +5,11 @@
 @endsection
 @section('content')
 <style>
-    .chat-workspace-card,
-    .chat-context-card {
-        border: 1px solid rgba(15, 23, 42, .06);
-        border-radius: 20px;
-        box-shadow: 0 10px 25px -12px rgba(15, 23, 42, .14);
-        overflow: hidden;
-        background: #fff;
-    }
-    .chat-workspace-card .card-header,
-    .chat-context-card .card-header {
-        border-bottom: 1px solid #edf1f6;
-        padding: 18px 20px;
-    }
-    .chat-shell {
-        height: 62vh;
-        min-height: 430px;
-        overflow-y: auto;
-        background: #f7f9fc;
-        padding: 24px !important;
-    }
-    .chat-bubble {
-        max-width: min(82%, 620px);
-        border-radius: 18px;
-        line-height: 1.55;
-    }
-    .chat-bubble.bg-primary {
-        background: #0d47a1 !important;
-        border-bottom-right-radius: 5px;
-    }
-    .chat-bubble.bg-white {
-        border: 1px solid #e8edf3;
-        border-bottom-left-radius: 5px;
-    }
-    .ticket-side .label {
-        color: #64748b;
-        font-size: .68rem;
-        font-weight: 700;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-        margin-bottom: .3rem;
-    }
-    .chat-context-card .card-body { padding: 20px; }
-    .chat-context-card .form-control,
-    .chat-context-card .form-select {
-        border-color: #dce3ec;
-        border-radius: 12px;
-        box-shadow: none;
-    }
-    .chat-context-card .form-control:focus,
-    .chat-context-card .form-select:focus {
-        border-color: #0d47a1;
-        box-shadow: 0 0 0 .2rem rgba(13, 71, 161, .12);
-    }
-    @media (max-width: 1199.98px) {
-        .chat-shell { height: 56vh; min-height: 360px; }
-    }
-    @media (max-width: 575.98px) {
-        .chat-shell { height: 52vh; min-height: 320px; padding: 16px !important; }
-        .chat-bubble { max-width: 90%; }
-    }
+.chat-card,.chat-side-card{border:1px solid #e7edf4;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 10px 28px -18px rgba(15,23,42,.28)}
+.chat-head{background:#0d47a1;color:#fff;padding:15px 18px}.chat-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);font-size:1.05rem}.chat-canvas{height:62vh;min-height:430px;overflow-y:auto;padding:24px;background-color:#f4f7fb;background-image:radial-gradient(rgba(13,71,161,.08) 1px,transparent 1px);background-size:18px 18px}.chat-message{max-width:min(78%,620px);padding:9px 11px 7px;border-radius:9px;box-shadow:0 1px 1px rgba(15,23,42,.09);line-height:1.5}.chat-message.mine{background:#0d47a1;color:#fff;border-top-right-radius:2px}.chat-message.theirs{background:#fff;color:#1e293b;border-top-left-radius:2px}.chat-meta{font-size:.68rem;text-align:right;margin-top:3px;opacity:.72}.chat-composer{background:#f7f9fc;border-top:1px solid #e7edf4;padding:12px;display:flex;gap:9px;align-items:end}.chat-input{border:1px solid #dce4ee;border-radius:18px!important;resize:none;box-shadow:none!important;padding:10px 14px}.chat-send{height:42px;width:42px;border-radius:50%;display:grid;place-items:center;padding:0}.chat-side-card .card-header{padding:16px 18px;background:#fff;border-bottom:1px solid #edf1f5}.chat-side-card .card-body{padding:18px}.ticket-label{color:#64748b;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.info-row{padding:11px 0;border-bottom:1px solid #f0f3f7}.info-row:last-child{border:0}@media(max-width:1199px){.chat-canvas{height:55vh;min-height:360px}}@media(max-width:575px){.chat-canvas{height:52vh;min-height:320px;padding:14px}.chat-message{max-width:88%}.chat-head{padding:12px}.chat-composer{padding:9px}}
 </style>
-<div class="mb-3"><a href="{{ route('tickets.chat.index') }}" class="text-decoration-none small fw-semibold"><i class="fas fa-arrow-left me-1"></i>Kembali ke Live Chat</a></div>
-<div class="row g-4"><div class="col-xl-8 order-1"><div class="chat-workspace-card h-100"><div class="card-header bg-white px-4 py-3 d-flex gap-3 align-items-center"><div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style="width:42px;height:42px"><i class="fas fa-building"></i></div><div class="flex-grow-1"><strong>{{ $ticket->assignedOpd?->name ?? 'OPD' }}</strong><div class="small text-muted">{{ $ticket->tracking_number ?? $ticket->ticket_number }} · {{ $ticket->reporter_name ?? 'Anonim' }}</div></div><span class="badge bg-light text-dark border">OPD</span></div><div id="admin-chat-messages" class="chat-shell p-4">@forelse($ticket->chatMessages as $response)@php $mine=$response->sender_id===auth()->id(); @endphp<div class="d-flex mb-3 {{ $mine?'justify-content-end':'justify-content-start' }}"><div class="chat-bubble px-3 py-2 shadow-sm {{ $mine?'bg-primary text-white':'bg-white text-dark' }}"><div class="small fw-bold mb-1 {{ $mine?'text-white-50':'text-primary' }}">{{ $mine?'Admin KMC':($response->sender?->name ?? 'OPD') }}</div><div style="white-space:pre-line">{{ $response->message }}</div>@if($response->attachment)<a href="{{ asset('storage/'.$response->attachment) }}" target="_blank" class="d-block mt-2 small {{ $mine?'text-white':'text-primary' }}"><i class="fas fa-paperclip me-1"></i>Lihat lampiran</a>@endif<div class="small mt-1 {{ $mine?'text-white-50':'text-muted' }}" style="font-size:.7rem">{{ $response->created_at?->format('d M Y, H:i') }}</div></div></div>@empty<div class="h-100 d-flex align-items-center justify-content-center text-center text-muted"><div><i class="far fa-comment-dots fa-3x mb-3 opacity-50"></i><div>Belum ada pesan dari OPD.</div></div></div>@endforelse</div><div class="border-top bg-white p-3"><form action="{{ route('tickets.chat.send',$ticket) }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 align-items-end">@csrf<input type="hidden" name="return_to_chat" value="1"><label for="admin-chat-attachment" class="btn btn-light border mb-0"><i class="fas fa-paperclip"></i></label><input id="admin-chat-attachment" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.3gp"><textarea name="message" class="form-control" rows="2" maxlength="2000" placeholder="Tulis pesan untuk OPD..." required></textarea><button class="btn btn-primary px-4" type="submit"><i class="fas fa-paper-plane me-1"></i>Kirim</button></form></div></div></div>
-<div class="col-xl-4 order-2"><div class="ticket-side"><div class="chat-context-card mb-4"><div class="card-header bg-white fw-bold"><i class="fas fa-info-circle text-primary me-2"></i>Info Tiket</div><div class="card-body"><div class="label">Nomor Tiket</div><div class="fw-bold mb-3">{{ $ticket->tracking_number ?? $ticket->ticket_number }}</div><div class="label">Pelapor</div><div class="mb-3">{{ $ticket->reporter_name ?? 'Anonim' }}</div><div class="label">Kategori</div><div class="mb-3">{{ $ticket->category }}@if($ticket->sub_category)<div class="small text-muted">{{ $ticket->sub_category }}</div>@endif</div><div class="label">OPD Terkait</div><div class="mb-3">{{ $ticket->assignedOpd?->name ?? '-' }}</div><div class="label">Isi Aduan</div><div class="small text-secondary" style="white-space:pre-line">{{ $ticket->complaint }}</div></div></div><div class="chat-context-card"><div class="card-header bg-white fw-bold"><i class="fas fa-sync-alt text-warning me-2"></i>Perbarui Status</div><div class="card-body"><form action="{{ route('tickets.status',$ticket) }}" method="POST" enctype="multipart/form-data">@csrf<select name="status" class="form-select mb-3" required><option value="diterima" @selected($ticket->status==='diterima')>Diterima</option><option value="proses_disposisi" @selected($ticket->status==='proses_disposisi')>Proses Disposisi</option><option value="diproses" @selected($ticket->status==='diproses')>Diproses</option><option value="dijawab" @selected($ticket->status==='dijawab')>Dijawab</option><option value="selesai" @selected($ticket->status==='selesai')>Selesai</option><option value="eskalasi" @selected($ticket->status==='eskalasi')>Eskalasi</option><option value="ditolak" @selected($ticket->status==='ditolak')>Ditolak</option></select><textarea name="notes" class="form-control mb-3" rows="2" placeholder="Catatan status (opsional)"></textarea><input name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png"><button class="btn btn-warning w-100 fw-bold" type="submit"><i class="fas fa-save me-1"></i>Simpan Status</button></form></div></div></div></div></div>
-@push('scripts')<script>const c=document.getElementById('admin-chat-messages');if(c)c.scrollTop=c.scrollHeight;</script>@endpush
+<div class="mb-3"><a href="{{ route('tickets.index') }}" class="text-decoration-none small fw-semibold"><i class="fas fa-arrow-left me-1"></i>Kembali ke Daftar Tiket</a></div>
+<div class="row g-4"><div class="col-xl-8"><section class="chat-card h-100"><header class="chat-head d-flex align-items-center gap-3"><div class="chat-avatar"><i class="fas fa-building"></i></div><div class="flex-grow-1"><div class="fw-bold">{{ $ticket->assignedOpd?->name ?? 'OPD' }}</div><div class="small text-white-50">Percakapan terkait {{ $ticket->tracking_number ?? $ticket->ticket_number }}</div></div><span class="badge rounded-pill" style="background:rgba(255,255,255,.14)"><i class="fas fa-comments me-1"></i>Chat OPD</span></header><main id="admin-chat-messages" class="chat-canvas">@forelse($ticket->chatMessages as $message)@php $mine=$message->sender_id===auth()->id(); @endphp<div class="d-flex mb-3 {{ $mine?'justify-content-end':'justify-content-start' }}"><article class="chat-message {{ $mine?'mine':'theirs' }}"><div class="small fw-bold mb-1 {{ $mine?'text-white-50':'text-primary' }}">{{ $mine?'Admin KMC':($message->sender?->name ?? 'OPD') }}</div><div style="white-space:pre-line">{{ $message->message }}</div>@if($message->attachment)<a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" class="d-block mt-2 small {{ $mine?'text-white':'text-primary' }}"><i class="fas fa-paperclip me-1"></i>Lihat lampiran</a>@endif<div class="chat-meta">{{ $message->created_at?->format('H:i') }}</div></article></div>@empty<div class="h-100 d-flex align-items-center justify-content-center text-center text-muted"><div><i class="far fa-comment-dots fs-1 mb-3 text-primary opacity-50"></i><div class="fw-semibold">Belum ada percakapan</div><small>Mulai koordinasi dengan OPD melalui kolom pesan di bawah.</small></div></div>@endforelse</main><footer class="chat-composer"><label for="admin-chat-attachment" class="btn btn-light border rounded-circle mb-0" title="Lampiran"><i class="fas fa-paperclip"></i></label><form action="{{ route('tickets.chat.send',$ticket) }}" method="POST" enctype="multipart/form-data" class="d-flex flex-grow-1 gap-2 align-items-end">@csrf<input type="hidden" name="return_to_chat" value="1"><input id="admin-chat-attachment" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.3gp"><textarea name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Tulis pesan untuk OPD..." required></textarea><button class="btn btn-primary chat-send" type="submit" title="Kirim pesan"><i class="fas fa-paper-plane"></i></button></form></footer></section></div>
+<div class="col-xl-4"><aside class="chat-side-card mb-4"><div class="card-header fw-bold"><i class="fas fa-info-circle text-primary me-2"></i>Info Tiket</div><div class="card-body"><div class="info-row"><div class="ticket-label">Nomor Tiket</div><div class="fw-bold">{{ $ticket->tracking_number ?? $ticket->ticket_number }}</div></div><div class="info-row"><div class="ticket-label">Pelapor</div><div>{{ $ticket->reporter_name ?? 'Anonim' }}</div></div><div class="info-row"><div class="ticket-label">Kategori</div><div>{{ $ticket->category }}<div class="small text-muted">{{ $ticket->sub_category }}</div></div></div><div class="info-row"><div class="ticket-label">OPD Terkait</div><div>{{ $ticket->assignedOpd?->name ?? '-' }}</div></div><div class="info-row"><div class="ticket-label">Isi Aduan</div><div class="small text-secondary" style="white-space:pre-line">{{ $ticket->complaint }}</div></div></div></aside><aside class="chat-side-card"><div class="card-header fw-bold"><i class="fas fa-sync-alt text-warning me-2"></i>Perbarui Status</div><div class="card-body"><form action="{{ route('tickets.status',$ticket) }}" method="POST" enctype="multipart/form-data">@csrf<select name="status" class="form-select mb-3" required><option value="diterima" @selected($ticket->status==='diterima')>Diterima</option><option value="proses_disposisi" @selected($ticket->status==='proses_disposisi')>Proses Disposisi</option><option value="diproses" @selected($ticket->status==='diproses')>Diproses</option><option value="dijawab" @selected($ticket->status==='dijawab')>Dijawab</option><option value="selesai" @selected($ticket->status==='selesai')>Selesai</option><option value="eskalasi" @selected($ticket->status==='eskalasi')>Eskalasi</option><option value="ditolak" @selected($ticket->status==='ditolak')>Ditolak</option></select><textarea name="notes" class="form-control mb-3" rows="2" placeholder="Catatan status (opsional)"></textarea><input name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png"><button class="btn btn-warning w-100 fw-bold" type="submit"><i class="fas fa-save me-1"></i>Simpan Status</button></form></div></aside></div></div>
+@push('scripts')<script>const messages=document.getElementById('admin-chat-messages');if(messages)messages.scrollTop=messages.scrollHeight;</script>@endpush
 @endsection
