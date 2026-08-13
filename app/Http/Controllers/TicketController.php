@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Notification;
 use App\Models\Opd;
 use App\Models\Ticket;
+use App\Models\TicketResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -211,6 +212,9 @@ class TicketController extends Controller
 
     public function show(Ticket $ticket)
     {
+        $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
+        TicketResponse::where('ticket_id', $ticket->id)->whereIn('user_id', $opdUserIds)
+            ->where('is_read', false)->update(['is_read' => true]);
         $ticket->load(['statusLogs.user', 'responses.user']);
         return view('tickets.show', compact('ticket'));
     }
@@ -253,6 +257,28 @@ class TicketController extends Controller
 
         return redirect()->route('tickets.index')
             ->with('success', 'Tiket berhasil dihapus.');
+    }
+
+    public function sendChat(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'message' => 'required|string|max:2000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi,3gp|max:20480',
+        ]);
+
+        $attachment = $request->hasFile('attachment')
+            ? $request->file('attachment')->store('chat-attachments', 'public')
+            : null;
+
+        TicketResponse::create([
+            'ticket_id' => $ticket->id,
+            'user_id' => auth()->id(),
+            'message' => $validated['message'],
+            'attachment' => $attachment,
+            'is_read' => false,
+        ]);
+
+        return redirect()->route('tickets.show', $ticket)->with('success', 'Pesan berhasil dikirim ke OPD.');
     }
 
     /**

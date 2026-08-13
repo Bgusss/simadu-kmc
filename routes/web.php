@@ -89,6 +89,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
     Route::post('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.status');
+    Route::post('/tickets/{ticket}/chat', [TicketController::class, 'sendChat'])->name('tickets.chat.send');
 });
 
 /*
@@ -103,6 +104,9 @@ Route::middleware(['auth', 'role:opd'])->prefix('opd')->name('opd.')->group(func
     Route::get('/tickets/{ticket}', [OpdController::class, 'showTicket'])->name('tickets.show');
     Route::get('/tickets/{ticket}/edit', [OpdController::class, 'editTicket'])->name('tickets.edit');
     Route::post('/tickets/{ticket}/respond', [OpdController::class, 'respond'])->name('tickets.respond');
+    Route::get('/chat', [OpdController::class, 'chatIndex'])->name('chat.index');
+    Route::get('/chat/{ticket}', [OpdController::class, 'chatShow'])->name('chat.show');
+    Route::post('/chat/{ticket}', [OpdController::class, 'chatSend'])->name('chat.send');
     Route::get('/profile', [OpdController::class, 'profile'])->name('profile');
     Route::post('/profile', [OpdController::class, 'updateProfile'])->name('profile.update');
 });

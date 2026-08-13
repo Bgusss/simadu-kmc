@@ -9,6 +9,7 @@ use App\Models\TicketResponse;
 use App\Models\TicketStatusLog; // Adjust based on your actual model name
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class OpdController extends Controller
 {
@@ -140,6 +141,66 @@ class OpdController extends Controller
         }
 
         return redirect()->back()->with('success', 'Tanggapan berhasil ditambahkan.');
+    }
+
+    public function chatIndex(Request $request)
+    {
+        $user = Auth::user();
+        $query = Ticket::where('assigned_opd_id', $user->opd_id)
+            ->with(['responses' => fn ($q) => $q->latest()->limit(1)]);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_number', 'like', "%{$search}%")
+                    ->orWhere('ticket_number', 'like', "%{$search}%")
+                    ->orWhere('reporter_name', 'like', "%{$search}%")
+                    ->orWhere('complaint', 'like', "%{$search}%");
+            });
+        }
+
+        $tickets = $query->latest()->paginate(12)->withQueryString();
+        $adminIds = \App\Models\User::where('role', 'admin')->pluck('id');
+        $unreadByTicket = TicketResponse::whereIn('ticket_id', $tickets->pluck('id'))
+            ->whereIn('user_id', $adminIds)->where('is_read', false)
+            ->selectRaw('ticket_id, count(*) as total')->groupBy('ticket_id')->pluck('total', 'ticket_id');
+
+        return view('opd.chat.index', compact('tickets', 'unreadByTicket'));
+    }
+
+    public function chatShow(Ticket $ticket)
+    {
+        $user = Auth::user();
+        if ($ticket->assigned_opd_id !== $user->opd_id) abort(403, 'Unauthorized.');
+
+        $adminIds = \App\Models\User::where('role', 'admin')->pluck('id');
+        TicketResponse::where('ticket_id', $ticket->id)->whereIn('user_id', $adminIds)
+            ->where('is_read', false)->update(['is_read' => true]);
+
+        $ticket->load(['responses.user']);
+        return view('opd.chat.show', compact('ticket'));
+    }
+
+    public function chatSend(Request $request, Ticket $ticket)
+    {
+        $user = Auth::user();
+        if ($ticket->assigned_opd_id !== $user->opd_id) abort(403, 'Unauthorized.');
+
+        $request->validate([
+            'message' => 'required|string|max:2000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi,3gp|max:20480',
+        ]);
+
+        $attachment = $request->hasFile('attachment')
+            ? $request->file('attachment')->store('chat-attachments', 'public')
+            : null;
+
+        TicketResponse::create([
+            'ticket_id' => $ticket->id, 'user_id' => $user->id,
+            'message' => $request->message, 'attachment' => $attachment, 'is_read' => false,
+        ]);
+
+        return redirect()->route('opd.chat.show', $ticket)->with('success', 'Pesan berhasil dikirim ke Admin KMC.');
     }
 
     public function profile()

@@ -12,6 +12,7 @@ class TicketResponse extends Model
         'user_id',
         'message',
         'attachment',
+        'is_read',
     ];
 
     // ──────────────────────────────────────────────

@@ -15,6 +15,11 @@
                 <i class="fas fa-ticket-alt"></i> Daftar Tiket
             </a>
         </li>
+        <li class="{{ request()->routeIs('opd.chat.*') ? 'active' : '' }}">
+            <a href="{{ route('opd.chat.index') }}">
+                <i class="fas fa-comments"></i> Live Chat
+            </a>
+        </li>
         <li class="{{ request()->routeIs('opd.profile') ? 'active' : '' }}">
             <a href="{{ route('opd.profile') }}">
                 <i class="fas fa-user-circle"></i> Profil
