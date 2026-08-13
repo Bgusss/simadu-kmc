@@ -295,6 +295,24 @@ class TicketController extends Controller
             ->with('success', 'Pesan berhasil dikirim ke OPD.');
     }
 
+    public function deleteChat(TicketChatMessage $message)
+    {
+        if ($message->sender_id !== auth()->id()) {
+            abort(403, 'Anda hanya bisa menghapus pesan sendiri.');
+        }
+
+        $ticket = $message->ticket;
+
+        if ($message->attachment) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($message->attachment);
+        }
+
+        $message->delete();
+
+        return redirect()->route('tickets.chat.show', $ticket)
+            ->with('success', 'Pesan berhasil dihapus.');
+    }
+
     /**
      * Admin memperbarui status tiket.
      * (Dipindahkan dari OpdController — sekarang hanya admin yang bisa update status)

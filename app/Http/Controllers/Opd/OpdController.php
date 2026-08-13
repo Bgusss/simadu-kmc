@@ -180,6 +180,30 @@ class OpdController extends Controller
         return redirect()->route('opd.chat.show', $ticket)->with('success', 'Pesan berhasil dikirim ke Admin KMC.');
     }
 
+    public function chatDelete(TicketChatMessage $message)
+    {
+        $user = Auth::user();
+
+        if ($message->sender_id !== $user->id) {
+            abort(403, 'Anda hanya bisa menghapus pesan sendiri.');
+        }
+
+        $ticket = $message->ticket;
+
+        if ($ticket->assigned_opd_id !== $user->opd_id) {
+            abort(403, 'Unauthorized.');
+        }
+
+        if ($message->attachment) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($message->attachment);
+        }
+
+        $message->delete();
+
+        return redirect()->route('opd.chat.show', $ticket)
+            ->with('success', 'Pesan berhasil dihapus.');
+    }
+
     public function profile()
     {
         $user = Auth::user();
