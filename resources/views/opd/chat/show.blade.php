@@ -15,16 +15,21 @@
     .chat-message.mine { background: #0d47a1; color: #fff; border-top-right-radius: 2px; }
     .chat-message.theirs { background: #fff; color: #1e293b; border-top-left-radius: 2px; }
     .chat-meta { font-size: .68rem; text-align: right; margin-top: 3px; opacity: .72; }
-    .chat-composer { background: #f7f9fc; border-top: 1px solid #e7edf4; padding: 12px; display: flex; gap: 9px; align-items: end; }
-    .chat-input { border: 1px solid #dce4ee; border-radius: 18px !important; resize: none; box-shadow: none !important; padding: 10px 14px; }
-    .chat-send { height: 42px; width: 42px; border-radius: 50%; display: grid; place-items: center; padding: 0; }
+    .chat-composer { background: #f7f9fc; border-top: 1px solid #e7edf4; padding: 12px; }
+    .chat-composer-form { display: flex; align-items: flex-end; gap: 10px; width: 100%; }
+    .chat-attachment, .chat-send { width: 42px; height: 42px; min-width: 42px; border-radius: 50%; display: grid; place-items: center; padding: 0; }
+    .chat-attachment { margin: 0; }
+    .chat-input { flex: 1 1 auto; min-width: 0; min-height: 42px; border: 1px solid #dce4ee; border-radius: 18px !important; resize: none; box-shadow: none !important; padding: 10px 14px; line-height: 1.3; }
+    .chat-input:focus { border-color: #0d47a1; box-shadow: 0 0 0 .2rem rgba(13,71,161,.12) !important; }
+    .chat-send { background: #0d47a1; border-color: #0d47a1; }
+    .chat-send:hover { background: #083b86; border-color: #083b86; }
     .chat-side-card .card-header { padding: 16px 18px; background: #fff; border-bottom: 1px solid #edf1f5; }
     .chat-side-card .card-body { padding: 18px; }
     .ticket-label { color: #64748b; font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
     .ticket-info-tile { height: 100%; padding: 10px; border: 1px solid #edf1f5; border-radius: 12px; background: #f8fafc; }
     .complaint-preview { padding: 13px; border-left: 4px solid #0d47a1; border-radius: 0 12px 12px 0; background: #eef4ff; }
     @media (max-width: 1199px) { .chat-canvas { height: 55vh; min-height: 360px; } }
-    @media (max-width: 575px) { .chat-canvas { height: 52vh; min-height: 320px; padding: 14px; } .chat-message { max-width: 88%; } .chat-head { padding: 12px; } .chat-composer { padding: 9px; } }
+    @media (max-width: 575px) { .chat-canvas { height: 52vh; min-height: 320px; padding: 14px; } .chat-message { max-width: 88%; } .chat-head { padding: 12px; } .chat-composer { padding: 10px; } .chat-composer-form { gap: 8px; } .chat-attachment, .chat-send { width: 40px; height: 40px; min-width: 40px; } .chat-input { min-height: 40px; padding: 9px 12px; } }
 </style>
 
 <div class="mb-3"><a href="{{ route('opd.tickets.index') }}" class="text-decoration-none small fw-semibold"><i class="fas fa-arrow-left me-1"></i>Kembali ke Daftar Tiket</a></div>
@@ -53,11 +58,11 @@
                 @endforelse
             </main>
             <footer class="chat-composer">
-                <label for="opd-chat-attachment" class="btn btn-light border rounded-circle mb-0" title="Lampiran"><i class="fas fa-paperclip"></i></label>
-                <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="d-flex flex-grow-1 gap-2 align-items-end">
+                <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form">
                     @csrf
+                    <label for="opd-chat-attachment" class="btn btn-light border chat-attachment" title="Lampiran"><i class="fas fa-paperclip"></i></label>
                     <input id="opd-chat-attachment" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.3gp">
-                    <textarea name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..." required></textarea>
+                    <textarea id="opd-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..." required></textarea>
                     <button class="btn btn-primary chat-send" type="submit" title="Kirim pesan"><i class="fas fa-paper-plane"></i></button>
                 </form>
             </footer>
