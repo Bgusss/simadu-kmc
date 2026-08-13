@@ -110,6 +110,8 @@ class CosineSimilarityService
         $text = preg_replace('/https?:\/\/\S+/i', '', $text);
         // Normalisasi frasa masalah yang setara dari data aduan lapangan.
         $text = preg_replace('/\b(lampu\s+jalan|lampu\s+penerangan|penerangan\s+jalan|lampu\s+pju)\b/iu', ' lampu_jalan ', $text);
+        $text = preg_replace('/\b(aspalnya|aspal)\b/iu', ' aspal ', $text);
+        $text = preg_replace('/\b(air\s+menggenang|jalan\s+becek|becek)\b/iu', ' dampak_hujan_jalan ', $text);
         $text = preg_replace('/\b(padam|mati\s+total|mati)\b/iu', ' gangguan_lampu ', $text);
         $text = preg_replace('/\b(dak|tidak|ngk|ngga|nggak)\s+(ngalir|jalan)\b/iu', ' gangguan_air ', $text);
         $text = preg_replace('/\b(tertutup\s+tanah|parit\s+sumbat|parit\s+tersumbat|air\s+(nye\s+)?sumbat)\b/iu', ' tersumbat ', $text);
@@ -147,8 +149,9 @@ class CosineSimilarityService
         $union = count(array_unique([...$leftLocations, ...$rightLocations]));
         $jaccard = $union ? $intersection / $union : 0.0;
 
-        // Tiga token lokasi yang sama (mis. Jalan Merdeka Gang Mawar) adalah
-        // bukti alamat yang kuat, walau redaksi keluhan berbeda jauh.
+        // Empat token lokasi yang sama (mis. Jalan A Yani Gang Melati)
+        // menunjukkan alamat yang sama persis. Tiga token tetap bukti kuat.
+        if ($intersection >= 4) return 1.0;
         return $intersection >= 3 ? max($jaccard, 0.80) : $jaccard;
     }
 
