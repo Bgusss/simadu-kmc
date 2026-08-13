@@ -59,6 +59,9 @@
         <a href="{{ route('opd.tickets.index') }}" class="{{ request()->is('opd/tickets*') ? 'active' : '' }}">
             <i class="fa-solid fa-ticket"></i> Daftar Tiket
         </a>
+        <a href="{{ route('opd.chat.index') }}" class="{{ request()->is('opd/chat*') ? 'active' : '' }}">
+            <i class="fa-solid fa-comments"></i> Live Chat
+        </a>
     @else
         <a href="{{ route('ticketing.index') }}" class="{{ request()->routeIs('ticketing.*') ? 'active' : '' }}">
             <i class="fa-solid fa-search"></i> Pelacakan Aduan
