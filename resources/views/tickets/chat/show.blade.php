@@ -315,26 +315,24 @@
                         <button type="button" class="btn-close btn-close-sm" onclick="cancelReply()"></button>
                     </div>
                 </div>
-                <form action="{{ route('tickets.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form" id="admin-chat-form">
+                <form action="{{ route('tickets.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form">
                     @csrf
                     <input type="hidden" name="return_to_chat" value="1">
-                    <input id="admin-attach-real" name="attachment" type="file" class="d-none">
                     <div class="chat-attach-dropdown dropup">
                         <button class="btn btn-light border chat-attachment" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Lampiran"><i class="fas fa-paperclip"></i></button>
                         <ul class="dropdown-menu shadow-lg">
-                            <li><a class="dropdown-item" href="#" onclick="openPicker('admin-pick-doc'); return false;"><i class="fas fa-file-alt me-2" style="color:#7c4dff"></i>Dokumen</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="openPicker('admin-pick-media'); return false;"><i class="fas fa-image me-2" style="color:#00bfa5"></i>Foto & Video</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="openPicker('admin-pick-camera'); return false;"><i class="fas fa-camera me-2" style="color:#ff1744"></i>Kamera</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('admin-attach-doc').click(); return false;"><i class="fas fa-file-alt me-2" style="color:#7c4dff"></i>Dokumen</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('admin-attach-media').click(); return false;"><i class="fas fa-image me-2" style="color:#00bfa5"></i>Foto & Video</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('admin-attach-camera').click(); return false;"><i class="fas fa-camera me-2" style="color:#ff1744"></i>Kamera</a></li>
                         </ul>
                     </div>
-                    <span id="admin-attach-label" class="attach-name small text-muted text-truncate d-none" style="max-width:140px"></span>
+                    <input id="admin-attach-doc" name="attachment" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" onchange="this.form.querySelector('.attach-name').textContent=this.files[0]?.name||''">
+                    <input id="admin-attach-media" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp" onchange="this.form.querySelector('.attach-name').textContent=this.files[0]?.name||''">
+                    <input id="admin-attach-camera" name="attachment" type="file" class="d-none" accept="image/*" capture="environment" onchange="this.form.querySelector('.attach-name').textContent=this.files[0]?.name||''">
+                    <span class="attach-name small text-muted text-truncate" style="max-width:120px;display:none"></span>
                     <textarea id="admin-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Tulis pesan untuk OPD..." required></textarea>
                     <button class="btn btn-primary chat-send" type="submit" title="Kirim pesan"><i class="fas fa-paper-plane"></i></button>
                 </form>
-                <!-- Picker inputs (outside form, no name) -->
-                <input id="admin-pick-doc" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
-                <input id="admin-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
-                <input id="admin-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
             </footer>
         </div>
     </div>
@@ -473,26 +471,5 @@ function showMsgInfo(id, time, sender) {
     const modal = new bootstrap.Modal(document.getElementById('msgInfoModal'));
     modal.show();
 }
-
-// Attachment picker bridge
-function openPicker(pickerId) {
-    document.getElementById(pickerId).click();
-}
-function bridgeFile(picker, realId, labelId) {
-    picker.addEventListener('change', function() {
-        const real = document.getElementById(realId);
-        const label = document.getElementById(labelId);
-        if (this.files.length) {
-            const dt = new DataTransfer();
-            dt.items.add(this.files[0]);
-            real.files = dt.files;
-            label.textContent = this.files[0].name;
-            label.classList.remove('d-none');
-        }
-    });
-}
-bridgeFile(document.getElementById('admin-pick-doc'), 'admin-attach-real', 'admin-attach-label');
-bridgeFile(document.getElementById('admin-pick-media'), 'admin-attach-real', 'admin-attach-label');
-bridgeFile(document.getElementById('admin-pick-camera'), 'admin-attach-real', 'admin-attach-label');
 </script>
 @endpush
