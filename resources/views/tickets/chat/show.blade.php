@@ -168,6 +168,34 @@
     box-shadow: 0 0 0 .2rem rgba(13,71,161,.12) !important;
 }
 
+/* Attachment preview in bubbles */
+.chat-attach-preview { max-width: 280px; }
+.chat-attach-img {
+    width: 100%; max-height: 220px;
+    object-fit: cover; border-radius: 8px;
+    cursor: pointer; display: block;
+}
+.chat-attach-video {
+    width: 100%; max-height: 220px;
+    border-radius: 8px; display: block;
+    background: #000;
+}
+.chat-attach-doc {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    background: rgba(0,0,0,.06);
+    text-decoration: none; color: #1e293b;
+    transition: background .15s;
+}
+.chat-attach-doc:hover { background: rgba(0,0,0,.1); }
+.chat-attach-doc.mine { background: rgba(255,255,255,.15); color: #fff; }
+.chat-attach-doc.mine:hover { background: rgba(255,255,255,.22); }
+.chat-attach-doc-icon { font-size: 1.6rem; opacity: .7; flex-shrink: 0; }
+.chat-attach-doc-info { flex: 1; min-width: 0; }
+.chat-attach-doc-name { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-attach-doc-meta { font-size: .68rem; opacity: .6; }
+.chat-attach-doc-dl { font-size: .85rem; opacity: .5; flex-shrink: 0; }
+
 /* Attachment dropdown */
 .chat-attach-dropdown {
     position: relative;
@@ -273,7 +301,25 @@
                                 <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Admin KMC' : ($message->sender?->name ?? 'OPD') }}</div>
                                 <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
                                 @if($message->attachment)
-                                    <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" class="d-block mt-2 small {{ $mine ? 'text-white' : 'text-primary' }}"><i class="fas fa-paperclip me-1"></i>Lihat lampiran</a>
+                                    @php $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)); $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']); $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']); @endphp
+                                    <div class="chat-attach-preview mt-2">
+                                        @if($isImage)
+                                            <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank">
+                                                <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img">
+                                            </a>
+                                        @elseif($isVideo)
+                                            <video controls class="chat-attach-video"><source src="{{ asset('storage/'.$message->attachment) }}" type="video/{{ $ext }}"></video>
+                                        @else
+                                            <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" class="chat-attach-doc {{ $mine ? 'mine' : '' }}">
+                                                <i class="fas fa-file-alt chat-attach-doc-icon"></i>
+                                                <div class="chat-attach-doc-info">
+                                                    <div class="chat-attach-doc-name">{{ basename($message->attachment) }}</div>
+                                                    <div class="chat-attach-doc-meta">{{ strtoupper($ext) }}</div>
+                                                </div>
+                                                <i class="fas fa-download chat-attach-doc-dl"></i>
+                                            </a>
+                                        @endif
+                                    </div>
                                 @endif
                                 <div class="chat-meta">{{ $message->created_at?->format('H:i') }}</div>
                             </article>
