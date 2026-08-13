@@ -83,7 +83,16 @@
                             <div class="text-muted small fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;"><i class="fas fa-user-circle me-1"></i> Info Pelapor</div>
                             <div class="fw-bold text-dark fs-6">{{ $ticket->reporter_name ?? 'Anonim' }}</div>
                             @if($ticket->reporter_link)
-                                <a href="{{ $ticket->reporter_link }}" target="_blank" class="small text-primary text-decoration-none mt-1 d-inline-block fw-semibold"><i class="fas fa-external-link-alt me-1"></i> Buka Sumber Aduan</a>
+                                @php
+                                    $sourceLink = $ticket->reporter_link;
+                                    if (strtolower($ticket->platform ?? '') === 'whatsapp') {
+                                        preg_match('/(?:phone=|wa\.me\/)(\d+)/', $ticket->reporter_link, $phoneMatch);
+                                        $sourceLink = !empty($phoneMatch[1])
+                                            ? 'https://web.whatsapp.com/send?phone=' . $phoneMatch[1]
+                                            : $ticket->reporter_link;
+                                    }
+                                @endphp
+                                <a href="{{ $sourceLink }}" target="_blank" rel="noopener" class="small text-primary text-decoration-none mt-1 d-inline-block fw-semibold"><i class="fas fa-external-link-alt me-1"></i> Buka Sumber Aduan</a>
                             @endif
                         </div>
                     </div>
@@ -111,7 +120,7 @@
         </div>
 
         <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm card-premium d-flex align-items-center justify-content-center mb-4 text-white" style="background-color: #F57C00; border: none; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(245, 124, 0, 0.2) !important;">
-            <i class="fas fa-edit me-2 fa-lg"></i> Perbarui Status & Berikan Tanggapan
+            <i class="fas fa-comment-dots me-2 fa-lg"></i> Berikan Tanggapan
         </a>
     </div>
 

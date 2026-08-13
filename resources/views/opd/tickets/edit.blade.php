@@ -100,7 +100,16 @@
                             <div class="text-muted small fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;"><i class="fas fa-user-circle me-1"></i> Info Pelapor</div>
                             <div class="fw-bold text-dark fs-6">{{ $ticket->reporter_name ?? 'Anonim' }}</div>
                             @if($ticket->reporter_link)
-                                <a href="{{ $ticket->reporter_link }}" target="_blank" class="small text-primary text-decoration-none mt-1 d-inline-block fw-semibold"><i class="fas fa-external-link-alt me-1"></i> Buka Sumber Aduan</a>
+                                @php
+                                    $sourceLink = $ticket->reporter_link;
+                                    if (strtolower($ticket->platform ?? '') === 'whatsapp') {
+                                        preg_match('/(?:phone=|wa\.me\/)(\d+)/', $ticket->reporter_link, $phoneMatch);
+                                        $sourceLink = !empty($phoneMatch[1])
+                                            ? 'https://web.whatsapp.com/send?phone=' . $phoneMatch[1]
+                                            : $ticket->reporter_link;
+                                    }
+                                @endphp
+                                <a href="{{ $sourceLink }}" target="_blank" rel="noopener" class="small text-primary text-decoration-none mt-1 d-inline-block fw-semibold"><i class="fas fa-external-link-alt me-1"></i> Buka Sumber Aduan</a>
                             @endif
                         </div>
                     </div>

@@ -151,8 +151,8 @@
                                 <a href="{{ route('opd.tickets.show', $ticket->id) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium me-1" title="Lihat Detail">
                                     <i class="fas fa-eye me-1"></i> Detail
                                 </a>
-                                <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm shadow-sm rounded-pill px-3 fw-medium text-white" style="background-color: #F57C00; border-color: #F57C00;" title="Perbarui Status & Tanggapan">
-                                    <i class="fas fa-edit me-1"></i> Edit
+                                <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm shadow-sm rounded-pill px-3 fw-medium text-white" style="background-color: #F57C00; border-color: #F57C00;" title="Berikan Tanggapan">
+                                    <i class="fas fa-comment-dots me-1"></i> Berikan Tanggapan
                                 </a>
                             </td>
                         </tr>
