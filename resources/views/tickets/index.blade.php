@@ -320,6 +320,11 @@
                                         <a href="{{ route('tickets.edit', $ticket->id) }}" class="btn btn-sm btn-light border text-warning" title="Edit Tiket">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @if($ticket->assigned_opd_id)
+                                            <a href="{{ route('tickets.chat.show', $ticket) }}" class="btn btn-sm btn-light border text-primary" title="Live Chat dengan OPD">
+                                                <i class="fas fa-comments"></i>
+                                            </a>
+                                        @endif
                                         <form action="{{ route('tickets.destroy', $ticket->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tiket ini?');">
                                             @csrf
                                             @method('DELETE')
