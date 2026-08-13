@@ -275,8 +275,6 @@
             </nav>
 
             <div class="container-fluid px-0">
-                @endif
-
                 @yield('content')
             </div>
         </div>
