@@ -153,7 +153,7 @@ class OpdController extends Controller
         TicketChatMessage::where('ticket_id', $ticket->id)->whereIn('sender_id', $adminIds)
             ->where('read_by_opd', false)->update(['read_by_opd' => true]);
 
-        $ticket->load(['assignedOpd', 'chatMessages.sender']);
+        $ticket->load(['assignedOpd', 'notification', 'chatMessages.sender']);
         return view('opd.chat.show', compact('ticket'));
     }
 
