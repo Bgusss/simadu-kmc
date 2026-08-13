@@ -25,7 +25,9 @@
                     <div class="flex-grow-1 min-w-0">
                         <div class="d-flex justify-content-between gap-3 align-items-center">
                             <strong class="text-dark">{{ $ticket->tracking_number ?? $ticket->ticket_number }}</strong>
-                            @if($last)<small class="text-muted">{{ $last->created_at?->diffForHumans() }}</small>@endif
+                            @if($last)
+                                <small class="text-muted">{{ $last->created_at?->diffForHumans() }}</small>
+                            @endif
                         </div>
                         <div class="small text-muted mt-1"><i class="fas fa-user me-1"></i>{{ $ticket->reporter_name ?? 'Anonim' }} · {{ $ticket->category }}</div>
                         <div class="small text-secondary text-truncate mt-2">{{ $last?->message ?? 'Belum ada percakapan. Mulai diskusi dengan Admin KMC.' }}</div>
