@@ -105,7 +105,6 @@ Route::middleware(['auth', 'role:opd'])->prefix('opd')->name('opd.')->group(func
     Route::get('/tickets/{ticket}', [OpdController::class, 'showTicket'])->name('tickets.show');
     Route::get('/tickets/{ticket}/edit', [OpdController::class, 'editTicket'])->name('tickets.edit');
     Route::post('/tickets/{ticket}/respond', [OpdController::class, 'respond'])->name('tickets.respond');
-    Route::get('/chat', [OpdController::class, 'chatIndex'])->name('chat.index');
     Route::get('/chat/{ticket}', [OpdController::class, 'chatShow'])->name('chat.show');
     Route::post('/chat/{ticket}', [OpdController::class, 'chatSend'])->name('chat.send');
     Route::get('/profile', [OpdController::class, 'profile'])->name('profile');

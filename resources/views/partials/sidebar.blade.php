@@ -56,11 +56,8 @@
         <a href="{{ route('opd.dashboard') }}" class="{{ request()->is('opd') ? 'active' : '' }}">
             <i class="fa-solid fa-chart-line"></i> Dashboard
         </a>
-        <a href="{{ route('opd.tickets.index') }}" class="{{ request()->is('opd/tickets*') ? 'active' : '' }}">
+        <a href="{{ route('opd.tickets.index') }}" class="{{ request()->is('opd/tickets*') || request()->is('opd/chat*') ? 'active' : '' }}">
             <i class="fa-solid fa-ticket"></i> Daftar Tiket
-        </a>
-        <a href="{{ route('opd.chat.index') }}" class="{{ request()->is('opd/chat*') ? 'active' : '' }}">
-            <i class="fa-solid fa-comments"></i> Live Chat
         </a>
     @else
         <a href="{{ route('ticketing.index') }}" class="{{ request()->routeIs('ticketing.*') ? 'active' : '' }}">
