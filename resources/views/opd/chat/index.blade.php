@@ -21,7 +21,7 @@
 <div class="card card-premium overflow-hidden">
     <div class="list-group list-group-flush">
         @forelse($tickets as $ticket)
-            @php $last = $ticket->responses->first(); $unread = $unreadByTicket[$ticket->id] ?? 0; @endphp
+            @php $last = $ticket->chatMessages->first(); $unread = $unreadByTicket[$ticket->id] ?? 0; @endphp
             <a href="{{ route('opd.chat.show', $ticket) }}" class="list-group-item list-group-item-action p-4 border-0 border-bottom">
                 <div class="d-flex gap-3 align-items-center">
                     <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:46px;height:46px"><i class="fas fa-ticket-alt"></i></div>

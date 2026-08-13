@@ -7,6 +7,7 @@ use App\Models\Notification;
 use App\Models\Opd;
 use App\Models\Ticket;
 use App\Models\TicketResponse;
+use App\Models\TicketChatMessage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -213,7 +214,7 @@ class TicketController extends Controller
     public function chatIndex(Request $request)
     {
         $query = Ticket::whereNotNull('assigned_opd_id')
-            ->with(['assignedOpd', 'responses' => fn ($q) => $q->latest()->limit(1)]);
+            ->with(['assignedOpd', 'chatMessages' => fn ($q) => $q->latest()->limit(1)]);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -227,8 +228,8 @@ class TicketController extends Controller
 
         $tickets = $query->latest()->paginate(12)->withQueryString();
         $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
-        $unreadByTicket = TicketResponse::whereIn('ticket_id', $tickets->pluck('id'))
-            ->whereIn('user_id', $opdUserIds)->where('is_read', false)
+        $unreadByTicket = TicketChatMessage::whereIn('ticket_id', $tickets->pluck('id'))
+            ->whereIn('sender_id', $opdUserIds)->where('read_by_admin', false)
             ->selectRaw('ticket_id, count(*) as total')->groupBy('ticket_id')->pluck('total', 'ticket_id');
 
         return view('tickets.chat.index', compact('tickets', 'unreadByTicket'));
@@ -238,9 +239,9 @@ class TicketController extends Controller
     {
         abort_unless($ticket->assigned_opd_id, 404);
         $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
-        TicketResponse::where('ticket_id', $ticket->id)->whereIn('user_id', $opdUserIds)
-            ->where('is_read', false)->update(['is_read' => true]);
-        $ticket->load(['assignedOpd', 'notification', 'responses.user', 'statusLogs.user']);
+        TicketChatMessage::where('ticket_id', $ticket->id)->whereIn('sender_id', $opdUserIds)
+            ->where('read_by_admin', false)->update(['read_by_admin' => true]);
+        $ticket->load(['assignedOpd', 'notification', 'chatMessages.sender', 'statusLogs.user']);
 
         return view('tickets.chat.show', compact('ticket'));
     }
@@ -305,12 +306,13 @@ class TicketController extends Controller
             ? $request->file('attachment')->store('chat-attachments', 'public')
             : null;
 
-        TicketResponse::create([
+        TicketChatMessage::create([
             'ticket_id' => $ticket->id,
-            'user_id' => auth()->id(),
+            'sender_id' => auth()->id(),
             'message' => $validated['message'],
             'attachment' => $attachment,
-            'is_read' => false,
+            'read_by_admin' => true,
+            'read_by_opd' => false,
         ]);
 
         return redirect()->route($request->boolean('return_to_chat') ? 'tickets.chat.show' : 'tickets.show', $ticket)

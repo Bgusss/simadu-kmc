@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Models\TicketResponse;
 use App\Models\TicketStatusLog; // Adjust based on your actual model name
+use App\Models\TicketChatMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -147,7 +148,7 @@ class OpdController extends Controller
     {
         $user = Auth::user();
         $query = Ticket::where('assigned_opd_id', $user->opd_id)
-            ->with(['responses' => fn ($q) => $q->latest()->limit(1)]);
+            ->with(['chatMessages' => fn ($q) => $q->latest()->limit(1)]);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -161,8 +162,8 @@ class OpdController extends Controller
 
         $tickets = $query->latest()->paginate(12)->withQueryString();
         $adminIds = \App\Models\User::where('role', 'admin')->pluck('id');
-        $unreadByTicket = TicketResponse::whereIn('ticket_id', $tickets->pluck('id'))
-            ->whereIn('user_id', $adminIds)->where('is_read', false)
+        $unreadByTicket = TicketChatMessage::whereIn('ticket_id', $tickets->pluck('id'))
+            ->whereIn('sender_id', $adminIds)->where('read_by_opd', false)
             ->selectRaw('ticket_id, count(*) as total')->groupBy('ticket_id')->pluck('total', 'ticket_id');
 
         return view('opd.chat.index', compact('tickets', 'unreadByTicket'));
@@ -174,10 +175,10 @@ class OpdController extends Controller
         if ($ticket->assigned_opd_id !== $user->opd_id) abort(403, 'Unauthorized.');
 
         $adminIds = \App\Models\User::where('role', 'admin')->pluck('id');
-        TicketResponse::where('ticket_id', $ticket->id)->whereIn('user_id', $adminIds)
-            ->where('is_read', false)->update(['is_read' => true]);
+        TicketChatMessage::where('ticket_id', $ticket->id)->whereIn('sender_id', $adminIds)
+            ->where('read_by_opd', false)->update(['read_by_opd' => true]);
 
-        $ticket->load(['responses.user']);
+        $ticket->load(['assignedOpd', 'chatMessages.sender']);
         return view('opd.chat.show', compact('ticket'));
     }
 
@@ -195,9 +196,10 @@ class OpdController extends Controller
             ? $request->file('attachment')->store('chat-attachments', 'public')
             : null;
 
-        TicketResponse::create([
-            'ticket_id' => $ticket->id, 'user_id' => $user->id,
-            'message' => $request->message, 'attachment' => $attachment, 'is_read' => false,
+        TicketChatMessage::create([
+            'ticket_id' => $ticket->id, 'sender_id' => $user->id,
+            'message' => $request->message, 'attachment' => $attachment,
+            'read_by_admin' => false, 'read_by_opd' => true,
         ]);
 
         return redirect()->route('opd.chat.show', $ticket)->with('success', 'Pesan berhasil dikirim ke Admin KMC.');

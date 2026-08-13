@@ -77,6 +77,11 @@ class Ticket extends Model
         return $this->hasMany(TicketResponse::class);
     }
 
+    public function chatMessages()
+    {
+        return $this->hasMany(TicketChatMessage::class);
+    }
+
 
     // ──────────────────────────────────────────────
     //  Update status dengan pencatatan log
