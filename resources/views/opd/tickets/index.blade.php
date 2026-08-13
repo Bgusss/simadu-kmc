@@ -154,6 +154,9 @@
                                 <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm shadow-sm rounded-pill px-3 fw-medium text-white" style="background-color: #F57C00; border-color: #F57C00;" title="Berikan Tanggapan">
                                     <i class="fas fa-comment-dots me-1"></i> Berikan Tanggapan
                                 </a>
+                                <a href="{{ route('opd.chat.show', $ticket) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium ms-1" title="Live Chat dengan Admin KMC">
+                                    <i class="fas fa-comments me-1"></i> Live Chat
+                                </a>
                             </td>
                         </tr>
                     @empty
