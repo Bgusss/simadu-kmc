@@ -211,30 +211,6 @@ class TicketController extends Controller
         return Carbon::now()->format('Ymd-His') . '-X-' . $sequence;
     }
 
-    public function chatIndex(Request $request)
-    {
-        $query = Ticket::whereNotNull('assigned_opd_id')
-            ->with(['assignedOpd', 'chatMessages' => fn ($q) => $q->latest()->limit(1)]);
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('tracking_number', 'like', "%{$search}%")
-                    ->orWhere('ticket_number', 'like', "%{$search}%")
-                    ->orWhere('reporter_name', 'like', "%{$search}%")
-                    ->orWhere('complaint', 'like', "%{$search}%");
-            });
-        }
-
-        $tickets = $query->latest()->paginate(12)->withQueryString();
-        $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
-        $unreadByTicket = TicketChatMessage::whereIn('ticket_id', $tickets->pluck('id'))
-            ->whereIn('sender_id', $opdUserIds)->where('read_by_admin', false)
-            ->selectRaw('ticket_id, count(*) as total')->groupBy('ticket_id')->pluck('total', 'ticket_id');
-
-        return view('tickets.chat.index', compact('tickets', 'unreadByTicket'));
-    }
-
     public function chatShow(Ticket $ticket)
     {
         abort_unless($ticket->assigned_opd_id, 404);

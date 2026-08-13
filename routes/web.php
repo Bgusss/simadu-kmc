@@ -84,7 +84,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
-    Route::get('/tickets/chat', [TicketController::class, 'chatIndex'])->name('tickets.chat.index');
     Route::get('/tickets/chat/{ticket}', [TicketController::class, 'chatShow'])->name('tickets.chat.show');
     Route::post('/tickets/chat/{ticket}', [TicketController::class, 'sendChat'])->name('tickets.chat.send');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
