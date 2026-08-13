@@ -84,12 +84,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    Route::get('/tickets/chat', [TicketController::class, 'chatIndex'])->name('tickets.chat.index');
+    Route::get('/tickets/chat/{ticket}', [TicketController::class, 'chatShow'])->name('tickets.chat.show');
+    Route::post('/tickets/chat/{ticket}', [TicketController::class, 'sendChat'])->name('tickets.chat.send');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
     Route::put('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
     Route::post('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.status');
-    Route::post('/tickets/{ticket}/chat', [TicketController::class, 'sendChat'])->name('tickets.chat.send');
 });
 
 /*

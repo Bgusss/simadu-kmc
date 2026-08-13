@@ -297,13 +297,9 @@
                     </div>
                 </div>
                 <div class="border-top bg-white p-3">
-                    <form action="{{ route('tickets.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 align-items-end">
-                        @csrf
-                        <label for="admin-chat-attachment" class="btn btn-light border mb-0" title="Lampiran"><i class="fas fa-paperclip"></i></label>
-                        <input id="admin-chat-attachment" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.3gp">
-                        <textarea id="admin-chat-message" name="message" class="form-control" rows="2" maxlength="2000" placeholder="Kirim pesan untuk OPD..." required></textarea>
-                        <button class="btn btn-primary px-3" type="submit"><i class="fas fa-paper-plane me-1"></i>Kirim</button>
-                    </form>
+                    <a href="{{ route('tickets.chat.show', $ticket) }}" class="btn btn-primary w-100 fw-bold">
+                        <i class="fas fa-comments me-2"></i>Buka Live Chat dengan OPD
+                    </a>
                 </div>
             </div>
         </div>

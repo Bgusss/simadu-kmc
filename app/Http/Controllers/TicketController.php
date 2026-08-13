@@ -210,6 +210,41 @@ class TicketController extends Controller
         return Carbon::now()->format('Ymd-His') . '-X-' . $sequence;
     }
 
+    public function chatIndex(Request $request)
+    {
+        $query = Ticket::whereNotNull('assigned_opd_id')
+            ->with(['assignedOpd', 'responses' => fn ($q) => $q->latest()->limit(1)]);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_number', 'like', "%{$search}%")
+                    ->orWhere('ticket_number', 'like', "%{$search}%")
+                    ->orWhere('reporter_name', 'like', "%{$search}%")
+                    ->orWhere('complaint', 'like', "%{$search}%");
+            });
+        }
+
+        $tickets = $query->latest()->paginate(12)->withQueryString();
+        $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
+        $unreadByTicket = TicketResponse::whereIn('ticket_id', $tickets->pluck('id'))
+            ->whereIn('user_id', $opdUserIds)->where('is_read', false)
+            ->selectRaw('ticket_id, count(*) as total')->groupBy('ticket_id')->pluck('total', 'ticket_id');
+
+        return view('tickets.chat.index', compact('tickets', 'unreadByTicket'));
+    }
+
+    public function chatShow(Ticket $ticket)
+    {
+        abort_unless($ticket->assigned_opd_id, 404);
+        $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
+        TicketResponse::where('ticket_id', $ticket->id)->whereIn('user_id', $opdUserIds)
+            ->where('is_read', false)->update(['is_read' => true]);
+        $ticket->load(['assignedOpd', 'notification', 'responses.user', 'statusLogs.user']);
+
+        return view('tickets.chat.show', compact('ticket'));
+    }
+
     public function show(Ticket $ticket)
     {
         $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
@@ -278,7 +313,8 @@ class TicketController extends Controller
             'is_read' => false,
         ]);
 
-        return redirect()->route('tickets.show', $ticket)->with('success', 'Pesan berhasil dikirim ke OPD.');
+        return redirect()->route($request->boolean('return_to_chat') ? 'tickets.chat.show' : 'tickets.show', $ticket)
+            ->with('success', 'Pesan berhasil dikirim ke OPD.');
     }
 
     /**
