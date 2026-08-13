@@ -49,9 +49,6 @@
         <a href="{{ route('tickets.index') }}" class="{{ request()->is('tickets') || request()->is('tickets/*') && !request()->is('tickets/chat*') ? 'active' : '' }}">
             <i class="fa-solid fa-ticket"></i> Daftar Tiket
         </a>
-        <a href="{{ route('tickets.chat.index') }}" class="{{ request()->is('tickets/chat*') ? 'active' : '' }}">
-            <i class="fa-solid fa-comments"></i> Live Chat
-        </a>
         <a href="{{ route('admin.opd.index') }}" class="{{ request()->is('admin/opd*') ? 'active' : '' }}">
             <i class="fa-solid fa-building"></i> Manajemen OPD
         </a>
