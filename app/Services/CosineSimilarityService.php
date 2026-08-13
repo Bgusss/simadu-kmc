@@ -17,7 +17,7 @@ class CosineSimilarityService
     private const NORMALIZATION_MAP = [
         'aik' => 'air', 'aiq' => 'air', 'aek' => 'air', 'ayek' => 'air', 'ayik' => 'air',
         'dak' => 'tidak', 'ndak' => 'tidak', 'dek' => 'tidak', 'idak' => 'tidak', 'ngk' => 'tidak', 'ngga' => 'tidak', 'nggak' => 'tidak',
-        'ngalir' => 'mengalir', 'smpai' => 'sampai', 'sdh' => 'sudah', 'blm' => 'belum', 'dgn' => 'dengan', 'yg' => 'yang', 'sy' => 'saya',
+        'ngalir' => 'mengalir', 'lame' => 'lama', 'nyuci' => 'mencuci', 'bise' => 'bisa', 'smpai' => 'sampai', 'sdh' => 'sudah', 'blm' => 'belum', 'dgn' => 'dengan', 'yg' => 'yang', 'sy' => 'saya',
         'galap' => 'gelap', 'parit' => 'drainase', 'pokok' => 'pohon',
         'pju' => 'lampu_jalan', 'lpju' => 'lampu_jalan', 'odgj' => 'gangguan_jiwa', 'gg' => 'gang',
         'jl' => 'jalan', 'jln' => 'jalan', 'pwn' => 'pawan', 'kel' => 'kelurahan', 'ds' => 'desa', 'kec' => 'kecamatan',
@@ -141,9 +141,15 @@ class CosineSimilarityService
         $leftLocations = array_values(array_diff($left, $exclude));
         $rightLocations = array_values(array_diff($right, $exclude));
         if (!$leftLocations || !$rightLocations) return 0.0;
-        $intersection = count(array_intersect(array_unique($leftLocations), array_unique($rightLocations)));
+
+        $shared = array_values(array_intersect(array_unique($leftLocations), array_unique($rightLocations)));
+        $intersection = count($shared);
         $union = count(array_unique([...$leftLocations, ...$rightLocations]));
-        return $union ? $intersection / $union : 0.0;
+        $jaccard = $union ? $intersection / $union : 0.0;
+
+        // Tiga token lokasi yang sama (mis. Jalan Merdeka Gang Mawar) adalah
+        // bukti alamat yang kuat, walau redaksi keluhan berbeda jauh.
+        return $intersection >= 3 ? max($jaccard, 0.80) : $jaccard;
     }
 
     private function conceptSimilarity(array $left, array $right): float
