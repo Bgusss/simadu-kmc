@@ -1,13 +1,16 @@
-@extends('opd.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Live Chat')
+@section('page-title')
+    <i class="fa-solid fa-comments text-primary me-2"></i> Live Chat
+@endsection
 
 @section('content')
 <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
     <div>
         <div class="text-primary fw-bold small text-uppercase" style="letter-spacing:.08em">Komunikasi dengan KMC</div>
-        <h3 class="fw-bold text-dark mb-1"><i class="fas fa-comments text-primary me-2"></i>Live Chat</h3>
-        <p class="text-muted mb-0">Pilih tiket untuk berdiskusi dengan Admin KMC.</p>
+        <h3 class="fw-bold text-dark mb-1">Pilih tiket untuk berdiskusi</h3>
+        <p class="text-muted mb-0">Seluruh percakapan tersimpan pada tiket yang dipilih.</p>
     </div>
     <form method="GET" class="d-flex gap-2" role="search">
         <input id="chat-ticket-search" name="search" value="{{ request('search') }}" class="form-control" placeholder="Cari nomor tiket atau pelapor" aria-label="Cari tiket chat">

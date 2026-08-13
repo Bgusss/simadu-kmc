@@ -1,6 +1,9 @@
-@extends('opd.layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Chat Tiket')
+@section('title', 'Percakapan Tiket')
+@section('page-title')
+    <i class="fa-solid fa-comments text-primary me-2"></i> Live Chat
+@endsection
 
 @section('content')
 <div class="mb-3"><a href="{{ route('opd.chat.index') }}" class="text-decoration-none small fw-semibold"><i class="fas fa-arrow-left me-1"></i>Kembali ke Live Chat</a></div>
