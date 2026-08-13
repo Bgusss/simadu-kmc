@@ -168,7 +168,31 @@
     box-shadow: 0 0 0 .2rem rgba(13,71,161,.12) !important;
 }
 
-/* Side cards */
+/* Attachment dropdown */
+.chat-attach-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.chat-attach-dropdown .dropdown-menu {
+    min-width: 180px;
+    border-radius: 12px;
+    border: 1px solid #e7edf4;
+    padding: 6px 0;
+    font-size: .85rem;
+    bottom: 100%;
+    top: auto;
+    margin-bottom: 6px;
+}
+.chat-attach-dropdown .dropdown-item {
+    padding: 9px 14px;
+}
+.chat-attach-dropdown .dropdown-item:hover {
+    background: #f0f5ff;
+}
+.chat-attach-dropdown .dropdown-item i {
+    width: 20px;
+    text-align: center;
+}
 .chat-side-card .card-header {
     padding: 16px 18px;
     background: #fff;
@@ -293,8 +317,18 @@
                 </div>
                 <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form">
                     @csrf
-                    <label for="opd-chat-attachment" class="btn btn-light border chat-attachment" title="Lampiran"><i class="fas fa-paperclip"></i></label>
-                    <input id="opd-chat-attachment" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.avi,.3gp">
+                    <div class="chat-attach-dropdown dropup">
+                        <button class="btn btn-light border chat-attachment" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Lampiran"><i class="fas fa-paperclip"></i></button>
+                        <ul class="dropdown-menu shadow-lg">
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-attach-doc').click(); return false;"><i class="fas fa-file-alt me-2" style="color:#7c4dff"></i>Dokumen</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-attach-media').click(); return false;"><i class="fas fa-image me-2" style="color:#00bfa5"></i>Foto & Video</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-attach-camera').click(); return false;"><i class="fas fa-camera me-2" style="color:#ff1744"></i>Kamera</a></li>
+                        </ul>
+                    </div>
+                    <input id="opd-attach-doc" name="attachment" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" onchange="this.form.querySelector('.attach-name').textContent=this.files[0]?.name||''">
+                    <input id="opd-attach-media" name="attachment" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp" onchange="this.form.querySelector('.attach-name').textContent=this.files[0]?.name||''">
+                    <input id="opd-attach-camera" name="attachment" type="file" class="d-none" accept="image/*" capture="environment" onchange="this.form.querySelector('.attach-name').textContent=this.files[0]?.name||''">
+                    <span class="attach-name small text-muted text-truncate" style="max-width:120px;display:none"></span>
                     <textarea id="opd-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..." required></textarea>
                     <button class="btn btn-primary chat-send" type="submit" title="Kirim pesan"><i class="fas fa-paper-plane"></i></button>
                 </form>

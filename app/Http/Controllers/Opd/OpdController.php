@@ -164,7 +164,7 @@ class OpdController extends Controller
 
         $request->validate([
             'message' => 'required|string|max:2000',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi,3gp|max:20480',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,3gp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv|max:20480',
         ]);
 
         $attachment = $request->hasFile('attachment')
