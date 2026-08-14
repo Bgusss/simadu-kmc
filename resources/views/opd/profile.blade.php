@@ -72,9 +72,9 @@
                     <h6 class="m-0 fw-bold text-dark"><i class="fa-solid fa-image text-primary me-2"></i> Foto Profil</h6>
                 </div>
                 <div class="card-body p-4 text-center">
-                    <div class="mb-4">
+                    <div class="mb-4" id="opd-photo-preview-container">
                         @if(Auth::user()->profile_photo)
-                            <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile" class="rounded-circle shadow-sm border p-1" style="width: 140px; height: 140px; object-fit: cover;">
+                            <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile" class="rounded-circle shadow-sm border p-1 bg-white" style="width: 140px; height: 140px; object-fit: cover;">
                         @else
                             <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm border border-primary border-opacity-25" style="width: 140px; height: 140px; font-size: 50px;">
                                 <i class="fas fa-user"></i>
@@ -89,7 +89,7 @@
                                 <div class="bg-secondary text-white px-3 py-2 rounded me-3 small fw-bold"><i class="fas fa-image me-1"></i> Pilih Foto</div>
                                 <span class="text-muted small text-truncate" style="flex: 1;" id="filename-profile-opd">Belum ada file...</span>
                             </div>
-                            <input type="file" name="profile_photo" id="profile_photo" class="d-none" accept=".jpg,.jpeg,.png" onchange="document.getElementById('filename-profile-opd').innerText = this.files[0] ? this.files[0].name : 'Belum ada file...'">
+                            <input type="file" name="profile_photo" id="profile_photo" class="d-none" accept=".jpg,.jpeg,.png" onchange="previewProfilePhoto(this, 'filename-profile-opd', 'opd-photo-preview-container')">
                         </label>
                         <div class="form-text mt-2 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> Hanya format <strong>JPG, JPEG, PNG</strong>. Maksimal <strong>2MB</strong>.</div>
                         @error('profile_photo')
@@ -102,4 +102,25 @@
     </div>
 </form>
 </div>
+
+@push('scripts')
+<script>
+function previewProfilePhoto(input, labelId, containerId) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const label = document.getElementById(labelId);
+        if (label) label.innerText = file.name;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = `<img src="${e.target.result}" alt="Pratinjau Foto Profil" class="rounded-circle shadow-sm border p-1 bg-white" style="width: 140px; height: 140px; object-fit: cover;">`;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+@endpush
 @endsection
