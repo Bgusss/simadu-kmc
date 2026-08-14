@@ -77,14 +77,26 @@
     opacity: .72;
 }
 .chat-receipt {
-    display: inline-flex;
-    align-items: center;
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 11px;
     margin-left: 2px;
-    font-size: .68rem;
-    line-height: 1;
-    letter-spacing: -2px;
     vertical-align: -1px;
 }
+.chat-receipt::before,
+.chat-receipt::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 4px;
+    border-left: 1.8px solid currentColor;
+    border-bottom: 1.8px solid currentColor;
+    transform: rotate(-45deg);
+}
+.chat-receipt::before { left: 1px; top: 3px; }
+.chat-receipt::after { left: 6px; top: 3px; }
+.chat-receipt.sent::after { display: none; }
 .chat-receipt.sent { color: currentColor; }
 .chat-receipt.read { color: #f57c00; opacity: 1; }
 .chat-scroll-latest {
@@ -368,7 +380,7 @@
                                 @endif
                                 <div class="chat-meta">{{ $message->created_at?->format('H:i') }}
                                     @if($mine)
-                                        <span class="chat-receipt {{ $message->read_by_admin ? 'read' : 'sent' }}" title="{{ $message->read_by_admin ? 'Dibaca Admin KMC' : 'Terkirim' }}"><i class="fas {{ $message->read_by_admin ? 'fa-check-double' : 'fa-check' }}"></i></span>
+                                        <span class="chat-receipt {{ $message->read_by_admin ? 'read' : 'sent' }}" title="{{ $message->read_by_admin ? 'Dibaca Admin KMC' : 'Terkirim' }}"></span>
                                     @endif
                                 </div>
                             </article>
@@ -687,7 +699,7 @@ async function pollOpdChat() {
                 const receipt = existing.querySelector('.chat-receipt');
                 if (receipt && message.read) {
                     receipt.className = 'chat-receipt read';
-                    receipt.innerHTML = '<i class="fas fa-check-double"></i>';
+                    receipt.innerHTML = '';
                 }
             }
         });
