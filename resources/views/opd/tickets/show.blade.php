@@ -55,8 +55,13 @@
     <!-- Kolom Kiri: Info Tiket & Update Status -->
     <div class="col-lg-7 mb-4">
         <div class="card card-premium mb-4 overflow-hidden">
-            <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
-                <span class="fw-bold"><i class="fas fa-info-circle me-2 text-primary"></i> Informasi Aduan</span>
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fw-bold"><i class="fas fa-info-circle me-2 text-primary"></i> Informasi Aduan</span>
+                    <a href="{{ route('opd.chat.show', $ticket) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold shadow-sm" title="Live Chat dengan Admin KMC">
+                        <i class="fas fa-comments me-1"></i> Live Chat
+                    </a>
+                </div>
                 @php
                     $badgeClass = 'bg-secondary';
                     if($ticket->status == 'diteruskan' || $ticket->status == 'diterima') $badgeClass = 'bg-info text-dark';
@@ -119,9 +124,18 @@
             </div>
         </div>
 
-        <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm card-premium d-flex align-items-center justify-content-center mb-4 text-white" style="background-color: #F57C00; border: none; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(245, 124, 0, 0.2) !important;">
-            <i class="fas fa-comment-dots me-2 fa-lg"></i> Berikan Tanggapan
-        </a>
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+                <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm d-flex align-items-center justify-content-center text-white" style="background-color: #F57C00; border: none; font-size: 1rem; box-shadow: 0 4px 6px rgba(245, 124, 0, 0.2) !important;">
+                    <i class="fas fa-comment-dots me-2 fa-lg"></i> Berikan Tanggapan
+                </a>
+            </div>
+            <div class="col-sm-6">
+                <a href="{{ route('opd.chat.show', $ticket) }}" class="btn btn-primary w-100 fw-bold rounded-pill py-3 shadow-sm d-flex align-items-center justify-content-center text-white" style="font-size: 1rem; box-shadow: 0 4px 6px rgba(13, 71, 161, 0.2) !important;">
+                    <i class="fas fa-comments me-2 fa-lg"></i> Live Chat dengan Admin
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Kolom Kanan: Timeline & Tanggapan -->
