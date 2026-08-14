@@ -11,6 +11,7 @@ use App\Models\AIClassification;
 use App\Services\CosineSimilarityService;
 use App\Services\TfIdfClassificationService;
 use App\Services\FonnteService;
+use App\Services\WhatsAppSpamGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -59,6 +60,23 @@ class PublicComplaintController extends Controller
             'attachments.*.mimes'     => 'Format file tidak didukung. Gunakan JPG, PNG, WEBP, MP4, MOV, atau 3GP.',
             'attachments.*.max'       => 'Ukuran file maksimal 20MB per file.',
         ]);
+
+        $spamCheck = app(WhatsAppSpamGuard::class)->check(
+            FonnteService::formatPhone($request->reporter_phone),
+            $request->complaint
+        );
+
+        if (!$spamCheck['allowed']) {
+            Log::info('PublicComplaint: WhatsApp report filtered', [
+                'sender_hash' => substr(hash('sha256', FonnteService::formatPhone($request->reporter_phone)), 0, 12),
+                'layer' => $spamCheck['layer'],
+                'reason' => $spamCheck['reason'],
+            ]);
+
+            return back()->withInput()->withErrors([
+                'complaint' => 'Pesan tidak dapat diproses karena terdeteksi sebagai spam atau pesan tanpa konteks aduan yang jelas.',
+            ]);
+        }
 
         try {
             // 1. Simpan lampiran (multiple)
