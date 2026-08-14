@@ -442,13 +442,6 @@
                         </button>
                         <span class="fw-bold text-dark fs-6 mb-0">Cari Pesan</span>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="chat-search-date" class="btn btn-sm btn-light border rounded-circle p-0 d-flex align-items-center justify-content-center m-0" style="width: 34px; height: 34px; cursor: pointer;" title="Filter Berdasarkan Tanggal">
-                            <i class="far fa-calendar-alt text-secondary"></i>
-                        </label>
-                        <input type="date" id="chat-search-date" class="d-none" onchange="performChatSearch()">
-                        <button type="button" id="clear-date-btn" class="btn btn-sm btn-outline-danger d-none py-0 px-2" style="font-size: 0.75rem;" onclick="clearSearchDate()" title="Hapus Filter Tanggal"><i class="fas fa-calendar-times me-1"></i>Hapus Tanggal</button>
-                    </div>
                 </div>
 
                 <div class="p-3 pb-2">
