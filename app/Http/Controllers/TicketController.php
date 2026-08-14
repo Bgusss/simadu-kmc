@@ -257,6 +257,7 @@ class TicketController extends Controller
             'id' => $message->id,
             'mine' => $message->sender_id === auth()->id(),
             'sender_name' => $message->sender_id === auth()->id() ? 'Admin KMC' : ($message->sender?->name ?? 'OPD'),
+            'sender_photo' => $message->sender?->profile_photo ? asset('storage/' . $message->sender->profile_photo) : null,
             'message' => $message->message,
             'attachment_url' => $message->attachment ? asset('storage/' . $message->attachment) : null,
             'attachment_name' => $message->attachment ? basename($message->attachment) : null,
