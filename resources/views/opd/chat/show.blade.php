@@ -643,8 +643,7 @@
                     <div class="small text-muted mt-1"><i class="far fa-clock me-1"></i>{{ $ticket->created_at?->format('d M Y, H:i') }} WIB</div>
                 </div>
                 <div class="row g-2 mb-3">
-                    <div class="col-6"><div class="ticket-info-tile"><div class="ticket-label"><i class="fas fa-user me-1"></i>Pelapor</div><div class="fw-semibold small text-dark text-truncate">{{ $ticket->reporter_name ?? 'Anonim' }}</div></div></div>
-                    <div class="col-6"><div class="ticket-info-tile"><div class="ticket-label"><i class="fas fa-building me-1"></i>OPD</div><div class="fw-semibold small text-dark text-truncate">{{ $ticket->assignedOpd?->name ?? '-' }}</div></div></div>
+                    <div class="col-12"><div class="ticket-info-tile"><div class="ticket-label"><i class="fas fa-user me-1"></i>Pelapor</div><div class="fw-semibold small text-dark text-truncate">{{ $ticket->reporter_name ?? 'Anonim' }}</div></div></div>
                     <div class="col-12"><div class="ticket-info-tile"><div class="ticket-label"><i class="fas fa-tag me-1"></i>Kategori Masalah</div><div class="fw-semibold small text-dark">{{ $ticket->category }}</div>@if($ticket->sub_category)<div class="small text-muted">{{ $ticket->sub_category }}</div>@endif</div></div>
                 </div>
                 <div class="complaint-preview">
