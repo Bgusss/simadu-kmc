@@ -107,14 +107,17 @@
                     <img id="cropperImage" src="" alt="Pratinjau Foto" style="max-width: 100%; display: block;">
                 </div>
                 
-                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap bg-white p-2 rounded-3 border shadow-sm mx-auto mb-2" style="max-width: 480px;">
+                <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap bg-white p-2 rounded-3 border shadow-sm mx-auto mb-2" style="max-width: 560px;">
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle px-2.5 py-1" onclick="cropperZoom(0.1)" title="Perbesar"><i class="fas fa-search-plus"></i></button>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle px-2.5 py-1" onclick="cropperZoom(-0.1)" title="Perkecil"><i class="fas fa-search-minus"></i></button>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle px-2.5 py-1" onclick="cropperRotate(-90)" title="Putar Kiri"><i class="fas fa-undo"></i></button>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle px-2.5 py-1" onclick="cropperRotate(90)" title="Putar Kanan"><i class="fas fa-redo"></i></button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle px-2.5 py-1" onclick="cropperFlipX()" title="Balik Horizontal"><i class="fas fa-arrows-alt-h"></i></button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle px-2.5 py-1" onclick="cropperFlipY()" title="Balik Vertikal"><i class="fas fa-arrows-alt-v"></i></button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-semibold" onclick="cropperCenter()" title="Posisikan di Tengah"><i class="fas fa-bullseye me-1"></i>Pusat Tengah</button>
                     <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-1" onclick="cropperReset()"><i class="fas fa-sync-alt me-1"></i>Reset</button>
                 </div>
-                <div class="small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i>Geser dan atur area foto agar pas di dalam lingkaran profil.</div>
+                <div class="small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i>Geser, balik, dan atur area foto agar pas di dalam lingkaran profil.</div>
             </div>
             <div class="modal-footer bg-white border-top-0 py-3">
                 <button type="button" class="btn btn-light border rounded-pill px-4 fw-semibold text-secondary" data-bs-dismiss="modal">
@@ -150,6 +153,8 @@ let currentFileInput = null;
 let currentLabelId = null;
 let currentContainerId = null;
 let originalFileName = 'profile_photo.jpg';
+let scaleXVal = 1;
+let scaleYVal = 1;
 
 function handlePhotoSelect(input, labelId, containerId) {
     if (input.files && input.files[0]) {
@@ -177,6 +182,8 @@ document.getElementById('cropPhotoModal').addEventListener('shown.bs.modal', fun
     if (cropperInstance) {
         cropperInstance.destroy();
     }
+    scaleXVal = 1;
+    scaleYVal = 1;
     cropperInstance = new Cropper(cropperImg, {
         aspectRatio: 1,
         viewMode: 1,
@@ -205,8 +212,37 @@ function cropperZoom(ratio) {
 function cropperRotate(degree) {
     if (cropperInstance) cropperInstance.rotate(degree);
 }
+function cropperFlipX() {
+    if (!cropperInstance) return;
+    scaleXVal = -scaleXVal;
+    cropperInstance.scaleX(scaleXVal);
+}
+function cropperFlipY() {
+    if (!cropperInstance) return;
+    scaleYVal = -scaleYVal;
+    cropperInstance.scaleY(scaleYVal);
+}
+function cropperCenter() {
+    if (!cropperInstance) return;
+    const containerData = cropperInstance.getContainerData();
+    const canvasData = cropperInstance.getCanvasData();
+    const cropBoxData = cropperInstance.getCropBoxData();
+
+    cropperInstance.setCanvasData({
+        left: (containerData.width - canvasData.width) / 2,
+        top: (containerData.height - canvasData.height) / 2
+    });
+    cropperInstance.setCropBoxData({
+        left: (containerData.width - cropBoxData.width) / 2,
+        top: (containerData.height - cropBoxData.height) / 2
+    });
+}
 function cropperReset() {
-    if (cropperInstance) cropperInstance.reset();
+    if (!cropperInstance) return;
+    scaleXVal = 1;
+    scaleYVal = 1;
+    cropperInstance.reset();
+    cropperCenter();
 }
 
 document.getElementById('btnCropSave').addEventListener('click', function () {
