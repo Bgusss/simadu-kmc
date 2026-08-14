@@ -118,7 +118,7 @@
                 </div>
                 
                 <div class="ms-2 text-truncate flex-grow-1" style="max-width: 150px;">
-                    <div class="fw-semibold small text-white text-truncate">{{ Auth::user()->name ?? 'Administrator' }}</div>
+                    <div class="fw-semibold small text-white text-truncate">{{ Auth::user()->name ?? 'Admin' }}</div>
                 </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark shadow border-0 mt-2 rounded-3 w-100" aria-labelledby="sidebarUserDropdown" style="background-color: #071f49; border: 1px solid rgba(255, 255, 255, 0.1) !important;">

@@ -12,17 +12,17 @@ class OpdUserSeeder extends Seeder
 {
 
     /**
-     * Membuat akun user untuk Administrator dan seluruh OPD.
+     * Membuat akun user untuk Admin dan seluruh OPD.
      */
     public function run(): void
     {
 
-        // ─── Akun Administrator ───────────────────────────────────────────
+        // ─── Akun Admin ───────────────────────────────────────────
         // 1. Create Admin account
         User::firstOrCreate(
             ['email' => 'admin@kmc.go.id'],
             [
-                'name' => 'Administrator',
+                'name' => 'Admin',
                 'username' => 'Admin',
                 'password' => Hash::make('000000'),
                 'role' => 'admin',

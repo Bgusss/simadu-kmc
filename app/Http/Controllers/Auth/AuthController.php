@@ -45,7 +45,7 @@ class AuthController extends Controller
 
             // Redirect berdasarkan role pengguna
             return match ($user->role) {
-                'admin' => redirect()->route('admin.dashboard')->with('success', "Selamat datang kembali, {$name}! Anda berhasil masuk sebagai Administrator."),
+                'admin' => redirect()->route('admin.dashboard')->with('success', "Selamat datang kembali, {$name}! Anda berhasil masuk sebagai Admin."),
                 'opd'   => redirect()->route('opd.dashboard')->with('success', "Selamat datang, {$name}! Anda berhasil masuk sebagai OPD."),
                 default => redirect('/login'),
             };
