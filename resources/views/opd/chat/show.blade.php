@@ -122,20 +122,37 @@
     bottom: 195px !important;
 }
 
-/* Image thumbnail hover download button */
-.chat-img-wrap {
+/* Image & Video thumbnail hover download button */
+.chat-img-wrap, .chat-video-wrap {
     position: relative;
     display: inline-block;
     border-radius: 8px;
     overflow: hidden;
+    background: #000;
 }
-.chat-img-wrap .chat-img-dl-btn {
+.chat-video-wrap {
+    max-width: 280px;
+    cursor: pointer;
+}
+.chat-video-wrap .chat-video-play-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.chat-video-wrap:hover .chat-video-play-btn {
+    transform: scale(1.1);
+    background: rgba(13, 71, 161, 0.85);
+}
+.chat-img-wrap .chat-img-dl-btn, .chat-video-wrap .chat-img-dl-btn {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
     transform: translateY(4px);
 }
-.chat-img-wrap:hover .chat-img-dl-btn {
+.chat-img-wrap:hover .chat-img-dl-btn, .chat-video-wrap:hover .chat-img-dl-btn {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -416,16 +433,21 @@
                                                 </a>
                                             </div>
                                         @elseif($isVideo)
-                                            <div class="position-relative d-inline-block">
-                                                <video controls class="chat-attach-video"><source src="{{ asset('storage/'.$message->attachment) }}" type="video/{{ $ext }}"></video>
-                                                <div class="mt-1 d-flex align-items-center justify-content-between gap-2">
-                                                    <button type="button" class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'video')" title="Pratinjau video layar penuh">
-                                                        <i class="fas fa-expand me-1"></i>Pratinjau Modal
-                                                    </button>
-                                                    <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" title="Unduh video">
-                                                        <i class="fas fa-download me-1"></i>Unduh video
-                                                    </a>
+                                            <div class="chat-video-wrap" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'video')">
+                                                <video preload="metadata" class="chat-attach-video d-block w-100" style="max-height:240px; object-fit:cover; pointer-events:none;">
+                                                    <source src="{{ asset('storage/'.$message->attachment) }}#t=0.1" type="video/{{ $ext }}">
+                                                </video>
+                                                <div class="position-absolute top-0 start-0 m-2 text-white opacity-90 small">
+                                                    <i class="fas fa-video"></i>
                                                 </div>
+                                                <div class="position-absolute top-50 start-50 translate-middle">
+                                                    <div class="chat-video-play-btn d-flex align-items-center justify-content-center text-white shadow-lg">
+                                                        <i class="fas fa-play fa-lg ms-1"></i>
+                                                    </div>
+                                                </div>
+                                                <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download onclick="event.stopPropagation();" class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh video">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
                                             </div>
                                         @elseif($isPdf)
                                             <div class="chat-attach-doc {{ $mine ? 'mine' : '' }} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75">
@@ -897,7 +919,7 @@ function opdMessageMarkup(message) {
         if (isImage) {
             attachment = `<div class="chat-attach-preview mt-2"><div class="chat-img-wrap"><button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button><a href="${message.attachment_url}" target="_blank" download class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto"><i class="fas fa-download"></i></a></div></div>`;
         } else if (isVideo) {
-            attachment = `<div class="chat-attach-preview mt-2"><div class="position-relative d-inline-block"><video controls class="chat-attach-video"><source src="${message.attachment_url}" type="video/${ext}"></video><div class="mt-1 d-flex align-items-center justify-content-between gap-2"><button type="button" class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" onclick="openLightbox('${message.attachment_url}', 'video')" title="Pratinjau video layar penuh"><i class="fas fa-expand me-1"></i>Pratinjau Modal</button><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" title="Unduh video"><i class="fas fa-download me-1"></i>Unduh video</a></div></div></div>`;
+            attachment = `<div class="chat-attach-preview mt-2"><div class="chat-video-wrap" onclick="openLightbox('${message.attachment_url}', 'video')"><video preload="metadata" class="chat-attach-video d-block w-100" style="max-height:240px; object-fit:cover; pointer-events:none;"><source src="${message.attachment_url}#t=0.1" type="video/${ext}"></video><div class="position-absolute top-0 start-0 m-2 text-white opacity-90 small"><i class="fas fa-video"></i></div><div class="position-absolute top-50 start-50 translate-middle"><div class="chat-video-play-btn d-flex align-items-center justify-content-center text-white shadow-lg"><i class="fas fa-play fa-lg ms-1"></i></div></div><a href="${message.attachment_url}" target="_blank" download onclick="event.stopPropagation();" class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh video"><i class="fas fa-download"></i></a></div></div>`;
         } else if (isPdf) {
             attachment = `<div class="chat-attach-preview mt-2"><div class="chat-attach-doc ${mineClass} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75"><div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('${message.attachment_url}', 'pdf')"><i class="fas fa-file-pdf text-danger fs-3 flex-shrink-0"></i><div class="chat-attach-doc-info text-truncate"><div class="chat-attach-doc-name fw-bold text-dark text-truncate small">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta text-muted" style="font-size: 0.75rem;"><i class="fas fa-eye me-1"></i>Klik untuk pratinjau PDF</div></div></div><div class="d-flex align-items-center gap-1 flex-shrink-0"><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2" title="Unduh PDF"><i class="fas fa-download"></i></a></div></div></div>`;
         } else {
