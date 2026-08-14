@@ -77,28 +77,20 @@
     opacity: .72;
 }
 .chat-receipt {
-    position: relative;
     display: inline-block;
     width: 15px;
-    height: 10px;
+    height: 12px;
     margin-left: 2px;
-    vertical-align: -1px;
+    vertical-align: -2px;
+    color: currentColor;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6.5 9 9.5 15 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6.5 9 9.5 15 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.chat-receipt::before,
-.chat-receipt::after {
-    content: '';
-    position: absolute;
-    width: 7px;
-    height: 4px;
-    border-right: 1.8px solid currentColor;
-    border-bottom: 1.8px solid currentColor;
-    transform: rotate(45deg);
-    transform-origin: center;
+.chat-receipt.sent {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
-.chat-receipt::before { left: 1px; top: 1px; }
-.chat-receipt::after { left: 6px; top: 1px; }
-.chat-receipt.sent::after { display: none; }
-.chat-receipt.sent { color: currentColor; }
 .chat-receipt.read { color: #f57c00; opacity: 1; }
 .chat-scroll-latest {
     position: absolute; right: 18px; bottom: 16px;
