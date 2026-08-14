@@ -361,9 +361,8 @@
                         <button type="button" class="btn-close btn-close-sm" onclick="cancelReply()"></button>
                     </div>
                 </div>
-                <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form">
+                <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form" id="opd-chat-form">
                     @csrf
-                    <input id="opd-attach-real" name="attachment" type="file" class="d-none">
                     <div class="chat-attach-dropdown dropup">
                         <button class="btn btn-light border chat-attachment" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Lampiran"><i class="fas fa-paperclip"></i></button>
                         <ul class="dropdown-menu shadow-lg">
@@ -372,13 +371,13 @@
                             <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-camera').click(); return false;"><i class="fas fa-camera me-2" style="color:#ff1744"></i>Kamera</a></li>
                         </ul>
                     </div>
+                    <input id="opd-pick-doc" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
+                    <input id="opd-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
+                    <input id="opd-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
                     <span class="attach-name small text-muted text-truncate d-none" id="opd-attach-label" style="max-width:140px"></span>
                     <textarea id="opd-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..." required></textarea>
                     <button class="btn btn-primary chat-send" type="submit" title="Kirim pesan"><i class="fas fa-paper-plane"></i></button>
                 </form>
-                <input id="opd-pick-doc" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
-                <input id="opd-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
-                <input id="opd-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
             </footer>
         </div>
     </div>
@@ -510,18 +509,17 @@ function showMsgInfo(id, time, sender) {
     modal.show();
 }
 
-// Attachment picker → real input bridge
+// Native attachment selection: only the chosen picker receives name="attachment".
 ['opd-pick-doc','opd-pick-media','opd-pick-camera'].forEach(function(id) {
     document.getElementById(id).addEventListener('change', function() {
         if (this.files.length) {
-            var real = document.getElementById('opd-attach-real');
+            ['opd-pick-doc','opd-pick-media','opd-pick-camera'].forEach(function(pickerId) {
+                document.getElementById(pickerId).removeAttribute('name');
+            });
+            this.name = 'attachment';
             var label = document.getElementById('opd-attach-label');
-            var dt = new DataTransfer();
-            dt.items.add(this.files[0]);
-            real.files = dt.files;
             label.textContent = this.files[0].name;
             label.classList.remove('d-none');
-            label.style.display = '';
         }
     });
 });
