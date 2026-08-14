@@ -16,18 +16,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     @if(session('success'))
     Swal.fire({
+        toast: true,
+        position: 'top-end',
         icon: 'success',
-        title: 'Berhasil!',
-        text: @json(session('success')),
-        showConfirmButton: true,
-        confirmButtonColor: '#0d47a1',
-        confirmButtonText: 'Selesai',
-        timer: 4500,
+        title: @json(session('success')),
+        showConfirmButton: false,
+        timer: 3500,
         timerProgressBar: true,
-        customClass: {
-            popup: 'rounded-4 shadow-lg border-0',
-            confirmButton: 'px-4 py-2 rounded-3 fw-bold'
-        }
+        customClass: { popup: 'swal-toast-custom swal-toast-success' }
     });
     @endif
 
