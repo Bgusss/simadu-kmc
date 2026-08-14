@@ -196,6 +196,28 @@
 .chat-attach-doc-meta { font-size: .68rem; opacity: .6; }
 .chat-attach-doc-dl { font-size: .85rem; opacity: .5; flex-shrink: 0; }
 
+/* Attachment preview before send */
+.composer-file-preview {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 8px 10px;
+    margin-bottom: 10px; border-radius: 10px;
+    background: #eef4ff; border-left: 3px solid #0d47a1;
+}
+.composer-file-preview img {
+    width: 48px; height: 48px; object-fit: cover;
+    border-radius: 7px; flex-shrink: 0;
+}
+.composer-file-icon {
+    width: 48px; height: 48px; border-radius: 7px;
+    display: grid; place-items: center; flex-shrink: 0;
+    background: #dfeaff; color: #0d47a1; font-size: 1.4rem;
+}
+.composer-file-info { min-width: 0; flex: 1; }
+.composer-file-name { font-size: .78rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.composer-file-meta { font-size: .68rem; color: #64748b; margin-top: 2px; }
+.composer-file-remove { border: 0; background: transparent; color: #64748b; padding: 5px; }
+.composer-file-remove:hover { color: #dc3545; }
+
 /* Attachment dropdown */
 .chat-attach-dropdown {
     position: relative;
@@ -361,6 +383,14 @@
                         <button type="button" class="btn-close btn-close-sm" onclick="cancelReply()"></button>
                     </div>
                 </div>
+                <div id="admin-file-preview" class="composer-file-preview d-none" aria-live="polite">
+                    <div id="admin-file-visual" class="composer-file-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="composer-file-info">
+                        <div id="admin-file-name" class="composer-file-name"></div>
+                        <div id="admin-file-meta" class="composer-file-meta"></div>
+                    </div>
+                    <button type="button" class="composer-file-remove" onclick="clearSelectedAttachment('admin')" aria-label="Hapus lampiran"><i class="fas fa-times"></i></button>
+                </div>
                 <form action="{{ route('tickets.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form" id="admin-chat-form">
                     @csrf
                     <input type="hidden" name="return_to_chat" value="1">
@@ -518,19 +548,40 @@ function showMsgInfo(id, time, sender) {
     modal.show();
 }
 
-// Native attachment selection: only the chosen picker receives name="attachment".
+// Native attachment selection with immediate local preview.
 ['admin-pick-doc','admin-pick-media','admin-pick-camera'].forEach(function(id) {
     document.getElementById(id).addEventListener('change', function() {
-        if (this.files.length) {
-            ['admin-pick-doc','admin-pick-media','admin-pick-camera'].forEach(function(pickerId) {
-                document.getElementById(pickerId).removeAttribute('name');
-            });
-            this.name = 'attachment';
-            var label = document.getElementById('admin-attach-label');
-            label.textContent = this.files[0].name;
-            label.classList.remove('d-none');
-        }
+        if (!this.files.length) return;
+        ['admin-pick-doc','admin-pick-media','admin-pick-camera'].forEach(function(pickerId) {
+            document.getElementById(pickerId).removeAttribute('name');
+        });
+        this.name = 'attachment';
+        showAttachmentPreview('admin', this.files[0]);
     });
 });
+function showAttachmentPreview(role, file) {
+    var preview = document.getElementById(role + '-file-preview');
+    var visual = document.getElementById(role + '-file-visual');
+    var name = document.getElementById(role + '-file-name');
+    var meta = document.getElementById(role + '-file-meta');
+    var label = document.getElementById(role + '-attach-label');
+    name.textContent = file.name;
+    meta.textContent = (file.type || 'File') + ' · ' + (file.size / 1024 / 1024).toFixed(file.size >= 1024 * 1024 ? 1 : 2) + ' MB';
+    visual.innerHTML = file.type.indexOf('image/') === 0
+        ? '<img src="' + URL.createObjectURL(file) + '" alt="Pratinjau lampiran">'
+        : '<i class="fas ' + (file.type.indexOf('video/') === 0 ? 'fa-video' : 'fa-file-alt') + '"></i>';
+    label.textContent = file.name;
+    label.classList.remove('d-none');
+    preview.classList.remove('d-none');
+}
+function clearSelectedAttachment(role) {
+    [role + '-pick-doc', role + '-pick-media', role + '-pick-camera'].forEach(function(id) {
+        var input = document.getElementById(id);
+        input.value = '';
+        input.removeAttribute('name');
+    });
+    document.getElementById(role + '-file-preview').classList.add('d-none');
+    document.getElementById(role + '-attach-label').classList.add('d-none');
+}
 </script>
 @endpush
