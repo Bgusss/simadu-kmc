@@ -233,17 +233,23 @@ class OpdController extends Controller
         return redirect()->route('opd.chat.show', $ticket)->with('success', 'Pesan berhasil dikirim ke Admin KMC.');
     }
 
-    public function chatDelete(TicketChatMessage $message)
+    public function chatDelete(Request $request, TicketChatMessage $message)
     {
         $user = Auth::user();
 
         if ($message->sender_id !== $user->id) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['message' => 'Anda hanya bisa menghapus pesan sendiri.'], 403);
+            }
             abort(403, 'Anda hanya bisa menghapus pesan sendiri.');
         }
 
         $ticket = $message->ticket;
 
         if ($ticket->assigned_opd_id !== $user->opd_id) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['message' => 'Unauthorized.'], 403);
+            }
             abort(403, 'Unauthorized.');
         }
 
@@ -251,7 +257,16 @@ class OpdController extends Controller
             \Illuminate\Support\Facades\Storage::disk('public')->delete($message->attachment);
         }
 
+        $deletedId = $message->id;
         $message->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesan berhasil dihapus.',
+                'deleted_id' => $deletedId,
+            ]);
+        }
 
         return redirect()->route('opd.chat.show', $ticket)
             ->with('success', 'Pesan berhasil dihapus.');

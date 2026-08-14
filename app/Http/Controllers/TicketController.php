@@ -347,9 +347,12 @@ class TicketController extends Controller
             ->with('success', 'Pesan berhasil dikirim ke OPD.');
     }
 
-    public function deleteChat(TicketChatMessage $message)
+    public function deleteChat(Request $request, TicketChatMessage $message)
     {
         if ($message->sender_id !== auth()->id()) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['message' => 'Anda hanya bisa menghapus pesan sendiri.'], 403);
+            }
             abort(403, 'Anda hanya bisa menghapus pesan sendiri.');
         }
 
@@ -359,7 +362,16 @@ class TicketController extends Controller
             \Illuminate\Support\Facades\Storage::disk('public')->delete($message->attachment);
         }
 
+        $deletedId = $message->id;
         $message->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesan berhasil dihapus.',
+                'deleted_id' => $deletedId,
+            ]);
+        }
 
         return redirect()->route('tickets.chat.show', $ticket)
             ->with('success', 'Pesan berhasil dihapus.');

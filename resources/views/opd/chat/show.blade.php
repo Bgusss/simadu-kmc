@@ -505,7 +505,7 @@
                                     @if($mine)
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form action="{{ route('opd.chat.delete', $message) }}" method="POST" onsubmit="return confirm('Hapus pesan ini?')">
+                                        <form action="{{ route('opd.chat.delete', $message) }}" method="POST" onsubmit="deleteMsgAjax(event, this)">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button>
                                         </form>
@@ -704,6 +704,33 @@ function copyMsg(el) {
         el.innerHTML = '<i class="fas fa-check me-2 text-success"></i>Tersalin!';
         setTimeout(() => { el.innerHTML = orig; }, 1500);
     });
+}
+
+// Delete message via AJAX
+async function deleteMsgAjax(event, form) {
+    event.preventDefault();
+    if (!confirm('Hapus pesan ini?')) return;
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin',
+        });
+        if (!response.ok) throw new Error('Gagal menghapus pesan.');
+        const data = await response.json();
+        if (data.success && data.deleted_id) {
+            const msgEl = chatCanvas.querySelector('[data-chat-message-id="' + data.deleted_id + '"]');
+            if (msgEl) {
+                msgEl.style.transition = 'all 0.25s ease';
+                msgEl.style.opacity = '0';
+                msgEl.style.transform = 'scale(0.9)';
+                setTimeout(() => msgEl.remove(), 250);
+            }
+        }
+    } catch (error) {
+        alert(error.message || 'Gagal menghapus pesan. Coba lagi.');
+    }
 }
 
 // Reply to message
@@ -934,7 +961,9 @@ function opdMessageMarkup(message) {
     const replyText = message.message || '';
     const replyAttachment = message.attachment_url || message.attachment_name || '';
     const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(replySender)}, ${JSON.stringify(replyText)}, ${JSON.stringify(replyAttachment)}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>${copyMenuItem}</ul></div></div></div>`;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(replySender)}, ${JSON.stringify(replyText)}, ${JSON.stringify(replyAttachment)}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 async function pollOpdChat() {
     if (opdPolling || document.hidden) return;
@@ -944,6 +973,20 @@ async function pollOpdChat() {
         const response = await fetch('{{ route('opd.chat.poll', $ticket) }}', { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' });
         if (!response.ok) return;
         const data = await response.json();
+
+        // Sync deleted messages in real-time
+        const activeIds = new Set(data.messages.map(m => m.id));
+        const renderedElements = chatCanvas.querySelectorAll('[data-chat-message-id]');
+        renderedElements.forEach(function(el) {
+            const id = parseInt(el.getAttribute('data-chat-message-id'));
+            if (id && !activeIds.has(id)) {
+                el.style.transition = 'all 0.25s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'scale(0.9)';
+                setTimeout(() => el.remove(), 250);
+            }
+        });
+
         data.messages.forEach(function(message) {
             const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
             if (!existing) chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(message));
