@@ -254,12 +254,13 @@
     background-color: #f1f5f9 !important;
 }
 .chat-bubble-wrap.search-active {
-    filter: drop-shadow(0px 0px 1.8px #f57c00) drop-shadow(0px 0px 1.8px #f57c00) drop-shadow(0px 4px 12px rgba(245, 124, 0, 0.35)) !important;
+    filter: drop-shadow(1px 0 0 #f57c00) drop-shadow(-1px 0 0 #f57c00) drop-shadow(0 1px 0 #f57c00) drop-shadow(0 -1px 0 #f57c00) drop-shadow(0 4px 14px rgba(245, 124, 0, 0.35)) !important;
     animation: searchPulse 1.4s ease-in-out infinite alternate !important;
 }
 .chat-bubble-wrap.search-active .chat-message {
     background: #fff7ed !important;
     color: #1e293b !important;
+    border: none !important;
 }
 .chat-bubble-wrap.search-active .chat-message.mine {
     background: #0d47a1 !important;
@@ -277,10 +278,10 @@
 }
 @keyframes searchPulse {
     from {
-        filter: drop-shadow(0px 0px 1.5px #f57c00) drop-shadow(0px 0px 1.5px #f57c00) drop-shadow(0px 2px 8px rgba(245, 124, 0, 0.25));
+        filter: drop-shadow(1px 0 0 #f57c00) drop-shadow(-1px 0 0 #f57c00) drop-shadow(0 1px 0 #f57c00) drop-shadow(0 -1px 0 #f57c00) drop-shadow(0 2px 8px rgba(245, 124, 0, 0.25));
     }
     to {
-        filter: drop-shadow(0px 0px 2.2px #ff9800) drop-shadow(0px 0px 2.2px #ff9800) drop-shadow(0px 6px 18px rgba(245, 124, 0, 0.55));
+        filter: drop-shadow(1.5px 0 0 #ff9800) drop-shadow(-1.5px 0 0 #ff9800) drop-shadow(0 1.5px 0 #ff9800) drop-shadow(0 -1.5px 0 #ff9800) drop-shadow(0 6px 18px rgba(245, 124, 0, 0.55));
     }
 }
 
