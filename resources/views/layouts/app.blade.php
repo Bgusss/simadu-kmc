@@ -629,16 +629,88 @@
             }
         }
 
-        function clearImagePreview(inputId, previewBoxId, fileNameId) {
-            var input = document.getElementById(inputId);
-            var box = document.getElementById(previewBoxId);
-            var fileNameEl = fileNameId ? document.getElementById(fileNameId) : null;
+        // Global Live Image Preview Modal Helper
+        let currentPreviewInputId = null;
+        let currentPreviewFileNameId = null;
 
-            if (input) input.value = '';
-            if (box) box.classList.add('d-none');
-            if (fileNameEl) fileNameEl.textContent = 'Belum ada file...';
+        function previewImageInModal(input, fileNameId) {
+            if (!input || !input.files || !input.files[0]) return;
+            var file = input.files[0];
+            var fileNameEl = fileNameId ? document.getElementById(fileNameId) : null;
+            if (fileNameEl) fileNameEl.textContent = file.name;
+
+            currentPreviewInputId = input.id;
+            currentPreviewFileNameId = fileNameId;
+
+            var previewBtn = document.getElementById(input.id + '-btn-preview');
+            if (previewBtn) previewBtn.classList.remove('d-none');
+
+            if (file.type.indexOf('image/') === 0) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var modalImg = document.getElementById('globalImagePreviewModalImg');
+                    var modalFileName = document.getElementById('globalImagePreviewModalFileName');
+                    if (modalImg) modalImg.src = e.target.result;
+                    if (modalFileName) modalFileName.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+
+                    var modalEl = document.getElementById('globalImagePreviewModal');
+                    if (modalEl && typeof bootstrap !== 'undefined') {
+                        var bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                        bsModal.show();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openCurrentPreviewModal() {
+            var modalEl = document.getElementById('globalImagePreviewModal');
+            if (modalEl && typeof bootstrap !== 'undefined') {
+                var bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                bsModal.show();
+            }
+        }
+
+        function clearGlobalImagePreviewModal() {
+            if (currentPreviewInputId) {
+                var input = document.getElementById(currentPreviewInputId);
+                if (input) input.value = '';
+                var previewBtn = document.getElementById(currentPreviewInputId + '-btn-preview');
+                if (previewBtn) previewBtn.classList.add('d-none');
+            }
+            if (currentPreviewFileNameId) {
+                var fileNameEl = document.getElementById(currentPreviewFileNameId);
+                if (fileNameEl) fileNameEl.textContent = 'Belum ada file...';
+            }
+            var modalEl = document.getElementById('globalImagePreviewModal');
+            if (modalEl && typeof bootstrap !== 'undefined') {
+                var instance = bootstrap.Modal.getInstance(modalEl);
+                if (instance) instance.hide();
+            }
         }
     </script>
+
+    <!-- Global Image Attachment Preview Modal -->
+    <div class="modal fade" id="globalImagePreviewModal" tabindex="-1" aria-labelledby="globalImagePreviewModalLabel" aria-hidden="true" style="z-index: 1090;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+                <div class="modal-header bg-light border-bottom py-3 px-4">
+                    <h5 class="modal-title fw-bold text-dark fs-6 mb-0" id="globalImagePreviewModalLabel">
+                        <i class="fas fa-image me-2 text-primary"></i>Pratinjau Lampiran Gambar
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center bg-dark bg-opacity-10 d-flex flex-column align-items-center justify-content-center" style="min-height: 260px; max-height: 70vh; overflow-y: auto;">
+                    <img id="globalImagePreviewModalImg" src="#" alt="Pratinjau Gambar" class="img-fluid rounded-3 shadow" style="max-height: 60vh; object-fit: contain;">
+                    <div id="globalImagePreviewModalFileName" class="mt-3 small fw-semibold text-secondary bg-white px-3 py-1 rounded-pill border shadow-sm"></div>
+                </div>
+                <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="clearGlobalImagePreviewModal()"><i class="fas fa-trash-alt me-1"></i>Hapus Lampiran</button>
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-4" data-bs-dismiss="modal">Gunakan Foto Ini</button>
+                </div>
+            </div>
+        </div>
+    </div>
     @include('partials.flash-toast')
     <script>
         document.addEventListener("DOMContentLoaded", function() {

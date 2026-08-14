@@ -166,18 +166,17 @@
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold">Lampiran Bukti (Opsional)</label>
-                        <label class="d-block m-0">
-                            <div class="form-control form-premium shadow-none d-flex align-items-center" style="cursor: pointer; padding: 0.4rem;">
-                                <div class="bg-secondary text-white px-3 py-2 rounded me-3 small fw-bold"><i class="fas fa-folder-open me-1"></i> Pilih File</div>
-                                <span class="text-muted small text-truncate" style="flex: 1;" id="filename-respond">Belum ada file...</span>
-                            </div>
-                            <input type="file" id="opd-respond-file" name="attachment" class="d-none" accept=".jpg,.jpeg,.png" onchange="previewImageAttachment(this, 'opd-respond-preview-box', 'opd-respond-img-preview', 'filename-respond')">
-                        </label>
-
-                        <!-- Live Image Preview Box -->
-                        <div id="opd-respond-preview-box" class="d-none mt-2 position-relative d-inline-block border rounded-3 overflow-hidden shadow-sm p-1 bg-white">
-                            <img id="opd-respond-img-preview" src="#" alt="Pratinjau Gambar" style="max-height: 150px; width: auto; object-fit: contain; border-radius: 8px; display: block;">
-                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0 m-2 p-0 d-flex align-items-center justify-content-center shadow" style="width:24px; height:24px;" onclick="clearImagePreview('opd-respond-file', 'opd-respond-preview-box', 'filename-respond')" title="Hapus Gambar"><i class="fas fa-times"></i></button>
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="flex-grow-1 m-0">
+                                <div class="form-control form-premium shadow-none d-flex align-items-center" style="cursor: pointer; padding: 0.4rem;">
+                                    <div class="bg-secondary text-white px-3 py-2 rounded me-3 small fw-bold"><i class="fas fa-folder-open me-1"></i> Pilih File</div>
+                                    <span class="text-muted small text-truncate" style="flex: 1;" id="filename-respond">Belum ada file...</span>
+                                </div>
+                                <input type="file" id="opd-respond-file" name="attachment" class="d-none" accept=".jpg,.jpeg,.png" onchange="previewImageInModal(this, 'filename-respond')">
+                            </label>
+                            <button type="button" id="opd-respond-file-btn-preview" class="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 flex-shrink-0 d-none" onclick="openCurrentPreviewModal()" title="Lihat Pratinjau Foto">
+                                <i class="fas fa-eye me-1"></i>Pratinjau
+                            </button>
                         </div>
 
                         <div class="form-text mt-2 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> Hanya format <strong>JPG, JPEG, PNG</strong>. Maksimal <strong>5MB</strong>.</div>

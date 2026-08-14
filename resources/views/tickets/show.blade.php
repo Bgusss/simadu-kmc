@@ -215,14 +215,13 @@
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.3px;">Lampiran Bukti (Opsional)</label>
-                        <input type="file" id="admin-status-file" name="attachment" class="form-control" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewImageAttachment(this, 'admin-status-preview-box', 'admin-status-img-preview')">
-                        
-                        <!-- Live Image Preview Box -->
-                        <div id="admin-status-preview-box" class="d-none mt-2 position-relative d-inline-block border rounded-3 overflow-hidden shadow-sm p-1 bg-white">
-                            <img id="admin-status-img-preview" src="#" alt="Pratinjau Gambar" style="max-height: 150px; width: auto; object-fit: contain; border-radius: 8px; display: block;">
-                            <button type="button" class="btn btn-sm btn-danger rounded-circle position-absolute top-0 end-0 m-2 p-0 d-flex align-items-center justify-content-center shadow" style="width:24px; height:24px;" onclick="clearImagePreview('admin-status-file', 'admin-status-preview-box')" title="Hapus Gambar"><i class="fas fa-times"></i></button>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="file" id="admin-status-file" name="attachment" class="form-control flex-grow-1" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewImageInModal(this, 'filename-admin-status')">
+                            <button type="button" id="admin-status-file-btn-preview" class="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 flex-shrink-0 d-none" onclick="openCurrentPreviewModal()" title="Lihat Pratinjau Foto">
+                                <i class="fas fa-eye me-1"></i>Pratinjau
+                            </button>
                         </div>
-
+                        <div id="filename-admin-status" class="d-none"></div>
                         <div class="form-text mt-1 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> JPG, JPEG, PNG — Maks 5MB</div>
                     </div>
                     <button type="submit" class="btn text-dark fw-bold w-100 rounded-pill py-2" style="background-color: #ffc107; border: none; box-shadow: 0 4px 6px rgba(255, 193, 7, 0.2);">
