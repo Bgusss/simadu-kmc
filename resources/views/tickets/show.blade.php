@@ -32,6 +32,21 @@
 </style>
 
 <div class="row">
+    @if(session('success'))
+    <div class="col-12 mb-3">
+        <div class="alert alert-success shadow-sm border-0 rounded-4 alert-dismissible fade show p-3" role="alert" style="background-color: #dcfce7; color: #15803d; border-left: 5px solid #22c55e !important;">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-check-circle me-3 fs-4 text-success"></i>
+                <div>
+                    <strong class="fs-6 d-block mb-0">Berhasil!</strong>
+                    <span class="small">{{ session('success') }}</span>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    @endif
+
     @if($errors->any())
     <div class="col-12 mb-3">
         <div class="alert alert-danger shadow-sm border-0 rounded-3">
