@@ -216,7 +216,11 @@ class TicketController extends Controller
         abort_unless($ticket->assigned_opd_id, 404);
         $opdUserIds = \App\Models\User::where('role', 'opd')->pluck('id');
         TicketChatMessage::where('ticket_id', $ticket->id)->whereIn('sender_id', $opdUserIds)
-            ->where('read_by_admin', false)->update(['read_by_admin' => true]);
+            ->where('read_by_admin', false)->update([
+                'read_by_admin' => true,
+                'delivered_at' => now(),
+                'read_at' => now(),
+            ]);
         $ticket->load(['assignedOpd', 'notification', 'chatMessages.sender', 'statusLogs.user']);
 
         return view('tickets.chat.show', compact('ticket'));
@@ -230,7 +234,11 @@ class TicketController extends Controller
         TicketChatMessage::where('ticket_id', $ticket->id)
             ->whereIn('sender_id', $opdUserIds)
             ->where('read_by_admin', false)
-            ->update(['read_by_admin' => true]);
+            ->update([
+                'read_by_admin' => true,
+                'delivered_at' => now(),
+                'read_at' => now(),
+            ]);
 
         return response()->json([
             'messages' => TicketChatMessage::with('sender')->where('ticket_id', $ticket->id)->orderBy('id')->get()
@@ -252,6 +260,8 @@ class TicketController extends Controller
             'attachment_type' => $extension,
             'created_at' => $message->created_at?->format('H:i'),
             'read' => (bool) $message->read_by_opd,
+            'delivered_at' => $message->delivered_at?->format('d M Y, H:i'),
+            'read_at' => $message->read_at?->format('d M Y, H:i'),
         ];
     }
 

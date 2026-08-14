@@ -11,6 +11,14 @@ class TicketChatMessage extends Model
         'ticket_id', 'sender_id', 'message', 'attachment', 'read_by_admin', 'read_by_opd',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'delivered_at' => 'datetime',
+            'read_at' => 'datetime',
+        ];
+    }
+
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);

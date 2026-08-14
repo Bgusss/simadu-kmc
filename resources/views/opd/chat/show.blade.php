@@ -21,6 +21,7 @@
     flex-direction: column;
     height: calc(100vh - 200px);
     min-height: 500px;
+    position: relative;
 }
 
 /* Header */
@@ -93,7 +94,7 @@
 }
 .chat-receipt.read { color: #f57c00; opacity: 1; }
 .chat-scroll-latest {
-    position: absolute; right: 18px; bottom: 16px;
+    position: absolute; right: 18px; bottom: 82px;
     width: 42px; height: 42px; border: 0; border-radius: 50%;
     display: grid; place-items: center;
     background: #fff; color: #0d47a1;
@@ -354,9 +355,9 @@
                                     @php $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)); $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']); $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']); @endphp
                                     <div class="chat-attach-preview mt-2">
                                         @if($isImage)
-                                            <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank">
-                                                <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img">
-                                            </a>
+                                            <button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
+                                                <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img lightbox-img">
+                                            </button>
                                         @elseif($isVideo)
                                             <video controls class="chat-attach-video"><source src="{{ asset('storage/'.$message->attachment) }}" type="video/{{ $ext }}"></video>
                                         @else
@@ -381,7 +382,7 @@
                             <div class="chat-msg-actions">
                                 <button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
                                 <ul class="dropdown-menu dropdown-menu-{{ $mine ? 'end' : 'start' }} chat-ctx-menu shadow-lg">
-                                    <li><a class="dropdown-item" href="#" onclick="showMsgInfo({{ $message->id }}, '{{ $message->created_at?->format('d M Y, H:i') }}', '{{ $mine ? 'Anda' : addslashes($message->sender?->name ?? 'Admin KMC') }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showMsgInfo('{{ $message->created_at?->format('d M Y, H:i') }}', '{{ $mine ? 'Anda' : addslashes($message->sender?->name ?? 'Admin KMC') }}', '{{ $mine ? ($message->delivered_at?->format('d M Y, H:i') ?? '-') : '-' }}', '{{ $mine ? ($message->read_at?->format('d M Y, H:i') ?? '-') : '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode(Str::limit($message->message, 60)) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
                                     @if($mine)
@@ -406,8 +407,8 @@
                         </div>
                     </div>
                 @endforelse
-                <button id="opd-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
             </div>
+            <button id="opd-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
 
             <footer class="chat-composer">
                 <div id="reply-preview" class="reply-preview d-none">
@@ -437,7 +438,6 @@
                     <input id="opd-pick-doc" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
                     <input id="opd-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
                     <input id="opd-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
-                    <span class="attach-name small text-muted text-truncate d-none" id="opd-attach-label" style="max-width:140px"></span>
                     <textarea id="opd-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..."></textarea>
                     <button id="opd-chat-send" class="btn btn-primary chat-send" type="submit" title="Kirim pesan" disabled><i class="fas fa-paper-plane"></i></button>
                 </form>
@@ -594,28 +594,12 @@ function cancelReply() {
 }
 
 // Message info modal
-function showMsgInfo(id, time, sender) {
+function showMsgInfo(time, sender, deliveredAt, readAt) {
     const old = document.getElementById('msgInfoModal');
     if (old) old.remove();
-    
-    const html = `
-    <div class="modal fade msg-info-modal" id="msgInfoModal" tabindex="-1">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white py-2">
-                    <h6 class="modal-title fw-bold"><i class="fas fa-info-circle me-2"></i>Info Pesan</h6>
-                    <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Pengirim</span><div class="fw-semibold">${sender}</div></div>
-                    <div><span class="text-muted small text-uppercase fw-bold">Waktu</span><div class="fw-semibold">${time}</div></div>
-                </div>
-            </div>
-        </div>
-    </div>`;
+    const html = `<div class="modal fade msg-info-modal" id="msgInfoModal" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white py-2"><h6 class="modal-title fw-bold"><i class="fas fa-info-circle me-2"></i>Info Pesan</h6><button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Pengirim</span><div class="fw-semibold">${sender}</div></div><div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Waktu</span><div class="fw-semibold">${time}</div></div><div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Tersampaikan</span><div class="fw-semibold">${deliveredAt || '-'}</div></div><div><span class="text-muted small text-uppercase fw-bold">Dibaca</span><div class="fw-semibold">${readAt || '-'}</div></div></div></div></div></div>`;
     document.body.insertAdjacentHTML('beforeend', html);
-    const modal = new bootstrap.Modal(document.getElementById('msgInfoModal'));
-    modal.show();
+    new bootstrap.Modal(document.getElementById('msgInfoModal')).show();
 }
 
 // Native attachment selection with immediate local preview.
@@ -641,8 +625,10 @@ function showAttachmentPreview(role, file) {
     visual.innerHTML = file.type.indexOf('image/') === 0
         ? '<img src="' + URL.createObjectURL(file) + '" alt="Pratinjau lampiran">'
         : '<i class="fas ' + (file.type.indexOf('video/') === 0 ? 'fa-video' : 'fa-file-alt') + '"></i>';
-    label.textContent = file.name;
-    label.classList.remove('d-none');
+    if (label) {
+        label.textContent = file.name;
+        label.classList.remove('d-none');
+    }
     preview.classList.remove('d-none');
 }
 function clearSelectedAttachment(role) {
@@ -652,7 +638,8 @@ function clearSelectedAttachment(role) {
         input.removeAttribute('name');
     });
     document.getElementById(role + '-file-preview').classList.add('d-none');
-    document.getElementById(role + '-attach-label').classList.add('d-none');
+    const label = document.getElementById(role + '-attach-label');
+    if (label) label.classList.add('d-none');
     updateOpdSendState();
 }
 
@@ -670,7 +657,7 @@ function opdMessageMarkup(message) {
     const videoTypes = ['mp4', 'mov', 'avi', '3gp', 'webm'];
     let attachment = '';
     if (message.attachment_url) {
-        if (imageTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img"></a></div>`;
+        if (imageTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button></div>`;
         else if (videoTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><video controls class="chat-attach-video"><source src="${message.attachment_url}"></video></div>`;
         else attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank" class="chat-attach-doc ${message.mine ? 'mine' : ''}"><i class="fas fa-file-alt chat-attach-doc-icon"></i><div class="chat-attach-doc-info"><div class="chat-attach-doc-name">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta">${escapeChatText(message.attachment_type || 'FILE').toUpperCase()}</div></div><i class="fas fa-download chat-attach-doc-dl"></i></a></div>`;
     }
