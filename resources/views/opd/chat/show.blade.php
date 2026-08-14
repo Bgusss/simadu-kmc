@@ -237,12 +237,15 @@
     flex: 1 1 auto;
     min-width: 0;
     min-height: 42px;
+    max-height: 140px;
     border: 1px solid #dce4ee;
     border-radius: 18px !important;
     resize: none;
     box-shadow: none !important;
     padding: 10px 14px;
-    line-height: 1.3;
+    line-height: 1.35;
+    overflow-y: auto;
+    transition: height 0.1s ease-out;
 }
 .chat-input:focus {
     border-color: #0d47a1;
@@ -667,7 +670,26 @@ function updateOpdSendState() {
     const hasAttachment = ['opd-pick-doc','opd-pick-media','opd-pick-camera'].some(id => document.getElementById(id).files.length > 0);
     document.getElementById('opd-chat-send').disabled = !message.value.trim() && !hasAttachment;
 }
-document.getElementById('opd-chat-message').addEventListener('input', updateOpdSendState);
+function autoResizeChatInput(inputEl) {
+    if (!inputEl) return;
+    inputEl.style.height = 'auto';
+    const newHeight = Math.min(inputEl.scrollHeight, 140);
+    inputEl.style.height = Math.max(newHeight, 42) + 'px';
+}
+const opdChatMsgEl = document.getElementById('opd-chat-message');
+if (opdChatMsgEl) {
+    opdChatMsgEl.addEventListener('input', function() {
+        updateOpdSendState();
+        autoResizeChatInput(this);
+    });
+    opdChatMsgEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('opd-chat-form').requestSubmit();
+        }
+    });
+}
+
 document.getElementById('opd-chat-form').addEventListener('submit', async function(event) {
     event.preventDefault();
     updateOpdSendState();
@@ -686,13 +708,15 @@ document.getElementById('opd-chat-form').addEventListener('submit', async functi
         if (!chatCanvas.querySelector('[data-chat-message-id="' + data.message.id + '"]')) {
             chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(data.message));
         }
-        document.getElementById('opd-chat-message').value = '';
+        opdChatMsgEl.value = '';
+        autoResizeChatInput(opdChatMsgEl);
         clearSelectedAttachment('opd');
         chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
     } catch (error) {
         alert(error.message || 'Pesan tidak dapat dikirim. Coba lagi.');
     } finally {
         updateOpdSendState();
+        autoResizeChatInput(opdChatMsgEl);
     }
 });
 

@@ -237,12 +237,15 @@
     flex: 1 1 auto;
     min-width: 0;
     min-height: 42px;
+    max-height: 140px;
     border: 1px solid #dce4ee;
     border-radius: 18px !important;
     resize: none;
     box-shadow: none !important;
     padding: 10px 14px;
-    line-height: 1.3;
+    line-height: 1.35;
+    overflow-y: auto;
+    transition: height 0.1s ease-out;
 }
 .chat-input:focus {
     border-color: #0d47a1;
@@ -675,7 +678,26 @@ function updateAdminSendState() {
     const hasAttachment = ['admin-pick-doc','admin-pick-media','admin-pick-camera'].some(id => document.getElementById(id).files.length > 0);
     document.getElementById('admin-chat-send').disabled = !message.value.trim() && !hasAttachment;
 }
-document.getElementById('admin-chat-message').addEventListener('input', updateAdminSendState);
+function autoResizeChatInput(inputEl) {
+    if (!inputEl) return;
+    inputEl.style.height = 'auto';
+    const newHeight = Math.min(inputEl.scrollHeight, 140);
+    inputEl.style.height = Math.max(newHeight, 42) + 'px';
+}
+const adminChatMsgEl = document.getElementById('admin-chat-message');
+if (adminChatMsgEl) {
+    adminChatMsgEl.addEventListener('input', function() {
+        updateAdminSendState();
+        autoResizeChatInput(this);
+    });
+    adminChatMsgEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('admin-chat-form').requestSubmit();
+        }
+    });
+}
+
 document.getElementById('admin-chat-form').addEventListener('submit', async function(event) {
     event.preventDefault();
     updateAdminSendState();
@@ -694,13 +716,15 @@ document.getElementById('admin-chat-form').addEventListener('submit', async func
         if (!chatCanvas.querySelector('[data-chat-message-id="' + data.message.id + '"]')) {
             chatCanvas.insertAdjacentHTML('beforeend', adminMessageMarkup(data.message));
         }
-        document.getElementById('admin-chat-message').value = '';
+        adminChatMsgEl.value = '';
+        autoResizeChatInput(adminChatMsgEl);
         clearSelectedAttachment('admin');
         chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
     } catch (error) {
         alert(error.message || 'Pesan tidak dapat dikirim. Coba lagi.');
     } finally {
         updateAdminSendState();
+        autoResizeChatInput(adminChatMsgEl);
     }
 });
 
