@@ -780,6 +780,7 @@
         <i class="fas fa-times"></i>
     </button>
     <img id="lightboxImg" src="" alt="Preview" style="max-width:92vw; max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
+    <video id="lightboxVideo" controls style="display:none; max-width:92vw; max-height:88vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; outline:none; animation:lightboxIn 0.25s ease;"></video>
 </div>
 <style>
     @keyframes lightboxIn {
@@ -800,14 +801,38 @@
     }
 </style>
 <script>
-    function openLightbox(src) {
+    function openLightbox(src, isVideo) {
         var lb = document.getElementById('globalLightbox');
-        document.getElementById('lightboxImg').src = src;
+        var img = document.getElementById('lightboxImg');
+        var vid = document.getElementById('lightboxVideo');
+        if (isVideo) {
+            if (img) img.style.display = 'none';
+            if (vid) {
+                vid.src = src;
+                vid.style.display = 'block';
+                vid.play().catch(function(){});
+            }
+        } else {
+            if (vid) {
+                vid.pause();
+                vid.style.display = 'none';
+                vid.src = '';
+            }
+            if (img) {
+                img.src = src;
+                img.style.display = 'block';
+            }
+        }
         lb.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
     function closeLightbox() {
         var lb = document.getElementById('globalLightbox');
+        var vid = document.getElementById('lightboxVideo');
+        if (vid) {
+            vid.pause();
+            vid.src = '';
+        }
         lb.style.display = 'none';
         document.body.style.overflow = '';
     }
@@ -822,7 +847,7 @@
         if (img) {
             e.preventDefault();
             e.stopPropagation();
-            openLightbox(img.src);
+            openLightbox(img.src, false);
         }
     });
 </script>

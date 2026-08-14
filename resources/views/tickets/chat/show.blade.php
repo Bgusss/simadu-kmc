@@ -418,10 +418,12 @@
                     </div>
                 </div>
                 <div id="admin-file-preview" class="composer-file-preview d-none" aria-live="polite">
-                    <div id="admin-file-visual" class="composer-file-icon"><i class="fas fa-file-alt"></i></div>
-                    <div class="composer-file-info">
-                        <div id="admin-file-name" class="composer-file-name"></div>
-                        <div id="admin-file-meta" class="composer-file-meta"></div>
+                    <div id="admin-file-body" class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden" style="cursor: pointer;" title="Klik untuk melihat pratinjau" onclick="previewAttachmentModal('admin')">
+                        <div id="admin-file-visual" class="composer-file-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="composer-file-info">
+                            <div id="admin-file-name" class="composer-file-name"></div>
+                            <div id="admin-file-meta" class="composer-file-meta"></div>
+                        </div>
                     </div>
                     <button type="button" class="composer-file-remove" onclick="clearSelectedAttachment('admin')" aria-label="Hapus lampiran"><i class="fas fa-times"></i></button>
                 </div>
@@ -622,33 +624,76 @@ function showMsgInfo(time, sender, deliveredAt, readAt) {
         updateAdminSendState();
     });
 });
+let selectedAttachmentUrls = { admin: null, opd: null };
+
 function showAttachmentPreview(role, file) {
     var preview = document.getElementById(role + '-file-preview');
     var visual = document.getElementById(role + '-file-visual');
     var name = document.getElementById(role + '-file-name');
     var meta = document.getElementById(role + '-file-meta');
     var label = document.getElementById(role + '-attach-label');
+
+    if (selectedAttachmentUrls[role]) {
+        URL.revokeObjectURL(selectedAttachmentUrls[role]);
+    }
+    const fileUrl = URL.createObjectURL(file);
+    selectedAttachmentUrls[role] = fileUrl;
+
+    const isImage = file.type.indexOf('image/') === 0;
+    const isVideo = file.type.indexOf('video/') === 0;
+
+    preview.dataset.fileUrl = fileUrl;
+    preview.dataset.fileType = isImage ? 'image' : (isVideo ? 'video' : 'doc');
+
     name.textContent = file.name;
-    meta.textContent = (file.type || 'File') + ' · ' + (file.size / 1024 / 1024).toFixed(file.size >= 1024 * 1024 ? 1 : 2) + ' MB';
-    visual.innerHTML = file.type.indexOf('image/') === 0
-        ? '<img src="' + URL.createObjectURL(file) + '" alt="Pratinjau lampiran">'
-        : '<i class="fas ' + (file.type.indexOf('video/') === 0 ? 'fa-video' : 'fa-file-alt') + '"></i>';
+    meta.textContent = (file.type || 'File') + ' · ' + (file.size / 1024 / 1024).toFixed(file.size >= 1024 * 1024 ? 1 : 2) + ' MB (Klik untuk melihat)';
+    visual.innerHTML = isImage
+        ? '<img src="' + fileUrl + '" alt="Pratinjau lampiran">'
+        : '<i class="fas ' + (isVideo ? 'fa-video' : 'fa-file-alt') + '"></i>';
+
     if (label) {
         label.textContent = file.name;
         label.classList.remove('d-none');
     }
     preview.classList.remove('d-none');
 }
+
+function previewAttachmentModal(role) {
+    var preview = document.getElementById(role + '-file-preview');
+    if (!preview || !preview.dataset.fileUrl) return;
+    const url = preview.dataset.fileUrl;
+    const type = preview.dataset.fileType;
+    if (type === 'image') {
+        openLightbox(url, false);
+    } else if (type === 'video') {
+        openLightbox(url, true);
+    } else {
+        window.open(url, '_blank');
+    }
+}
+
 function clearSelectedAttachment(role) {
     [role + '-pick-doc', role + '-pick-media', role + '-pick-camera'].forEach(function(id) {
         var input = document.getElementById(id);
-        input.value = '';
-        input.removeAttribute('name');
+        if (input) {
+            input.value = '';
+            input.removeAttribute('name');
+        }
     });
-    document.getElementById(role + '-file-preview').classList.add('d-none');
+    var preview = document.getElementById(role + '-file-preview');
+    if (preview) {
+        preview.classList.add('d-none');
+        delete preview.dataset.fileUrl;
+        delete preview.dataset.fileType;
+    }
+    if (selectedAttachmentUrls[role]) {
+        URL.revokeObjectURL(selectedAttachmentUrls[role]);
+        selectedAttachmentUrls[role] = null;
+    }
     const label = document.getElementById(role + '-attach-label');
     if (label) label.classList.add('d-none');
-    updateAdminSendState();
+    if (role === 'admin') updateAdminSendState();
+    else if (role === 'opd') updateOpdSendState();
 }
 
 // Refresh-free chat polling
