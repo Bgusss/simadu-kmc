@@ -1127,19 +1127,23 @@
             toast.style.cssText = 'pointer-events: auto; width: 360px; max-width: 100%; border-radius: 16px !important; box-shadow: 0 14px 36px rgba(15,23,42,0.18) !important; border: 1px solid #e2e8f0; transition: transform 0.25s ease, opacity 0.25s ease; cursor: pointer;';
 
             var avatarHtml = notif.sender_photo 
-                ? '<img src="' + notif.sender_photo + '" alt="' + escapeChatText(notif.sender_name) + '" class="rounded-circle flex-shrink-0" style="width: 26px; height: 26px; object-fit: cover;">'
-                : '<div class="rounded-circle bg-primary text-white flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; font-size: 0.75rem;"><i class="' + (notif.channel_icon || 'fas fa-comments') + '"></i></div>';
+                ? '<img src="' + notif.sender_photo + '" alt="' + escapeChatText(notif.sender_name) + '" class="rounded-circle flex-shrink-0" style="width: 32px; height: 32px; object-fit: cover;">'
+                : '<div class="rounded-circle bg-primary text-white flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem;"><i class="' + (notif.channel_icon || 'fas fa-comments') + '"></i></div>';
 
             var timeText = notif.created_at || 'baru saja';
+            var trackingText = notif.tracking_number ? 'Tiket #' + notif.tracking_number : 'Livechat Tiket';
             var msgSnippet = notif.message ? (notif.message.length > 95 ? notif.message.substring(0, 95) + '...' : notif.message) : 'Mengirim lampiran';
 
-            toast.innerHTML = '<div class="p-3 pb-25">' +
-                '<div class="d-flex align-items-center justify-content-between mb-2">' +
-                    '<div class="d-flex align-items-center gap-2 overflow-hidden pe-2">' +
+            toast.innerHTML = '<div class="p-3">' +
+                '<div class="d-flex align-items-start justify-content-between mb-2">' +
+                    '<div class="d-flex align-items-center gap-2.5 overflow-hidden pe-2">' +
                         avatarHtml +
-                        '<span class="fw-bold text-dark text-truncate" style="font-size: 0.9rem;">' + escapeChatText(notif.sender_name) + '</span>' +
+                        '<div class="d-flex flex-column overflow-hidden">' +
+                            '<div class="fw-bold text-dark text-truncate" style="font-size: 0.9rem; line-height: 1.2;">' + escapeChatText(notif.sender_name) + '</div>' +
+                            '<div class="text-primary fw-semibold text-truncate mt-0.5" style="font-size: 0.72rem; line-height: 1.2;"><i class="fas fa-comments me-1"></i>Livechat · ' + escapeChatText(trackingText) + '</div>' +
+                        '</div>' +
                     '</div>' +
-                    '<span class="text-muted flex-shrink-0" style="font-size: 0.75rem;">' + escapeChatText(timeText) + '</span>' +
+                    '<span class="text-muted flex-shrink-0" style="font-size: 0.75rem; margin-top: 2px;">' + escapeChatText(timeText) + '</span>' +
                 '</div>' +
                 '<div class="text-secondary" style="font-size: 0.85rem; line-height: 1.45; word-break: break-word;">' + escapeChatText(msgSnippet) + '</div>' +
             '</div>' +

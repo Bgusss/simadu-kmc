@@ -1424,6 +1424,7 @@ async function pollAdminChat() {
                             window.showGlobalChatToast({
                                 id: message.id,
                                 ticket_id: {{ $ticket->id }},
+                                tracking_number: '{{ $ticket->tracking_number ?? $ticket->ticket_number }}',
                                 sender_name: message.sender_name,
                                 sender_photo: message.sender_photo,
                                 message: message.message,
