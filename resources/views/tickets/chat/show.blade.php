@@ -427,8 +427,12 @@
                                             $readAtVal = $message->read_at ?? ($message->read_by_opd ? ($message->updated_at ?? $message->created_at) : null);
                                         @endphp
                                         <li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '{{ $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') }}', 'Admin KMC', '{{ $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}', '{{ $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
-                                    @endif
-                                    <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode(Str::limit($message->message, 60)) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
+                                    @php
+                                        $replySender = $mine ? 'Anda' : ($message->sender?->name ?? 'OPD');
+                                        $replyText = $message->message ?? '';
+                                        $replyAttachment = $message->attachment ?? '';
+                                    @endphp
+                                    <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode($replySender) }}, {{ json_encode($replyText) }}, {{ json_encode($replyAttachment) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
                                     @if($mine)
                                     <li><hr class="dropdown-divider"></li>
@@ -456,10 +460,13 @@
             <button id="admin-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
 
             <footer class="chat-composer">
-                <div id="reply-preview" class="reply-preview d-none">
+                <div id="reply-preview" class="reply-preview d-none mb-2 p-2 rounded-3 border-start border-4 border-primary shadow-sm" style="background-color: rgba(13, 71, 161, 0.06) !important;">
                     <div class="d-flex align-items-center justify-content-between">
-                        <div class="small text-primary fw-semibold text-truncate" id="reply-preview-text"></div>
-                        <button type="button" class="btn-close btn-close-sm" onclick="cancelReply()"></button>
+                        <div class="overflow-hidden pe-2" style="min-width: 0;">
+                            <div class="fw-bold text-primary small text-truncate mb-0" id="reply-preview-sender" style="font-size: 0.78rem;"></div>
+                            <div class="small text-dark text-truncate" id="reply-preview-text" style="font-size: 0.82rem;"></div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="cancelReply()" aria-label="Batal balas"></button>
                     </div>
                 </div>
                 <div id="admin-file-preview" class="composer-file-preview d-none" aria-live="polite">
@@ -640,12 +647,43 @@ function copyMsg(el) {
 }
 
 // Reply to message
-function replyMsg(msgId, preview) {
+function replyMsg(msgId, senderName, text, attachment) {
     const box = document.getElementById('reply-preview');
-    const text = document.getElementById('reply-preview-text');
+    const senderEl = document.getElementById('reply-preview-sender');
+    const textEl = document.getElementById('reply-preview-text');
+    
+    let contentHtml = '';
+    if (attachment) {
+        const ext = attachment.split('.').pop().toLowerCase();
+        let icon = 'fa-file-alt text-secondary';
+        let typeName = 'Dokumen';
+        if (['jpg','jpeg','png','webp','gif'].includes(ext)) {
+            icon = 'fa-camera text-primary';
+            typeName = 'Foto';
+        } else if (['mp4','mov','avi','3gp','webm'].includes(ext)) {
+            icon = 'fa-video text-primary';
+            typeName = 'Video';
+        } else if (ext === 'pdf') {
+            icon = 'fa-file-pdf text-danger';
+            typeName = 'PDF';
+        }
+
+        const fileName = attachment.split('/').pop();
+        if (text && text.trim() !== '') {
+            contentHtml = `<i class="fas ${icon} me-1"></i> <span class="fw-semibold">${typeName}:</span> ${escapeChatText(text)}`;
+        } else {
+            contentHtml = `<i class="fas ${icon} me-1"></i> <span class="fw-semibold">${typeName}</span> ${typeName === 'Foto' || typeName === 'Video' ? '' : '<span class="text-muted small ms-1">(' + escapeChatText(fileName) + ')</span>'}`;
+        }
+    } else {
+        contentHtml = escapeChatText(text || 'Pesan');
+    }
+
+    if (senderEl) senderEl.textContent = senderName || 'Pesan';
+    if (textEl) textEl.innerHTML = contentHtml;
+
     box.classList.remove('d-none');
-    text.textContent = preview;
-    document.getElementById('admin-chat-message').focus();
+    const msgInput = document.getElementById('admin-chat-message');
+    if (msgInput) msgInput.focus();
 }
 function cancelReply() {
     document.getElementById('reply-preview').classList.add('d-none');
@@ -824,10 +862,10 @@ function adminMessageMarkup(message) {
         }
     }
     const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
-    const infoDelivered = message.delivered_at || '-';
-    const infoRead = message.read_at || '-';
-    const infoMenuItem = message.mine ? `<li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '${escapeChatText(message.created_at)}', '${escapeChatText(message.sender_name)}', '${escapeChatText(infoDelivered)}', '${escapeChatText(infoRead)}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(message.message ? message.message.substring(0,60) : 'Lampiran')}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li><li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li></ul></div></div></div>`;
+    const replySender = message.mine ? 'Anda' : message.sender_name;
+    const replyText = message.message || '';
+    const replyAttachment = message.attachment_url || message.attachment_name || '';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(replySender)}, ${JSON.stringify(replyText)}, ${JSON.stringify(replyAttachment)}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li><li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li></ul></div></div></div>`;
 }
 async function pollAdminChat() {
     if (adminPolling || document.hidden) return;
