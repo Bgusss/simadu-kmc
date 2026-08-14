@@ -255,23 +255,39 @@
 }
 .chat-bubble-wrap.search-active .chat-message,
 .chat-message.search-active {
-    box-shadow: 0 0 0 2.5px #f57c00, 0 4px 18px rgba(245, 124, 0, 0.4) !important;
+    border: 2.5px solid #f57c00 !important;
+    background-color: #fff7ed !important;
+    color: #1e293b !important;
+    box-shadow: 0 4px 18px rgba(245, 124, 0, 0.35) !important;
     animation: searchPulse 1.4s ease-in-out infinite alternate !important;
 }
-.chat-bubble-wrap.search-active .chat-message.mine::after,
-.chat-message.search-active.mine::after {
-    filter: drop-shadow(2px 0 0 #f57c00);
+.chat-bubble-wrap.search-active .chat-message.mine,
+.chat-message.search-active.mine {
+    background-color: #0d47a1 !important;
+    color: #ffffff !important;
 }
 .chat-bubble-wrap.search-active .chat-message.theirs::after,
 .chat-message.search-active.theirs::after {
-    filter: drop-shadow(-2px 0 0 #f57c00);
+    background-color: #fff7ed !important;
+    top: -2.5px !important;
+    left: -8.5px !important;
+    filter: drop-shadow(-2.5px 0 0 #f57c00);
+}
+.chat-bubble-wrap.search-active .chat-message.mine::after,
+.chat-message.search-active.mine::after {
+    background-color: #0d47a1 !important;
+    top: -2.5px !important;
+    right: -8.5px !important;
+    filter: drop-shadow(2.5px 0 0 #f57c00);
 }
 @keyframes searchPulse {
     from {
-        box-shadow: 0 0 0 2.5px #f57c00, 0 2px 10px rgba(245, 124, 0, 0.3);
+        border-color: #f57c00;
+        box-shadow: 0 2px 10px rgba(245, 124, 0, 0.3);
     }
     to {
-        box-shadow: 0 0 0 3.5px #ff9800, 0 6px 22px rgba(245, 124, 0, 0.6);
+        border-color: #ff9800;
+        box-shadow: 0 6px 22px rgba(245, 124, 0, 0.6);
     }
 }
 
