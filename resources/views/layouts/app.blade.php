@@ -31,6 +31,11 @@
             --kmc-orange-hover: #e65100;
         }
 
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: #f8fafc;
@@ -1062,6 +1067,23 @@
             return node.innerHTML;
         }
 
+        function playIncomingMessageChime() {
+            try {
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var osc = audioCtx.createOscillator();
+                var gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {}
+        }
+
         async function checkGlobalUnreadChatNotifications() {
             if (document.hidden) return;
             try {
@@ -1088,73 +1110,62 @@
 
         function showGlobalChatToast(notif) {
             var container = document.getElementById('global-chat-toast-container');
-            if (!container) return;
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'global-chat-toast-container';
+                container.style.cssText = 'position: fixed; top: 20px; right: 24px; z-index: 1090; display: flex; flex-direction: column; gap: 10px; max-width: 380px; width: calc(100vw - 48px); pointer-events: none;';
+                document.body.appendChild(container);
+            }
+
+            playIncomingMessageChime();
 
             var currentPath = window.location.pathname;
             var isCurrentChatPage = currentPath.indexOf('/chat/' + notif.ticket_id) !== -1;
 
             var toast = document.createElement('div');
-            toast.className = 'chat-toast-item p-3 mb-2 rounded-4 shadow-lg border bg-white fade show';
-            toast.style.cssText = 'max-width: 360px; transition: all 0.3s ease; position: relative; pointer-events: auto;';
+            toast.className = 'chat-toast-item bg-white overflow-hidden fade show position-relative';
+            toast.style.cssText = 'pointer-events: auto; width: 360px; max-width: 100%; border-radius: 16px !important; box-shadow: 0 14px 36px rgba(15,23,42,0.18) !important; border: 1px solid #e2e8f0; transition: transform 0.25s ease, opacity 0.25s ease; cursor: pointer;';
 
             var avatarHtml = notif.sender_photo 
-                ? '<img src="' + notif.sender_photo + '" alt="' + escapeChatText(notif.sender_name) + '" class="rounded-circle overflow-hidden flex-shrink-0" style="width: 40px; height: 40px; object-fit: cover;">'
-                : '<div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="fas fa-comment-dots fs-5"></i></div>';
+                ? '<img src="' + notif.sender_photo + '" alt="' + escapeChatText(notif.sender_name) + '" class="rounded-circle flex-shrink-0" style="width: 26px; height: 26px; object-fit: cover;">'
+                : '<div class="rounded-circle bg-primary text-white flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; font-size: 0.75rem;"><i class="' + (notif.channel_icon || 'fas fa-comments') + '"></i></div>';
 
-            if (isCurrentChatPage) {
-                // NOT CLICKABLE on current chat page
-                toast.style.cursor = 'default';
-                toast.innerHTML = '<div class="d-flex align-items-start gap-3">' +
-                    avatarHtml +
-                    '<div class="flex-grow-1 overflow-hidden">' +
-                        '<div class="d-flex align-items-center justify-content-between mb-1">' +
-                            '<span class="fw-bold text-dark small text-truncate">' + escapeChatText(notif.sender_name) + '</span>' +
-                            '<span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.65rem;">Pesan Baru</span>' +
-                        '</div>' +
-                        '<div class="small text-secondary text-truncate mb-1" style="font-size: 0.75rem;">' +
-                            '<i class="fas fa-ticket-alt me-1 text-primary"></i>' + escapeChatText(notif.tracking_number) +
-                        '</div>' +
-                        '<div class="small text-dark text-truncate" style="font-size: 0.82rem;">' + escapeChatText(notif.message) + '</div>' +
+            var timeText = notif.created_at || 'baru saja';
+            var msgSnippet = notif.message ? (notif.message.length > 95 ? notif.message.substring(0, 95) + '...' : notif.message) : 'Mengirim lampiran';
+
+            toast.innerHTML = '<div class="p-3 pb-25">' +
+                '<div class="d-flex align-items-center justify-content-between mb-2">' +
+                    '<div class="d-flex align-items-center gap-2 overflow-hidden pe-2">' +
+                        avatarHtml +
+                        '<span class="fw-bold text-dark text-truncate" style="font-size: 0.9rem;">' + escapeChatText(notif.sender_name) + '</span>' +
                     '</div>' +
-                    '<button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="this.closest(\'.chat-toast-item\').remove()"></button>' +
-                '</div>';
-            } else {
-                // CLICKABLE on all other pages
-                toast.style.cursor = 'pointer';
-                toast.innerHTML = '<div class="d-flex align-items-start gap-3">' +
-                    avatarHtml +
-                    '<div class="flex-grow-1 overflow-hidden">' +
-                        '<div class="d-flex align-items-center justify-content-between mb-1">' +
-                            '<span class="fw-bold text-dark small text-truncate">' + escapeChatText(notif.sender_name) + '</span>' +
-                            '<span class="small text-muted" style="font-size: 0.7rem;">' + escapeChatText(notif.created_at) + '</span>' +
-                        '</div>' +
-                        '<div class="small text-primary fw-semibold text-truncate mb-1" style="font-size: 0.75rem;">' +
-                            '<i class="fas fa-ticket-alt me-1"></i>' + escapeChatText(notif.tracking_number) + ' <i class="fas fa-arrow-right ms-1" style="font-size:0.65rem;"></i>' +
-                        '</div>' +
-                        '<div class="small text-dark text-truncate" style="font-size: 0.82rem;">' + escapeChatText(notif.message) + '</div>' +
-                    '</div>' +
-                    '<button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="event.stopPropagation(); this.closest(\'.chat-toast-item\').remove()"></button>' +
-                '</div>';
-                toast.addEventListener('click', function(e) {
-                    if (!e.target.closest('.btn-close')) {
-                        window.location.href = notif.chat_url;
-                    }
-                });
-            }
+                    '<span class="text-muted flex-shrink-0" style="font-size: 0.75rem;">' + escapeChatText(timeText) + '</span>' +
+                '</div>' +
+                '<div class="text-secondary" style="font-size: 0.85rem; line-height: 1.45; word-break: break-word;">' + escapeChatText(msgSnippet) + '</div>' +
+            '</div>' +
+            '<div class="toast-progress-bar" style="height: 4px; background: linear-gradient(90deg, #0d47a1, #f57c00); width: 100%; animation: toastProgress 4.8s linear forwards;"></div>';
+
+            toast.onclick = function(e) {
+                if (!isCurrentChatPage && notif.chat_url) {
+                    window.location.href = notif.chat_url;
+                }
+                toast.classList.remove('show');
+                setTimeout(function() { toast.remove(); }, 250);
+            };
 
             container.appendChild(toast);
 
             setTimeout(function() {
                 if (toast && toast.parentNode) {
                     toast.classList.remove('show');
-                    setTimeout(function() { toast.remove(); }, 300);
+                    setTimeout(function() { toast.remove(); }, 250);
                 }
-            }, 6000);
+            }, 4800);
         }
 
         @auth
-            setInterval(checkGlobalUnreadChatNotifications, 5000);
-            setTimeout(checkGlobalUnreadChatNotifications, 1200);
+            setInterval(checkGlobalUnreadChatNotifications, 4000);
+            setTimeout(checkGlobalUnreadChatNotifications, 1000);
         @endauth
     })();
 </script>
