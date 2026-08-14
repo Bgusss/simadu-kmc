@@ -603,6 +603,40 @@
                 }
                 return false;
             }
+        // Global Live Image Preview Helper
+        function previewImageAttachment(input, previewBoxId, imgPreviewId, fileNameId) {
+            var box = document.getElementById(previewBoxId);
+            var img = document.getElementById(imgPreviewId);
+            var fileNameEl = fileNameId ? document.getElementById(fileNameId) : null;
+
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                if (fileNameEl) fileNameEl.textContent = file.name;
+
+                if (file.type.indexOf('image/') === 0) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (img) img.src = e.target.result;
+                        if (box) box.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    if (box) box.classList.add('d-none');
+                }
+            } else {
+                if (box) box.classList.add('d-none');
+                if (fileNameEl) fileNameEl.textContent = 'Belum ada file...';
+            }
+        }
+
+        function clearImagePreview(inputId, previewBoxId, fileNameId) {
+            var input = document.getElementById(inputId);
+            var box = document.getElementById(previewBoxId);
+            var fileNameEl = fileNameId ? document.getElementById(fileNameId) : null;
+
+            if (input) input.value = '';
+            if (box) box.classList.add('d-none');
+            if (fileNameEl) fileNameEl.textContent = 'Belum ada file...';
         }
     </script>
     @include('partials.flash-toast')
