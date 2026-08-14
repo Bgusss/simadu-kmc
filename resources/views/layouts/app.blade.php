@@ -779,8 +779,9 @@
     <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; width:44px; height:44px; border-radius:50%; font-size:1.4rem; cursor:pointer; z-index:100000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:all 0.2s;">
         <i class="fas fa-times"></i>
     </button>
-    <img id="lightboxImg" src="" alt="Preview" style="max-width:92vw; max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
+    <img id="lightboxImg" src="" alt="Preview" style="display:none; max-width:92vw; max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
     <video id="lightboxVideo" controls style="display:none; max-width:92vw; max-height:88vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; outline:none; animation:lightboxIn 0.25s ease;"></video>
+    <iframe id="lightboxPdf" src="" style="display:none; width:88vw; height:88vh; border:none; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); background:#fff; animation:lightboxIn 0.25s ease;"></iframe>
 </div>
 <style>
     @keyframes lightboxIn {
@@ -801,23 +802,31 @@
     }
 </style>
 <script>
-    function openLightbox(src, isVideo) {
+    function openLightbox(src, type) {
         var lb = document.getElementById('globalLightbox');
         var img = document.getElementById('lightboxImg');
         var vid = document.getElementById('lightboxVideo');
-        if (isVideo) {
-            if (img) img.style.display = 'none';
+        var pdf = document.getElementById('lightboxPdf');
+
+        var isPdf = type === 'pdf' || (typeof src === 'string' && src.toLowerCase().split('?')[0].endsWith('.pdf'));
+        var isVid = type === 'video' || type === true;
+
+        if (vid) { vid.pause(); vid.style.display = 'none'; vid.src = ''; }
+        if (img) { img.style.display = 'none'; img.src = ''; }
+        if (pdf) { pdf.style.display = 'none'; pdf.src = ''; }
+
+        if (isPdf) {
+            if (pdf) {
+                pdf.src = src;
+                pdf.style.display = 'block';
+            }
+        } else if (isVid) {
             if (vid) {
                 vid.src = src;
                 vid.style.display = 'block';
                 vid.play().catch(function(){});
             }
         } else {
-            if (vid) {
-                vid.pause();
-                vid.style.display = 'none';
-                vid.src = '';
-            }
             if (img) {
                 img.src = src;
                 img.style.display = 'block';
@@ -829,9 +838,13 @@
     function closeLightbox() {
         var lb = document.getElementById('globalLightbox');
         var vid = document.getElementById('lightboxVideo');
+        var pdf = document.getElementById('lightboxPdf');
         if (vid) {
             vid.pause();
             vid.src = '';
+        }
+        if (pdf) {
+            pdf.src = '';
         }
         lb.style.display = 'none';
         document.body.style.overflow = '';

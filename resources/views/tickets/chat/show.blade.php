@@ -371,7 +371,12 @@
                                     <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
                                 @endif
                                 @if($message->attachment)
-                                    @php $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)); $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']); $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']); @endphp
+                                    @php
+                                        $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION));
+                                        $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
+                                        $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']);
+                                        $isPdf = $ext === 'pdf';
+                                    @endphp
                                     <div class="chat-attach-preview mt-2">
                                         @if($isImage)
                                             <button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
@@ -379,6 +384,24 @@
                                             </button>
                                         @elseif($isVideo)
                                             <video controls class="chat-attach-video"><source src="{{ asset('storage/'.$message->attachment) }}" type="video/{{ $ext }}"></video>
+                                        @elseif($isPdf)
+                                            <div class="chat-attach-doc {{ $mine ? 'mine' : '' }} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75">
+                                                <div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'pdf')">
+                                                    <i class="fas fa-file-pdf text-danger fs-3 flex-shrink-0"></i>
+                                                    <div class="chat-attach-doc-info text-truncate">
+                                                        <div class="chat-attach-doc-name fw-bold text-dark text-truncate small">{{ basename($message->attachment) }}</div>
+                                                        <div class="chat-attach-doc-meta text-muted" style="font-size: 0.75rem;"><i class="fas fa-eye me-1"></i>Klik untuk pratinjau PDF</div>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                                    <button type="button" class="btn btn-sm btn-light border-0 text-primary py-1 px-2" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'pdf')" title="Pratinjau PDF">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2" title="Unduh PDF">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
                                         @else
                                             <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" class="chat-attach-doc {{ $mine ? 'mine' : '' }}">
                                                 <i class="fas fa-file-alt chat-attach-doc-icon"></i>
@@ -717,15 +740,16 @@ function showAttachmentPreview(role, file) {
 
     const isImage = file.type.indexOf('image/') === 0;
     const isVideo = file.type.indexOf('video/') === 0;
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 
     preview.dataset.fileUrl = fileUrl;
-    preview.dataset.fileType = isImage ? 'image' : (isVideo ? 'video' : 'doc');
+    preview.dataset.fileType = isImage ? 'image' : (isVideo ? 'video' : (isPdf ? 'pdf' : 'doc'));
 
     name.textContent = file.name;
     meta.textContent = (file.type || 'File') + ' · ' + (file.size / 1024 / 1024).toFixed(file.size >= 1024 * 1024 ? 1 : 2) + ' MB (Klik untuk melihat)';
     visual.innerHTML = isImage
         ? '<img src="' + fileUrl + '" alt="Pratinjau lampiran">'
-        : '<i class="fas ' + (isVideo ? 'fa-video' : 'fa-file-alt') + '"></i>';
+        : '<i class="fas ' + (isVideo ? 'fa-video' : (isPdf ? 'fa-file-pdf text-danger' : 'fa-file-alt')) + '"></i>';
 
     if (label) {
         label.textContent = file.name;
@@ -743,6 +767,8 @@ function previewAttachmentModal(role) {
         openLightbox(url, false);
     } else if (type === 'video') {
         openLightbox(url, true);
+    } else if (type === 'pdf') {
+        openLightbox(url, 'pdf');
     } else {
         window.open(url, '_blank');
     }
@@ -782,13 +808,21 @@ function escapeChatText(value) {
 function adminMessageMarkup(message) {
     const mineClass = message.mine ? 'mine' : 'theirs';
     const alignment = message.mine ? 'justify-content-end' : 'justify-content-start';
-    const imageTypes = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-    const videoTypes = ['mp4', 'mov', 'avi', '3gp', 'webm'];
     let attachment = '';
     if (message.attachment_url) {
-        if (imageTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button></div>`;
-        else if (videoTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><video controls class="chat-attach-video"><source src="${message.attachment_url}"></video></div>`;
-        else attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank" class="chat-attach-doc ${message.mine ? 'mine' : ''}"><i class="fas fa-file-alt chat-attach-doc-icon"></i><div class="chat-attach-doc-info"><div class="chat-attach-doc-name">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta">${escapeChatText(message.attachment_type || 'FILE').toUpperCase()}</div></div><i class="fas fa-download chat-attach-doc-dl"></i></a></div>`;
+        const ext = (message.attachment_type || '').toLowerCase();
+        const isImage = ['jpg','jpeg','png','webp','gif'].includes(ext);
+        const isVideo = ['mp4','mov','avi','3gp','webm'].includes(ext);
+        const isPdf = ext === 'pdf';
+        if (isImage) {
+            attachment = `<div class="chat-attach-preview mt-2"><button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button></div>`;
+        } else if (isVideo) {
+            attachment = `<div class="chat-attach-preview mt-2"><video controls class="chat-attach-video"><source src="${message.attachment_url}" type="video/${ext}"></video></div>`;
+        } else if (isPdf) {
+            attachment = `<div class="chat-attach-preview mt-2"><div class="chat-attach-doc ${mineClass} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75"><div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('${message.attachment_url}', 'pdf')"><i class="fas fa-file-pdf text-danger fs-3 flex-shrink-0"></i><div class="chat-attach-doc-info text-truncate"><div class="chat-attach-doc-name fw-bold text-dark text-truncate small">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta text-muted" style="font-size: 0.75rem;"><i class="fas fa-eye me-1"></i>Klik untuk pratinjau PDF</div></div></div><div class="d-flex align-items-center gap-1 flex-shrink-0"><button type="button" class="btn btn-sm btn-light border-0 text-primary py-1 px-2" onclick="openLightbox('${message.attachment_url}', 'pdf')" title="Pratinjau PDF"><i class="fas fa-eye"></i></button><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2" title="Unduh PDF"><i class="fas fa-download"></i></a></div></div></div>`;
+        } else {
+            attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank" class="chat-attach-doc ${mineClass}"><i class="fas fa-file-alt chat-attach-doc-icon"></i><div class="chat-attach-doc-info"><div class="chat-attach-doc-name">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta">${ext.toUpperCase()}</div></div><i class="fas fa-download chat-attach-doc-dl"></i></a></div>`;
+        }
     }
     const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
     const infoDelivered = message.delivered_at || '-';
