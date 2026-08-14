@@ -122,6 +122,25 @@
     bottom: 195px !important;
 }
 
+/* Image thumbnail hover download button */
+.chat-img-wrap {
+    position: relative;
+    display: inline-block;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.chat-img-wrap .chat-img-dl-btn {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+    transform: translateY(4px);
+}
+.chat-img-wrap:hover .chat-img-dl-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 /* Context menu trigger (chevron) — appears on hover */
 .chat-msg-actions {
     position: absolute;
@@ -388,11 +407,11 @@
                                     @endphp
                                     <div class="chat-attach-preview mt-2">
                                         @if($isImage)
-                                            <div class="position-relative d-inline-block">
+                                            <div class="chat-img-wrap">
                                                 <button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
                                                     <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img lightbox-img">
                                                 </button>
-                                                <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute top-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto">
+                                                <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                             </div>
@@ -881,7 +900,7 @@ function adminMessageMarkup(message) {
         const isVideo = ['mp4','mov','avi','3gp','webm'].includes(ext);
         const isPdf = ext === 'pdf';
         if (isImage) {
-            attachment = `<div class="chat-attach-preview mt-2"><div class="position-relative d-inline-block"><button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute top-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto"><i class="fas fa-download"></i></a></div></div>`;
+            attachment = `<div class="chat-attach-preview mt-2"><div class="chat-img-wrap"><button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button><a href="${message.attachment_url}" target="_blank" download class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto"><i class="fas fa-download"></i></a></div></div>`;
         } else if (isVideo) {
             attachment = `<div class="chat-attach-preview mt-2"><div class="position-relative d-inline-block"><video controls class="chat-attach-video"><source src="${message.attachment_url}" type="video/${ext}"></video><div class="mt-1 d-flex justify-content-end"><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" title="Unduh video"><i class="fas fa-download me-1"></i>Unduh video</a></div></div></div>`;
         } else if (isPdf) {
