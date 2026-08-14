@@ -109,7 +109,7 @@
                 
                 <div class="bg-white text-primary border rounded-circle overflow-hidden flex-shrink-0" style="width: 38px; height: 38px; min-width: 38px;">
                     @if(Auth::user()->profile_photo)
-                        <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; background-color: #ffffff;">
                     @else
                         <div class="w-100 h-100 d-flex align-items-center justify-content-center">
                             <i class="fas fa-user"></i>

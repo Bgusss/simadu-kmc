@@ -251,6 +251,7 @@ document.getElementById('btnCropSave').addEventListener('click', function () {
     const canvas = cropperInstance.getCroppedCanvas({
         width: 400,
         height: 400,
+        fillColor: '#ffffff',
         imageSmoothingEnabled: true,
         imageSmoothingQuality: 'high',
     });

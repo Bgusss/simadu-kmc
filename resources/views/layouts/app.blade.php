@@ -79,6 +79,16 @@
         .text-primary-subtle {
             color: var(--kmc-blue) !important;
         }
+
+        /* Ensure all profile photos & avatars use solid white background for PNG images */
+        .chat-avatar img,
+        .sidebar-user-dropdown img,
+        #opd-photo-preview-container img,
+        #admin-photo-preview-container img,
+        .profile-photo-img,
+        img.profile-photo {
+            background-color: #ffffff !important;
+        }
         .pagination .page-item.active .page-link {
             background-color: var(--kmc-blue) !important;
             border-color: var(--kmc-blue) !important;
