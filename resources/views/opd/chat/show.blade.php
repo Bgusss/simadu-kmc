@@ -86,7 +86,7 @@
     vertical-align: -1px;
 }
 .chat-receipt.sent { color: currentColor; }
-.chat-receipt.read { color: #53bdeb; opacity: 1; }
+.chat-receipt.read { color: #f57c00; opacity: 1; }
 .chat-scroll-latest {
     position: absolute; right: 18px; bottom: 16px;
     width: 42px; height: 42px; border: 0; border-radius: 50%;
