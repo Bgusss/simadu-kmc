@@ -117,14 +117,14 @@
                         </thead>
                         <tbody>
                             @forelse($recentTickets as $ticket)
-                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <tr class="text-center align-middle" style="border-bottom: 1px solid #f1f5f9;">
                                     <td class="px-4 py-3"><span class="fw-bold text-primary">{{ $ticket->tracking_number ?? $ticket->ticket_number ?? '#' . $ticket->id }}</span></td>
                                     <td class="py-3 text-muted">
                                         <div class="fw-medium text-dark">{{ $ticket->created_at?->format('d M Y') }}</div>
                                         <div class="small">{{ $ticket->created_at?->format('H:i') }} WIB</div>
                                     </td>
                                     <td class="py-3">
-                                        <div class="text-truncate text-dark" style="max-width: 280px;" title="{{ $ticket->complaint }}">
+                                        <div class="text-truncate text-dark mx-auto" style="max-width: 280px;" title="{{ $ticket->complaint }}">
                                             {{ Str::limit($ticket->complaint, 60) }}
                                         </div>
                                     </td>
@@ -165,7 +165,7 @@
                                         @endphp
                                         <span class="badge rounded-pill px-3 py-2 fw-bold {{ $badgeClass }}" @if($ticket->status == 'proses_disposisi') style="background-color: rgba(245, 124, 0, 0.1); color: #F57C00 !important; border-color: #F57C00 !important;" @endif>{{ $ticket->status == 'proses_disposisi' ? 'Proses Disposisi' : ucfirst($ticket->status) }}</span>
                                     </td>
-                                    <td class="px-4 py-3 text-end">
+                                    <td class="px-4 py-3 text-center">
                                         <a href="{{ route('opd.tickets.show', $ticket->id) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium">
                                             Detail
                                         </a>
