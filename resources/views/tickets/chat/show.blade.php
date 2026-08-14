@@ -49,13 +49,6 @@
 }
 
 /* Canvas — fills remaining space */
-.chat-canvas-wrap {
-    position: relative;
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
 .chat-canvas {
     flex: 1 1 auto;
     overflow-y: auto;
@@ -65,13 +58,56 @@
     background-size: 18px 18px;
 }
 
-/* Scroll to latest button */
+/* Message bubbles */
+.chat-bubble-wrap {
+    position: relative;
+    max-width: min(78%, 620px);
+}
+.chat-message {
+    padding: 9px 28px 7px 11px;
+    border-radius: 9px;
+    box-shadow: 0 1px 1px rgba(15,23,42,.09);
+    line-height: 1.5;
+    position: relative;
+}
+.chat-message.mine {
+    background: #0d47a1;
+    color: #fff;
+    border-top-right-radius: 2px;
+}
+.chat-message.theirs {
+    background: #fff;
+    color: #1e293b;
+    border-top-left-radius: 2px;
+}
+.chat-meta {
+    font-size: .68rem;
+    text-align: right;
+    margin-top: 3px;
+    opacity: .72;
+}
+.chat-receipt {
+    display: inline-block;
+    width: 15px;
+    height: 12px;
+    margin-left: 2px;
+    vertical-align: -2px;
+    color: currentColor;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6.5 9 9.5 15 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6.5 9 9.5 15 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.chat-receipt.sent {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12'%3E%3Cpath d='M1 6.5 4 9.5 9 2.5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.chat-receipt.read { color: #f57c00; opacity: 1; }
 .chat-scroll-latest {
-    position: absolute; right: 20px; bottom: 16px;
+    position: absolute; right: 18px; bottom: 82px;
     width: 42px; height: 42px; border: 0; border-radius: 50%;
     display: grid; place-items: center;
     background: #fff; color: #0d47a1;
-    box-shadow: 0 4px 14px rgba(15,23,42,.25); z-index: 5;
+    box-shadow: 0 5px 18px rgba(15,23,42,.2); z-index: 3;
     transition: transform .15s, opacity .15s;
 }
 .chat-scroll-latest:hover { transform: translateY(-2px); }
@@ -324,8 +360,7 @@
                 <span class="badge rounded-pill" style="background:rgba(255,255,255,.14)"><i class="fas fa-comments me-1"></i>Chat OPD</span>
             </header>
 
-            <div class="chat-canvas-wrap">
-                <div class="chat-canvas position-relative" id="admin-chat-messages">
+            <div class="chat-canvas position-relative" id="admin-chat-messages">
                 @forelse($ticket->chatMessages as $message)
                     @php $mine = $message->sender_id === auth()->id(); @endphp
                     <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}">
@@ -422,9 +457,8 @@
                         </div>
                     </div>
                 @endforelse
-                </div>
-                <button id="admin-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
             </div>
+            <button id="admin-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
 
             <footer class="chat-composer">
                 <div id="reply-preview" class="reply-preview d-none mb-2 p-2 rounded-3 border-start border-4 border-primary shadow-sm" style="background-color: rgba(13, 71, 161, 0.06) !important;">
