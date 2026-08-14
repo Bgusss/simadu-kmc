@@ -255,19 +255,23 @@
 }
 .chat-bubble-wrap.search-active .chat-message,
 .chat-message.search-active {
-    outline: 2.5px solid #f57c00 !important;
-    outline-offset: 2px !important;
-    box-shadow: 0 4px 16px rgba(245, 124, 0, 0.35) !important;
+    box-shadow: 0 0 0 2.5px #f57c00, 0 4px 18px rgba(245, 124, 0, 0.4) !important;
     animation: searchPulse 1.4s ease-in-out infinite alternate !important;
+}
+.chat-bubble-wrap.search-active .chat-message.mine::after,
+.chat-message.search-active.mine::after {
+    filter: drop-shadow(2px 0 0 #f57c00);
+}
+.chat-bubble-wrap.search-active .chat-message.theirs::after,
+.chat-message.search-active.theirs::after {
+    filter: drop-shadow(-2px 0 0 #f57c00);
 }
 @keyframes searchPulse {
     from {
-        outline-color: #f57c00;
-        box-shadow: 0 2px 8px rgba(245, 124, 0, 0.25);
+        box-shadow: 0 0 0 2.5px #f57c00, 0 2px 10px rgba(245, 124, 0, 0.3);
     }
     to {
-        outline-color: #ff9800;
-        box-shadow: 0 6px 20px rgba(245, 124, 0, 0.55);
+        box-shadow: 0 0 0 3.5px #ff9800, 0 6px 22px rgba(245, 124, 0, 0.6);
     }
 }
 
