@@ -35,8 +35,17 @@
     width: 42px; height: 42px;
     border-radius: 50%;
     display: grid; place-items: center;
-    background: rgba(255,255,255,.16);
+    background: #ffffff;
     font-size: 1.05rem;
+    color: #0d47a1;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: #ffffff;
 }
 
 /* Canvas — fills remaining space */
@@ -352,19 +361,11 @@
 
             <div class="chat-canvas position-relative" id="opd-chat-messages">
                 @forelse($ticket->chatMessages as $message)
-                    @php
-                        $mine = $message->sender_id === auth()->id();
-                        $senderPhoto = $message->sender?->profile_photo ? asset('storage/' . $message->sender->profile_photo) : null;
-                    @endphp
+                    @php $mine = $message->sender_id === auth()->id(); @endphp
                     <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}">
                         <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
                             <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
-                                <div class="d-flex align-items-center gap-1 mb-1">
-                                    @if($senderPhoto)
-                                        <img src="{{ $senderPhoto }}" class="rounded-circle border" style="width:20px; height:20px; object-fit:cover;" alt="Avatar">
-                                    @endif
-                                    <div class="small fw-bold {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
-                                </div>
+                                <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
                                 @if(filled($message->message))
                                     <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
                                 @endif
@@ -783,8 +784,7 @@ function opdMessageMarkup(message) {
     const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
     const infoDelivered = message.delivered_at || '-';
     const infoRead = message.read_at || '-';
-    const photoMarkup = message.sender_photo ? `<img src="${message.sender_photo}" class="rounded-circle border me-1" style="width:20px; height:20px; object-fit:cover;" alt="Avatar">` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="d-flex align-items-center gap-1 mb-1">${photoMarkup}<div class="small fw-bold ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div></div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg"><li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '${escapeChatText(message.created_at)}', '${escapeChatText(message.sender_name)}', '${escapeChatText(infoDelivered)}', '${escapeChatText(infoRead)}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li><li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(message.message ? message.message.substring(0,60) : 'Lampiran')}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li><li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li></ul></div></div></div>`;
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg"><li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '${escapeChatText(message.created_at)}', '${escapeChatText(message.sender_name)}', '${escapeChatText(infoDelivered)}', '${escapeChatText(infoRead)}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li><li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(message.message ? message.message.substring(0,60) : 'Lampiran')}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li><li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li></ul></div></div></div>`;
 }
 async function pollOpdChat() {
     if (opdPolling || document.hidden) return;
