@@ -826,8 +826,9 @@
             dlBtn.href = src;
         }
 
-        var isPdf = type === 'pdf' || (typeof src === 'string' && src.toLowerCase().split('?')[0].endsWith('.pdf'));
-        var isVid = type === 'video' || type === true;
+        var cleanSrc = typeof src === 'string' ? src.toLowerCase().split('?')[0] : '';
+        var isPdf = type === 'pdf' || cleanSrc.endsWith('.pdf');
+        var isVid = type === 'video' || type === true || cleanSrc.endsWith('.mp4') || cleanSrc.endsWith('.mov') || cleanSrc.endsWith('.avi') || cleanSrc.endsWith('.3gp') || cleanSrc.endsWith('.webm');
 
         if (vid) { vid.pause(); vid.style.display = 'none'; vid.src = ''; }
         if (img) { img.style.display = 'none'; img.src = ''; }
