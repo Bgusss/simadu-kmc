@@ -76,9 +76,17 @@
     margin-top: 3px;
     opacity: .72;
 }
-.chat-receipt { margin-left: 3px; font-size: .72rem; }
+.chat-receipt {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 2px;
+    font-size: .68rem;
+    line-height: 1;
+    letter-spacing: -2px;
+    vertical-align: -1px;
+}
 .chat-receipt.sent { color: currentColor; }
-.chat-receipt.read { color: #ff8f00; opacity: 1; }
+.chat-receipt.read { color: #53bdeb; opacity: 1; }
 .chat-scroll-latest {
     position: absolute; right: 18px; bottom: 16px;
     width: 42px; height: 42px; border: 0; border-radius: 50%;
