@@ -200,27 +200,25 @@
     background: #f0f5ff;
 }
 
-/* WhatsApp-style Right-Side Search Panel */
-.chat-search-container {
-    position: absolute;
-    top: 67px;
-    right: 0;
-    width: 380px;
-    max-width: 85%;
-    z-index: 25;
+/* WhatsApp-style Contracting Side Panel Layout */
+.chat-main-column {
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 0;
+}
+.chat-search-side-panel {
+    width: 350px;
+    max-width: 45%;
+    flex-shrink: 0;
     background: #ffffff;
     border-left: 1px solid #e2e8f0;
-    border-bottom: 1px solid #e2e8f0;
-    border-bottom-left-radius: 16px;
-    box-shadow: -6px 10px 24px rgba(15,23,42,0.12);
-    max-height: calc(100% - 135px);
     display: flex;
     flex-direction: column;
-    animation: searchSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    height: 100%;
+    animation: searchPanelSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-@keyframes searchSlideIn {
-    from { transform: translateX(30px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+@keyframes searchPanelSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 .chat-search-pill {
     transition: all 0.2s ease;
@@ -451,194 +449,202 @@
                 </div>
             </header>
 
-            <!-- WhatsApp-style Search Panel -->
-            <div id="chat-search-container" class="chat-search-container d-none border-bottom bg-white">
-                <div class="d-flex align-items-center justify-content-between p-3 border-bottom bg-light">
-                    <div class="d-flex align-items-center gap-3">
-                        <button type="button" class="btn btn-sm btn-link text-dark p-0 text-decoration-none" onclick="toggleChatSearch()" title="Tutup pencarian">
-                            <i class="fas fa-times fs-5"></i>
-                        </button>
-                        <span class="fw-bold text-dark fs-6 mb-0">Cari Pesan</span>
-                    </div>
-                </div>
-
-                <div class="p-3 pb-2">
-                    <div class="chat-search-pill d-flex align-items-center px-3 py-1 bg-light rounded-pill border" id="chat-search-pill-box">
-                        <i class="fas fa-search text-muted me-2"></i>
-                        <input type="text" id="chat-search-input" class="form-control border-0 bg-transparent shadow-none p-1" placeholder="Cari kata atau frasa..." oninput="performChatSearch()">
-                        <button type="button" class="btn btn-sm text-muted p-0 border-0" onclick="clearChatSearch()" title="Hapus pencarian">
-                            <i class="fas fa-times-circle"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div id="chat-search-results-list" class="chat-search-results-list px-3 pb-3" style="flex: 1 1 auto; overflow-y: auto; min-height: 0;">
-                    <div class="text-center text-muted py-4 small">
-                        <i class="fas fa-search fs-3 opacity-50 mb-2 d-block"></i>
-                        Ketik kata kunci untuk mencari pesan dalam percakapan ini
-                    </div>
-                </div>
-            </div>
-
-            <div class="chat-canvas position-relative" id="opd-chat-messages">
-                @forelse($ticket->chatMessages as $message)
-                    @php $mine = $message->sender_id === auth()->id(); @endphp
-                    <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}" data-created-date="{{ $message->created_at?->format('Y-m-d') }}">
-                        <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
-                            <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
-                                <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
-                                @if(filled($message->message))
-                                    <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
-                                @endif
-                                @if($message->attachment)
-                                    @php
-                                        $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION));
-                                        $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
-                                        $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']);
-                                        $isPdf = $ext === 'pdf';
-                                    @endphp
-                                    <div class="chat-attach-preview mt-2">
-                                        @if($isImage)
-                                            <div class="chat-img-wrap">
-                                                <button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
-                                                    <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img lightbox-img">
-                                                </button>
-                                                <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                            </div>
-                                        @elseif($isVideo)
-                                            <div class="chat-video-wrap" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'video')">
-                                                <video preload="metadata" class="chat-attach-video d-block w-100" style="max-height:240px; object-fit:cover; pointer-events:none;">
-                                                    <source src="{{ asset('storage/'.$message->attachment) }}#t=0.1" type="video/{{ $ext }}">
-                                                </video>
-                                                <div class="position-absolute top-0 start-0 m-2 text-white opacity-90 small">
-                                                    <i class="fas fa-video"></i>
-                                                </div>
-                                                <div class="position-absolute top-50 start-50 translate-middle">
-                                                    <div class="chat-video-play-btn d-flex align-items-center justify-content-center text-white shadow-lg">
-                                                        <i class="fas fa-play fa-lg ms-1"></i>
-                                                    </div>
-                                                </div>
-                                                <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download onclick="event.stopPropagation();" class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh video">
-                                                    <i class="fas fa-download"></i>
-                                                </a>
-                                            </div>
-                                        @elseif($isPdf)
-                                            <div class="chat-attach-doc {{ $mine ? 'mine' : '' }} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75">
-                                                <div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'pdf')">
-                                                    <i class="fas fa-file-pdf text-danger fs-3 flex-shrink-0"></i>
-                                                    <div class="chat-attach-doc-info text-truncate">
-                                                        <div class="chat-attach-doc-name fw-bold text-dark text-truncate small">{{ basename($message->attachment) }}</div>
-                                                        <div class="chat-attach-doc-meta text-muted" style="font-size: 0.75rem;"><i class="fas fa-eye me-1"></i>Klik untuk pratinjau PDF</div>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 flex-shrink-0">
-                                                    <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2" title="Unduh PDF">
-                                                        <i class="fas fa-download"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" class="chat-attach-doc {{ $mine ? 'mine' : '' }}">
-                                                <i class="fas fa-file-alt chat-attach-doc-icon"></i>
-                                                <div class="chat-attach-doc-info">
-                                                    <div class="chat-attach-doc-name">{{ basename($message->attachment) }}</div>
-                                                    <div class="chat-attach-doc-meta">{{ strtoupper($ext) }}</div>
-                                                </div>
-                                                <i class="fas fa-download chat-attach-doc-dl"></i>
-                                            </a>
+            <!-- Main Flex Row Container -->
+            <div class="d-flex flex-grow-1 overflow-hidden position-relative" style="min-height: 0;">
+                
+                <!-- Left Main Column (contracts to left in search mode) -->
+                <div class="chat-main-column d-flex flex-column flex-grow-1 overflow-hidden position-relative" id="chat-main-column">
+                    <div class="chat-canvas position-relative" id="opd-chat-messages">
+                        @forelse($ticket->chatMessages as $message)
+                            @php $mine = $message->sender_id === auth()->id(); @endphp
+                            <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}" data-created-date="{{ $message->created_at?->format('Y-m-d') }}">
+                                <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
+                                    <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
+                                        <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
+                                        @if(filled($message->message))
+                                            <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
                                         @endif
+                                        @if($message->attachment)
+                                            @php
+                                                $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION));
+                                                $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
+                                                $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']);
+                                                $isPdf = $ext === 'pdf';
+                                            @endphp
+                                            <div class="chat-attach-preview mt-2">
+                                                @if($isImage)
+                                                    <div class="chat-img-wrap">
+                                                        <button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
+                                                            <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img lightbox-img">
+                                                        </button>
+                                                        <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                    </div>
+                                                @elseif($isVideo)
+                                                    <div class="chat-video-wrap" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'video')">
+                                                        <video preload="metadata" class="chat-attach-video d-block w-100" style="max-height:240px; object-fit:cover; pointer-events:none;">
+                                                            <source src="{{ asset('storage/'.$message->attachment) }}#t=0.1" type="video/{{ $ext }}">
+                                                        </video>
+                                                        <div class="position-absolute top-0 start-0 m-2 text-white opacity-90 small">
+                                                            <i class="fas fa-video"></i>
+                                                        </div>
+                                                        <div class="position-absolute top-50 start-50 translate-middle">
+                                                            <div class="chat-video-play-btn d-flex align-items-center justify-content-center text-white shadow-lg">
+                                                                <i class="fas fa-play fa-lg ms-1"></i>
+                                                            </div>
+                                                        </div>
+                                                        <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download onclick="event.stopPropagation();" class="chat-img-dl-btn btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute bottom-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh video">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                    </div>
+                                                @elseif($isPdf)
+                                                    <div class="chat-attach-doc {{ $mine ? 'mine' : '' }} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75">
+                                                        <div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'pdf')">
+                                                            <i class="fas fa-file-pdf text-danger fs-3 flex-shrink-0"></i>
+                                                            <div class="chat-attach-doc-info text-truncate">
+                                                                <div class="chat-attach-doc-name fw-bold text-dark text-truncate small">{{ basename($message->attachment) }}</div>
+                                                                <div class="chat-attach-doc-meta text-muted" style="font-size: 0.75rem;"><i class="fas fa-eye me-1"></i>Klik untuk pratinjau PDF</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                                            <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2" title="Unduh PDF">
+                                                                <i class="fas fa-download"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" class="chat-attach-doc {{ $mine ? 'mine' : '' }}">
+                                                        <i class="fas fa-file-alt chat-attach-doc-icon"></i>
+                                                        <div class="chat-attach-doc-info">
+                                                            <div class="chat-attach-doc-name">{{ basename($message->attachment) }}</div>
+                                                            <div class="chat-attach-doc-meta">{{ strtoupper($ext) }}</div>
+                                                        </div>
+                                                        <i class="fas fa-download chat-attach-doc-dl"></i>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @endif
+                                        <div class="chat-meta">{{ $message->created_at?->format('H:i') }}
+                                            @if($mine)
+                                                <span class="chat-receipt {{ $message->read_by_admin ? 'read' : 'sent' }}" title="{{ $message->read_by_admin ? 'Dibaca Admin KMC' : 'Terkirim' }}"></span>
+                                            @endif
+                                        </div>
+                                    </article>
+                                    <!-- WhatsApp-style dropdown chevron -->
+                                    <div class="chat-msg-actions">
+                                        <button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-{{ $mine ? 'end' : 'start' }} chat-ctx-menu shadow-lg">
+                                            @if($mine)
+                                                @php
+                                                    $deliveredAtVal = $message->delivered_at ?? $message->created_at;
+                                                    $readAtVal = $message->read_at ?? ($message->read_by_admin ? ($message->updated_at ?? $message->created_at) : null);
+                                                @endphp
+                                                <li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '{{ $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') }}', 'Anda', '{{ $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}', '{{ $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
+                                            @endif
+                                            @php
+                                                $replySender = $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC');
+                                                $replyText = $message->message ?? '';
+                                                $replyAttachment = $message->attachment ?? '';
+                                            @endphp
+                                            <li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="{{ $message->id }}" data-reply-sender="{{ $replySender }}" data-reply-text="{{ $replyText }}" data-reply-attachment="{{ $replyAttachment }}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
+                                            @if(filled($message->message))
+                                                <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
+                                            @endif
+                                            @if($mine)
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form action="{{ route('opd.chat.delete', $message) }}" method="POST" onsubmit="deleteMsgAjax(event, this)">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button>
+                                                </form>
+                                            </li>
+                                            @endif
+                                        </ul>
                                     </div>
-                                @endif
-                                <div class="chat-meta">{{ $message->created_at?->format('H:i') }}
-                                    @if($mine)
-                                        <span class="chat-receipt {{ $message->read_by_admin ? 'read' : 'sent' }}" title="{{ $message->read_by_admin ? 'Dibaca Admin KMC' : 'Terkirim' }}"></span>
-                                    @endif
                                 </div>
-                            </article>
-                            <!-- WhatsApp-style dropdown chevron -->
-                            <div class="chat-msg-actions">
-                                <button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
-                                <ul class="dropdown-menu dropdown-menu-{{ $mine ? 'end' : 'start' }} chat-ctx-menu shadow-lg">
-                                    @if($mine)
-                                        @php
-                                            $deliveredAtVal = $message->delivered_at ?? $message->created_at;
-                                            $readAtVal = $message->read_at ?? ($message->read_by_admin ? ($message->updated_at ?? $message->created_at) : null);
-                                        @endphp
-                                        <li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '{{ $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') }}', 'Anda', '{{ $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}', '{{ $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
-                                    @endif
-                                    @php
-                                        $replySender = $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC');
-                                        $replyText = $message->message ?? '';
-                                        $replyAttachment = $message->attachment ?? '';
-                                    @endphp
-                                    <li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="{{ $message->id }}" data-reply-sender="{{ $replySender }}" data-reply-text="{{ $replyText }}" data-reply-attachment="{{ $replyAttachment }}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
-                                    @if(filled($message->message))
-                                        <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
-                                    @endif
-                                    @if($mine)
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form action="{{ route('opd.chat.delete', $message) }}" method="POST" onsubmit="deleteMsgAjax(event, this)">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button>
-                                        </form>
-                                    </li>
-                                    @endif
-                                </ul>
+                            </div>
+                        @empty
+                            <div class="h-100 d-flex align-items-center justify-content-center text-center text-muted">
+                                <div>
+                                    <i class="far fa-comment-dots fs-1 mb-3 text-primary opacity-50"></i>
+                                    <div class="fw-semibold">Belum ada percakapan</div>
+                                    <small>Mulai koordinasi dengan Admin KMC melalui kolom pesan di bawah.</small>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+                    <button id="opd-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
+
+                    <footer class="chat-composer">
+                        <div id="reply-preview" class="reply-preview d-none mb-2 p-2 rounded-3 shadow-sm" style="border-left: 4px solid #f57c00; background-color: rgba(245, 124, 0, 0.08) !important;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="overflow-hidden pe-2" style="min-width: 0;">
+                                    <div class="fw-bold small text-truncate mb-0" id="reply-preview-sender" style="font-size: 0.78rem; color: #f57c00;"></div>
+                                    <div class="small text-dark text-truncate" id="reply-preview-text" style="font-size: 0.82rem;"></div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="cancelReply()" aria-label="Batal balas"></button>
                             </div>
                         </div>
-                    </div>
-                @empty
-                    <div class="h-100 d-flex align-items-center justify-content-center text-center text-muted">
-                        <div>
-                            <i class="far fa-comment-dots fs-1 mb-3 text-primary opacity-50"></i>
-                            <div class="fw-semibold">Belum ada percakapan</div>
-                            <small>Mulai koordinasi dengan Admin KMC melalui kolom pesan di bawah.</small>
+                        <div id="opd-file-preview" class="composer-file-preview d-none" aria-live="polite">
+                            <div id="opd-file-body" class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden" style="cursor: pointer;" title="Klik untuk melihat pratinjau" onclick="previewAttachmentModal('opd')">
+                                <div id="opd-file-visual" class="composer-file-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="composer-file-info">
+                                    <div id="opd-file-name" class="composer-file-name"></div>
+                                    <div id="opd-file-meta" class="composer-file-meta"></div>
+                                </div>
+                            </div>
+                            <button type="button" class="composer-file-remove" onclick="clearSelectedAttachment('opd')" aria-label="Hapus lampiran"><i class="fas fa-times"></i></button>
                         </div>
-                    </div>
-                @endforelse
-            </div>
-            <button id="opd-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
+                        <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form" id="opd-chat-form">
+                            @csrf
+                            <div class="chat-attach-dropdown dropup">
+                                <button class="btn btn-light border chat-attachment" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Lampiran"><i class="fas fa-paperclip"></i></button>
+                                <ul class="dropdown-menu shadow-lg">
+                                    <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-doc').click(); return false;"><i class="fas fa-file-alt me-2" style="color:#7c4dff"></i>Dokumen</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-media').click(); return false;"><i class="fas fa-image me-2" style="color:#00bfa5"></i>Foto & Video</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-camera').click(); return false;"><i class="fas fa-camera me-2" style="color:#ff1744"></i>Kamera</a></li>
+                                </ul>
+                            </div>
+                            <input id="opd-pick-doc" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
+                            <input id="opd-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
+                            <input id="opd-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
+                            <textarea id="opd-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..."></textarea>
+                            <button id="opd-chat-send" class="btn btn-primary chat-send" type="submit" title="Kirim pesan" disabled><i class="fas fa-paper-plane"></i></button>
+                        </form>
+                    </footer>
+                </div>
 
-            <footer class="chat-composer">
-                <div id="reply-preview" class="reply-preview d-none mb-2 p-2 rounded-3 shadow-sm" style="border-left: 4px solid #f57c00; background-color: rgba(245, 124, 0, 0.08) !important;">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="overflow-hidden pe-2" style="min-width: 0;">
-                            <div class="fw-bold small text-truncate mb-0" id="reply-preview-sender" style="font-size: 0.78rem; color: #f57c00;"></div>
-                            <div class="small text-dark text-truncate" id="reply-preview-text" style="font-size: 0.82rem;"></div>
-                        </div>
-                        <button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="cancelReply()" aria-label="Batal balas"></button>
-                    </div>
-                </div>
-                <div id="opd-file-preview" class="composer-file-preview d-none" aria-live="polite">
-                    <div id="opd-file-body" class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden" style="cursor: pointer;" title="Klik untuk melihat pratinjau" onclick="previewAttachmentModal('opd')">
-                        <div id="opd-file-visual" class="composer-file-icon"><i class="fas fa-file-alt"></i></div>
-                        <div class="composer-file-info">
-                            <div id="opd-file-name" class="composer-file-name"></div>
-                            <div id="opd-file-meta" class="composer-file-meta"></div>
+                <!-- Right Search Side Panel Column -->
+                <div id="chat-search-container" class="chat-search-side-panel d-none">
+                    <div class="d-flex align-items-center justify-content-between p-3 border-bottom bg-light">
+                        <div class="d-flex align-items-center gap-3">
+                            <button type="button" class="btn btn-sm btn-link text-dark p-0 text-decoration-none" onclick="toggleChatSearch()" title="Tutup pencarian">
+                                <i class="fas fa-times fs-5"></i>
+                            </button>
+                            <span class="fw-bold text-dark fs-6 mb-0">Cari Pesan</span>
                         </div>
                     </div>
-                    <button type="button" class="composer-file-remove" onclick="clearSelectedAttachment('opd')" aria-label="Hapus lampiran"><i class="fas fa-times"></i></button>
-                </div>
-                <form action="{{ route('opd.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form" id="opd-chat-form">
-                    @csrf
-                    <div class="chat-attach-dropdown dropup">
-                        <button class="btn btn-light border chat-attachment" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Lampiran"><i class="fas fa-paperclip"></i></button>
-                        <ul class="dropdown-menu shadow-lg">
-                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-doc').click(); return false;"><i class="fas fa-file-alt me-2" style="color:#7c4dff"></i>Dokumen</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-media').click(); return false;"><i class="fas fa-image me-2" style="color:#00bfa5"></i>Foto & Video</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('opd-pick-camera').click(); return false;"><i class="fas fa-camera me-2" style="color:#ff1744"></i>Kamera</a></li>
-                        </ul>
+
+                    <div class="p-3 pb-2">
+                        <div class="chat-search-pill d-flex align-items-center px-3 py-1 bg-light rounded-pill border" id="chat-search-pill-box">
+                            <i class="fas fa-search text-muted me-2"></i>
+                            <input type="text" id="chat-search-input" class="form-control border-0 bg-transparent shadow-none p-1" placeholder="Cari kata atau frasa..." oninput="performChatSearch()">
+                            <button type="button" class="btn btn-sm text-muted p-0 border-0" onclick="clearChatSearch()" title="Hapus pencarian">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
+                        </div>
                     </div>
-                    <input id="opd-pick-doc" type="file" class="d-none" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
-                    <input id="opd-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
-                    <input id="opd-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
-                    <textarea id="opd-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Kirim pesan chat untuk Admin KMC..."></textarea>
-                    <button id="opd-chat-send" class="btn btn-primary chat-send" type="submit" title="Kirim pesan" disabled><i class="fas fa-paper-plane"></i></button>
-                </form>
-            </footer>
+
+                    <div id="chat-search-results-list" class="chat-search-results-list px-3 pb-3" style="flex: 1 1 auto; overflow-y: auto; min-height: 0;">
+                        <div class="text-center text-muted py-4 small">
+                            <i class="fas fa-search fs-3 opacity-50 mb-2 d-block"></i>
+                            Ketik kata kunci untuk mencari pesan dalam percakapan ini
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
