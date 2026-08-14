@@ -108,10 +108,19 @@
     display: grid; place-items: center;
     background: #fff; color: #0d47a1;
     box-shadow: 0 5px 18px rgba(15,23,42,.2); z-index: 3;
-    transition: transform .15s, opacity .15s;
+    transition: transform .15s, opacity .15s, bottom .2s ease;
 }
 .chat-scroll-latest:hover { transform: translateY(-2px); }
 .chat-scroll-latest.d-none { display: none; }
+.chat-card:has(#reply-preview:not(.d-none)) .chat-scroll-latest {
+    bottom: 138px !important;
+}
+.chat-card:has(.composer-file-preview:not(.d-none)) .chat-scroll-latest {
+    bottom: 145px !important;
+}
+.chat-card:has(#reply-preview:not(.d-none)):has(.composer-file-preview:not(.d-none)) .chat-scroll-latest {
+    bottom: 195px !important;
+}
 
 /* Context menu trigger (chevron) — appears on hover */
 .chat-msg-actions {
@@ -675,11 +684,16 @@ function replyMsg(msgId, senderName, text, attachment) {
     if (textEl) textEl.innerHTML = contentHtml;
 
     box.classList.remove('d-none');
+    const scrollBtn = document.getElementById('opd-scroll-latest');
+    if (scrollBtn) scrollBtn.style.bottom = '138px';
     const msgInput = document.getElementById('opd-chat-message');
     if (msgInput) msgInput.focus();
 }
 function cancelReply() {
-    document.getElementById('reply-preview').classList.add('d-none');
+    const box = document.getElementById('reply-preview');
+    if (box) box.classList.add('d-none');
+    const scrollBtn = document.getElementById('opd-scroll-latest');
+    if (scrollBtn) scrollBtn.style.bottom = '82px';
 }
 
 // WhatsApp-style Message Info modal with chat bubble preview
