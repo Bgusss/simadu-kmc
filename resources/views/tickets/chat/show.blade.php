@@ -501,7 +501,7 @@
                                         $replyText = $message->message ?? '';
                                         $replyAttachment = $message->attachment ?? '';
                                     @endphp
-                                    <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode($replySender) }}, {{ json_encode($replyText) }}, {{ json_encode($replyAttachment) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="{{ $message->id }}" data-reply-sender="{{ $replySender }}" data-reply-text="{{ $replyText }}" data-reply-attachment="{{ $replyAttachment }}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
                                     @if(filled($message->message))
                                         <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
                                     @endif
@@ -719,6 +719,7 @@ document.getElementById('admin-chat-form').addEventListener('submit', async func
         adminChatMsgEl.value = '';
         autoResizeChatInput(adminChatMsgEl);
         clearSelectedAttachment('admin');
+        cancelReply();
         chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
     } catch (error) {
         alert(error.message || 'Pesan tidak dapat dikirim. Coba lagi.');
@@ -766,6 +767,14 @@ async function deleteMsgAjax(event, form) {
 }
 
 // Reply to message
+function replyMsgFromEl(el) {
+    if (!el) return;
+    const msgId = el.getAttribute('data-reply-id');
+    const sender = el.getAttribute('data-reply-sender') || '';
+    const text = el.getAttribute('data-reply-text') || '';
+    const attach = el.getAttribute('data-reply-attachment') || '';
+    replyMsg(msgId, sender, text, attach);
+}
 function replyMsg(msgId, senderName, text, attachment) {
     const box = document.getElementById('reply-preview');
     const senderEl = document.getElementById('reply-preview-sender');
@@ -992,10 +1001,11 @@ function adminMessageMarkup(message) {
     const replySender = message.mine ? 'Anda' : message.sender_name;
     const replyText = message.message || '';
     const replyAttachment = message.attachment_url || message.attachment_name || '';
+    const replyMenuItem = `<li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="${message.id}" data-reply-sender="${escapeChatText(replySender)}" data-reply-text="${escapeChatText(replyText)}" data-reply-attachment="${escapeChatText(replyAttachment)}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>`;
     const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/tickets/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(replySender)}, ${JSON.stringify(replyText)}, ${JSON.stringify(replyAttachment)}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 async function pollAdminChat() {
     if (adminPolling || document.hidden) return;
