@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use App\Models\Opd;
+use App\Models\Notification;
+use App\Models\AIClassification;
 use App\Services\FonnteService;
+use App\Services\AIClassificationService;
+use App\Services\CosineSimilarityService;
+use App\Services\TicketingService;
+use App\Services\WhatsAppSpamGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -237,10 +243,10 @@ class WhatsappController extends Controller
 
             /*
             |------------------------------------------------------------------
-            | PESAN TIDAK DIKENALI
+            | PESAN BEBAS — spam guard, AI classification, notification/ticket
             |------------------------------------------------------------------
             */
-            return $this->handleTidakDikenali($number);
+            return $this->handleFreeTextComplaint($number, $message, $request);
 
         } catch (\Exception $e) {
             Log::error('WhatsApp Webhook Error', [
@@ -251,6 +257,54 @@ class WhatsappController extends Controller
 
             return response()->json(['success' => false, 'message' => 'Internal error']);
         }
+    }
+
+    private function handleFreeTextComplaint(string $number, string $message, Request $request)
+    {
+        $providerMessageId = $request->input('id') ?? $request->input('message_id') ?? $request->input('messageId');
+        $spam = app(WhatsAppSpamGuard::class)->check($number, $message, $providerMessageId);
+
+        if (!$spam['allowed']) {
+            Log::info('WhatsApp message filtered', [
+                'sender_hash' => substr(hash('sha256', $number), 0, 12),
+                'layer' => $spam['layer'],
+                'reason' => $spam['reason'],
+            ]);
+            return response()->json(['success' => true, 'filtered' => true]);
+        }
+
+        $notification = Notification::create([
+            'title' => 'WhatsApp',
+            'sender' => 'WhatsApp ' . substr($number, -4),
+            'message' => $message,
+            'permalink' => 'https://web.whatsapp.com/send?phone=' . FonnteService::formatPhone($number),
+        ]);
+
+        $classification = app(AIClassificationService::class)->classify($message);
+        $ai = AIClassification::create([
+            'notification_id' => $notification->id,
+            'suggested_category' => $classification['suggested_category'],
+            'suggested_sub_category' => $classification['suggested_sub_category'],
+            'suggested_opds' => $classification['suggested_opds'],
+            'priority' => $classification['priority'],
+            'confidence' => $classification['confidence'],
+            'reasoning' => $classification['reasoning'],
+        ]);
+
+        $duplicate = app(CosineSimilarityService::class)->checkDuplicate($message, $notification->id);
+        if ($duplicate) {
+            $notification->update([
+                'duplicate_of_id' => $duplicate['notification_id'],
+                'duplicate_similarity' => $duplicate['similarity'],
+                'duplicate_status' => 'terdeteksi',
+            ]);
+            return response()->json(['success' => true, 'duplicate' => true]);
+        }
+
+        $ticket = app(TicketingService::class)->createTicketFromClassification($notification, $ai);
+        FonnteService::send($number, "✅ Laporan Anda telah diterima. Nomor tiket: *{$ticket->tracking_number}*. Gunakan CEK#{$ticket->tracking_number} untuk memeriksa status.");
+
+        return response()->json(['success' => true, 'ticket' => $ticket->tracking_number]);
     }
 
     /**

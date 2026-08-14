@@ -56,4 +56,11 @@ return [
         'bot_number' => env('FONNTE_BOT_NUMBER'),
     ],
 
+    'whatsapp_spam' => [
+        'window_seconds' => env('WHATSAPP_SPAM_WINDOW_SECONDS', 60),
+        'max_free_messages' => env('WHATSAPP_SPAM_MAX_FREE_MESSAGES', 6),
+        'duplicate_cooldown_seconds' => env('WHATSAPP_DUPLICATE_COOLDOWN_SECONDS', 120),
+        'ai_enabled' => env('WHATSAPP_AI_SPAM_ENABLED', true),
+    ],
+
 ];
