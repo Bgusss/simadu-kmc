@@ -51,6 +51,7 @@
 /* Canvas — fills remaining space */
 .chat-canvas {
     flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     padding: 24px;
     background-color: #f4f7fb;
@@ -203,6 +204,10 @@
 .chat-search-container {
     z-index: 15;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    flex-shrink: 0;
+    max-height: 260px;
+    display: flex;
+    flex-direction: column;
 }
 .chat-search-pill {
     transition: all 0.2s ease;
