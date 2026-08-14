@@ -199,13 +199,15 @@
     background: #f0f5ff;
 }
 
-/* Reply preview bar */
-.reply-preview {
-    background: #eef4ff;
-    border-left: 3px solid #0d47a1;
-    padding: 8px 12px;
-    margin-bottom: 0;
-    border-radius: 0;
+/* Search bar & highlight */
+.chat-search-bar {
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.chat-bubble-wrap.search-active {
+    box-shadow: 0 0 0 3px #f57c00, 0 8px 24px rgba(245, 124, 0, 0.25) !important;
+    border-radius: 12px;
+    transition: box-shadow 0.2s ease;
 }
 
 /* Composer */
@@ -401,12 +403,33 @@
                         <i class="fas fa-building"></i>
                     @endif
                 </div>
-                <div class="flex-grow-1">
-                    <div class="fw-bold">{{ $ticket->assignedOpd?->name ?? 'OPD' }}</div>
-                    <div class="small text-white-50">Percakapan terkait {{ $ticket->tracking_number ?? $ticket->ticket_number }}</div>
+                <div class="flex-grow-1 overflow-hidden">
+                    <div class="fw-bold text-truncate">{{ $ticket->assignedOpd?->name ?? 'OPD' }}</div>
+                    <div class="small text-white-50 text-truncate">Percakapan terkait {{ $ticket->tracking_number ?? $ticket->ticket_number }}</div>
                 </div>
-                <span class="badge rounded-pill" style="background:rgba(255,255,255,.14)"><i class="fas fa-comments me-1"></i>Chat OPD</span>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm text-white opacity-85 hover-opacity-100 p-1 border-0" onclick="toggleChatSearch()" title="Cari pesan">
+                        <i class="fas fa-search fs-5"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm text-white opacity-85 hover-opacity-100 p-1 border-0" data-bs-toggle="modal" data-bs-target="#chatSettingsModal" title="Pengaturan Chat">
+                        <i class="fas fa-cog fs-5"></i>
+                    </button>
+                </div>
             </header>
+
+            <div id="chat-search-bar" class="chat-search-bar d-none p-2 bg-light border-bottom d-flex align-items-center gap-2">
+                <div class="input-group input-group-sm flex-grow-1">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" id="chat-search-input" class="form-control border-start-0" placeholder="Cari isi pesan..." oninput="performChatSearch()">
+                    <button class="btn btn-outline-secondary" type="button" onclick="clearChatSearch()" title="Bersihkan"><i class="fas fa-times"></i></button>
+                </div>
+                <span id="chat-search-count" class="small text-muted text-nowrap px-1">0/0</span>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-secondary" onclick="navChatSearch(-1)" title="Sebelumnya"><i class="fas fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="navChatSearch(1)" title="Berikutnya"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <button type="button" class="btn-close ms-1" onclick="toggleChatSearch()" aria-label="Tutup pencarian"></button>
+            </div>
 
             <div class="chat-canvas position-relative" id="admin-chat-messages">
                 @forelse($ticket->chatMessages as $message)
@@ -653,6 +676,29 @@
         </aside>
     </div>
 </div>
+
+<!-- Chat Settings Modal -->
+<div class="modal fade" id="chatSettingsModal" tabindex="-1" aria-labelledby="chatSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold" id="chatSettingsModalLabel"><i class="fas fa-cog text-primary me-2"></i>Pengaturan Chat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body py-4">
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border">
+                    <div>
+                        <div class="fw-bold text-dark mb-1" style="font-size: 1rem;">Enter untuk Mengirim</div>
+                        <div class="small text-muted" id="enterToSendHint">Tombol Enter akan Mengirim Pesan Anda</div>
+                    </div>
+                    <div class="form-check form-switch fs-4 mb-0 ps-0">
+                        <input class="form-check-input ms-0" type="checkbox" role="switch" id="enterToSendSwitch" checked onchange="toggleEnterToSend(this.checked)" style="cursor: pointer;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -692,10 +738,118 @@ if (adminChatMsgEl) {
     });
     adminChatMsgEl.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            document.getElementById('admin-chat-form').requestSubmit();
+            if (isEnterToSendEnabled()) {
+                e.preventDefault();
+                document.getElementById('admin-chat-form').requestSubmit();
+            }
         }
     });
+}
+
+// Enter to Send Setting
+function isEnterToSendEnabled() {
+    const saved = localStorage.getItem('simadu_enter_to_send');
+    return saved === null ? true : saved === 'true';
+}
+
+function toggleEnterToSend(enabled) {
+    localStorage.setItem('simadu_enter_to_send', enabled ? 'true' : 'false');
+    const hint = document.getElementById('enterToSendHint');
+    if (hint) {
+        hint.textContent = enabled ? 'Tombol Enter akan Mengirim Pesan Anda' : 'Tombol Enter untuk baris baru (kirim via tombol plane)';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const switchEl = document.getElementById('enterToSendSwitch');
+    if (switchEl) {
+        const enabled = isEnterToSendEnabled();
+        switchEl.checked = enabled;
+        toggleEnterToSend(enabled);
+    }
+});
+
+// Search in Chat
+let chatSearchMatches = [];
+let currentSearchIdx = -1;
+
+function toggleChatSearch() {
+    const bar = document.getElementById('chat-search-bar');
+    const input = document.getElementById('chat-search-input');
+    if (!bar) return;
+    if (bar.classList.contains('d-none')) {
+        bar.classList.remove('d-none');
+        if (input) { input.focus(); input.select(); }
+        performChatSearch();
+    } else {
+        bar.classList.add('d-none');
+        clearChatSearch();
+    }
+}
+
+function clearChatSearch() {
+    const input = document.getElementById('chat-search-input');
+    if (input) input.value = '';
+    chatSearchMatches = [];
+    currentSearchIdx = -1;
+    updateSearchCountUI();
+    clearChatSearchHighlights();
+}
+
+function clearChatSearchHighlights() {
+    if (!chatCanvas) return;
+    chatCanvas.querySelectorAll('.chat-bubble-wrap.search-active').forEach(el => el.classList.remove('search-active'));
+}
+
+function performChatSearch() {
+    clearChatSearchHighlights();
+    const query = (document.getElementById('chat-search-input')?.value || '').trim().toLowerCase();
+    chatSearchMatches = [];
+    currentSearchIdx = -1;
+    if (!query || !chatCanvas) {
+        updateSearchCountUI();
+        return;
+    }
+
+    const bubbles = chatCanvas.querySelectorAll('.chat-bubble-wrap');
+    bubbles.forEach(bubble => {
+        const textEl = bubble.querySelector('.chat-msg-text');
+        if (textEl && textEl.textContent.toLowerCase().includes(query)) {
+            chatSearchMatches.push(bubble);
+        }
+    });
+
+    if (chatSearchMatches.length > 0) {
+        currentSearchIdx = 0;
+        highlightCurrentMatchUI();
+    }
+    updateSearchCountUI();
+}
+
+function highlightCurrentMatchUI() {
+    clearChatSearchHighlights();
+    if (currentSearchIdx >= 0 && currentSearchIdx < chatSearchMatches.length) {
+        const bubble = chatSearchMatches[currentSearchIdx];
+        bubble.classList.add('search-active');
+        bubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function navChatSearch(direction) {
+    if (chatSearchMatches.length === 0) return;
+    currentSearchIdx = (currentSearchIdx + direction + chatSearchMatches.length) % chatSearchMatches.length;
+    highlightCurrentMatchUI();
+    updateSearchCountUI();
+}
+
+function updateSearchCountUI() {
+    const countEl = document.getElementById('chat-search-count');
+    if (!countEl) return;
+    if (chatSearchMatches.length === 0) {
+        countEl.textContent = '0/0';
+    } else {
+        countEl.textContent = (currentSearchIdx + 1) + '/' + chatSearchMatches.length;
+    }
 }
 
 document.getElementById('admin-chat-form').addEventListener('submit', async function(event) {
