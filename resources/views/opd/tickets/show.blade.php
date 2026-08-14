@@ -23,6 +23,8 @@
     }
 </style>
 
+<div class="row">
+
     @if(session('success'))
     <div class="col-12 mb-3">
         <div class="alert alert-success shadow-sm border-0 rounded-4 alert-dismissible fade show p-3" role="alert" style="background-color: #dcfce7; color: #15803d; border-left: 5px solid #22c55e !important;">
