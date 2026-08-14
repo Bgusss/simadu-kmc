@@ -200,14 +200,27 @@
     background: #f0f5ff;
 }
 
-/* WhatsApp-style Search Panel */
+/* WhatsApp-style Right-Side Search Panel */
 .chat-search-container {
-    z-index: 15;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    flex-shrink: 0;
-    max-height: 260px;
+    position: absolute;
+    top: 67px;
+    right: 0;
+    width: 380px;
+    max-width: 85%;
+    z-index: 25;
+    background: #ffffff;
+    border-left: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    border-bottom-left-radius: 16px;
+    box-shadow: -6px 10px 24px rgba(15,23,42,0.12);
+    max-height: calc(100% - 135px);
     display: flex;
     flex-direction: column;
+    animation: searchSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes searchSlideIn {
+    from { transform: translateX(30px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 .chat-search-pill {
     transition: all 0.2s ease;
@@ -459,7 +472,7 @@
                     </div>
                 </div>
 
-                <div id="chat-search-results-list" class="chat-search-results-list px-3 pb-3" style="max-height: 280px; overflow-y: auto;">
+                <div id="chat-search-results-list" class="chat-search-results-list px-3 pb-3" style="flex: 1 1 auto; overflow-y: auto; min-height: 0;">
                     <div class="text-center text-muted py-4 small">
                         <i class="fas fa-search fs-3 opacity-50 mb-2 d-block"></i>
                         Ketik kata kunci untuk mencari pesan dalam percakapan ini
