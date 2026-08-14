@@ -338,7 +338,7 @@
             <div class="chat-canvas position-relative" id="opd-chat-messages">
                 @forelse($ticket->chatMessages as $message)
                     @php $mine = $message->sender_id === auth()->id(); @endphp
-                    <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}">
+                    <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}">
                         <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
                             <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
                                 <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
@@ -538,9 +538,32 @@ function updateOpdSendState() {
     document.getElementById('opd-chat-send').disabled = !message.value.trim() && !hasAttachment;
 }
 document.getElementById('opd-chat-message').addEventListener('input', updateOpdSendState);
-document.getElementById('opd-chat-form').addEventListener('submit', function(event) {
+document.getElementById('opd-chat-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
     updateOpdSendState();
-    if (document.getElementById('opd-chat-send').disabled) event.preventDefault();
+    const sendButton = document.getElementById('opd-chat-send');
+    if (sendButton.disabled) return;
+    sendButton.disabled = true;
+    try {
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this),
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin',
+        });
+        if (!response.ok) throw new Error('Pesan tidak dapat dikirim.');
+        const data = await response.json();
+        if (!chatCanvas.querySelector('[data-chat-message-id="' + data.message.id + '"]')) {
+            chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(data.message));
+        }
+        document.getElementById('opd-chat-message').value = '';
+        clearSelectedAttachment('opd');
+        chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
+    } catch (error) {
+        alert(error.message || 'Pesan tidak dapat dikirim. Coba lagi.');
+    } finally {
+        updateOpdSendState();
+    }
 });
 
 // Copy message
@@ -627,5 +650,56 @@ function clearSelectedAttachment(role) {
     document.getElementById(role + '-attach-label').classList.add('d-none');
     updateOpdSendState();
 }
+
+// Refresh-free chat polling
+let opdPolling = false;
+function escapeChatText(value) {
+    const node = document.createElement('div');
+    node.textContent = value || '';
+    return node.innerHTML;
+}
+function opdMessageMarkup(message) {
+    const mineClass = message.mine ? 'mine' : 'theirs';
+    const alignment = message.mine ? 'justify-content-end' : 'justify-content-start';
+    const imageTypes = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    const videoTypes = ['mp4', 'mov', 'avi', '3gp', 'webm'];
+    let attachment = '';
+    if (message.attachment_url) {
+        if (imageTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img"></a></div>`;
+        else if (videoTypes.includes(message.attachment_type)) attachment = `<div class="chat-attach-preview mt-2"><video controls class="chat-attach-video"><source src="${message.attachment_url}"></video></div>`;
+        else attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank" class="chat-attach-doc ${message.mine ? 'mine' : ''}"><i class="fas fa-file-alt chat-attach-doc-icon"></i><div class="chat-attach-doc-info"><div class="chat-attach-doc-name">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta">${escapeChatText(message.attachment_type || 'FILE').toUpperCase()}</div></div><i class="fas fa-download chat-attach-doc-dl"></i></a></div>`;
+    }
+    const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article></div></div>`;
+}
+async function pollOpdChat() {
+    if (opdPolling || document.hidden) return;
+    opdPolling = true;
+    const wasNearBottom = opdIsNearBottom();
+    try {
+        const response = await fetch('{{ route('opd.chat.poll', $ticket) }}', { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' });
+        if (!response.ok) return;
+        const data = await response.json();
+        data.messages.forEach(function(message) {
+            const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
+            if (!existing) chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(message));
+            else if (message.mine) {
+                const receipt = existing.querySelector('.chat-receipt');
+                if (receipt && message.read) {
+                    receipt.className = 'chat-receipt read';
+                    receipt.innerHTML = '<i class="fas fa-check-double"></i>';
+                }
+            }
+        });
+        if (wasNearBottom) chatCanvas.scrollTop = chatCanvas.scrollHeight;
+        updateOpdLatestButton();
+    } catch (error) {
+        console.warn('Chat polling failed.', error);
+    } finally {
+        opdPolling = false;
+    }
+}
+setInterval(pollOpdChat, 5000);
+document.addEventListener('visibilitychange', function() { if (!document.hidden) pollOpdChat(); });
 </script>
 @endpush

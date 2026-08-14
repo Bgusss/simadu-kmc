@@ -157,6 +157,40 @@ class OpdController extends Controller
         return view('opd.chat.show', compact('ticket'));
     }
 
+    public function chatPoll(Ticket $ticket)
+    {
+        $user = Auth::user();
+        if ($ticket->assigned_opd_id !== $user->opd_id) abort(403, 'Unauthorized.');
+
+        $adminIds = \App\Models\User::where('role', 'admin')->pluck('id');
+        TicketChatMessage::where('ticket_id', $ticket->id)
+            ->whereIn('sender_id', $adminIds)
+            ->where('read_by_opd', false)
+            ->update(['read_by_opd' => true]);
+
+        return response()->json([
+            'messages' => TicketChatMessage::with('sender')->where('ticket_id', $ticket->id)->orderBy('id')->get()
+                ->map(fn (TicketChatMessage $message) => $this->chatMessagePayload($message, $user->id)),
+        ]);
+    }
+
+    private function chatMessagePayload(TicketChatMessage $message, int $currentUserId): array
+    {
+        $extension = $message->attachment ? strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)) : null;
+
+        return [
+            'id' => $message->id,
+            'mine' => $message->sender_id === $currentUserId,
+            'sender_name' => $message->sender_id === $currentUserId ? 'Anda' : ($message->sender?->name ?? 'Admin KMC'),
+            'message' => $message->message,
+            'attachment_url' => $message->attachment ? asset('storage/' . $message->attachment) : null,
+            'attachment_name' => $message->attachment ? basename($message->attachment) : null,
+            'attachment_type' => $extension,
+            'created_at' => $message->created_at?->format('H:i'),
+            'read' => (bool) $message->read_by_admin,
+        ];
+    }
+
     public function chatSend(Request $request, Ticket $ticket)
     {
         $user = Auth::user();
@@ -171,11 +205,15 @@ class OpdController extends Controller
             ? $request->file('attachment')->store('chat-attachments', 'public')
             : null;
 
-        TicketChatMessage::create([
+        $message = TicketChatMessage::create([
             'ticket_id' => $ticket->id, 'sender_id' => $user->id,
             'message' => $validated['message'] ?? '', 'attachment' => $attachment,
             'read_by_admin' => false, 'read_by_opd' => true,
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $this->chatMessagePayload($message->load('sender'), $user->id)], 201);
+        }
 
         return redirect()->route('opd.chat.show', $ticket)->with('success', 'Pesan berhasil dikirim ke Admin KMC.');
     }
