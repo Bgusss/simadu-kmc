@@ -105,26 +105,26 @@
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
                         <thead style="background-color: #f8fafc; border-top: 1px solid #f1f5f9; border-bottom: 2px solid #e2e8f0;">
-                            <tr class="text-center">
+                            <tr>
                                 <th class="px-4 py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Nomor Tiket</th>
                                 <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Tanggal/Waktu</th>
                                 <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aduan</th>
                                 <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Pelapor</th>
                                 <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Kategori</th>
-                                <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Status</th>
-                                <th class="px-4 py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aksi</th>
+                                <th class="py-3 text-uppercase text-muted text-center" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Status</th>
+                                <th class="px-4 py-3 text-uppercase text-muted text-center" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($recentTickets as $ticket)
-                                <tr class="text-center align-middle" style="border-bottom: 1px solid #f1f5f9;">
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
                                     <td class="px-4 py-3"><span class="fw-bold text-primary">{{ $ticket->tracking_number ?? $ticket->ticket_number ?? '#' . $ticket->id }}</span></td>
                                     <td class="py-3 text-muted">
                                         <div class="fw-medium text-dark">{{ $ticket->created_at?->format('d M Y') }}</div>
                                         <div class="small">{{ $ticket->created_at?->format('H:i') }} WIB</div>
                                     </td>
                                     <td class="py-3">
-                                        <div class="text-truncate text-dark mx-auto" style="max-width: 280px;" title="{{ $ticket->complaint }}">
+                                        <div class="text-truncate text-dark" style="max-width: 280px;" title="{{ $ticket->complaint }}">
                                             {{ Str::limit($ticket->complaint, 60) }}
                                         </div>
                                     </td>
@@ -153,7 +153,7 @@
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td class="py-3">
+                                    <td class="py-3 text-center">
                                         @php
                                             $badgeClass = 'bg-secondary text-white';
                                             if($ticket->status == 'diteruskan' || $ticket->status == 'diterima') $badgeClass = 'bg-info bg-opacity-10 text-info border border-info';

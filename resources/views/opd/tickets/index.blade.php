@@ -89,76 +89,76 @@
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
                     <thead style="background-color: #f8fafc; border-top: 1px solid #f1f5f9; border-bottom: 2px solid #e2e8f0;">
-                        <tr class="text-center">
-                        <th class="px-4 py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">No. Tiket</th>
-                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aduan</th>
-                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Pelapor</th>
-                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Kategori</th>
-                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Tanggal</th>
-                        <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Status</th>
-                        <th class="px-4 py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($tickets as $ticket)
-                        <tr class="text-center align-middle" style="border-bottom: 1px solid #f1f5f9;">
-                            <td class="px-4 py-3 fw-bold text-primary">{{ $ticket->tracking_number ?? $ticket->ticket_number ?? '#' . $ticket->id }}</td>
-                            <td class="py-3">
-                                <div class="text-truncate text-dark mx-auto" style="max-width: 250px;" title="{{ $ticket->complaint }}">{{ Str::limit($ticket->complaint, 60) }}</div>
-                            </td>
-                            <td class="py-3">
-                                <div class="fw-medium text-dark">{{ $ticket->reporter_name ?? 'Anonim' }}</div>
-                                @if($ticket->reporter_link && strtolower($ticket->platform ?? '') !== 'whatsapp' && !str_contains($ticket->reporter_link, 'instagram.com/direct/'))
-                                    <a href="{{ $ticket->reporter_link }}" target="_blank" class="text-decoration-none small text-primary fw-medium"><i class="fas fa-link"></i> Lihat Postingan</a>
-                                @endif
-                            </td>
-                            <td class="py-3">
-                                @if($ticket->category)
-                                    <div class="mb-1">
-                                        <span class="badge-category">
-                                            {{ $ticket->category }}
-                                        </span>
-                                    </div>
-                                @endif
-                                @if($ticket->sub_category)
-                                    <div>
-                                        <span class="badge-subcategory">
-                                            {{ $ticket->sub_category }}
-                                        </span>
-                                    </div>
-                                @endif
-                                @if(!$ticket->category && !$ticket->sub_category)
-                                    <span class="text-muted">-</span>
-                                @endif
-                            </td>
-                            <td class="py-3 text-muted">
-                                <div class="fw-medium text-dark">{{ $ticket->created_at?->format('d M Y') }}</div>
-                                <div class="small">{{ $ticket->created_at?->format('H:i') }} WIB</div>
-                            </td>
-                            <td class="py-3">
-                                @php
-                                    $badgeClass = 'bg-secondary text-white';
-                                    if($ticket->status == 'diteruskan' || $ticket->status == 'diterima') $badgeClass = 'bg-info bg-opacity-10 text-info border border-info';
-                                    elseif($ticket->status == 'proses_disposisi') $badgeClass = 'border border-warning text-dark';
-                                    elseif($ticket->status == 'diproses') $badgeClass = 'bg-warning bg-opacity-10 text-warning border border-warning';
-                                    elseif($ticket->status == 'dijawab') $badgeClass = 'bg-primary-subtle text-primary border border-primary';
-                                    elseif($ticket->status == 'selesai') $badgeClass = 'bg-success bg-opacity-10 text-success border border-success';
-                                    elseif($ticket->status == 'eskalasi') $badgeClass = 'bg-danger bg-opacity-10 text-danger border border-danger';
-                                @endphp
-                                <span class="badge rounded-pill px-3 py-2 fw-bold {{ $badgeClass }}" @if($ticket->status == 'proses_disposisi') style="background-color: rgba(245, 124, 0, 0.1); color: #F57C00 !important; border-color: #F57C00 !important;" @endif>{{ $ticket->status == 'proses_disposisi' ? 'Proses Disposisi' : ucfirst($ticket->status) }}</span>
-                            </td>
-                            <td class="px-4 py-3 text-center text-nowrap">
-                                <a href="{{ route('opd.tickets.show', $ticket->id) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium me-1" title="Lihat Detail">
-                                    <i class="fas fa-eye me-1"></i> Detail
-                                </a>
-                                <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm shadow-sm rounded-pill px-3 fw-medium text-white" style="background-color: #F57C00; border-color: #F57C00;" title="Berikan Tanggapan">
-                                    <i class="fas fa-comment-dots me-1"></i> Berikan Tanggapan
-                                </a>
-                                <a href="{{ route('opd.chat.show', $ticket) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium ms-1" title="Live Chat dengan Admin KMC">
-                                    <i class="fas fa-comments me-1"></i> Live Chat
-                                </a>
-                            </td>
+                        <tr>
+                            <th class="px-4 py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">No. Tiket</th>
+                            <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aduan</th>
+                            <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Pelapor</th>
+                            <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Kategori</th>
+                            <th class="py-3 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Tanggal</th>
+                            <th class="py-3 text-uppercase text-muted text-center" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Status</th>
+                            <th class="px-4 py-3 text-uppercase text-muted text-center" style="font-size: 0.75rem; letter-spacing: 0.5px; font-weight: 600;">Aksi</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($tickets as $ticket)
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td class="px-4 py-3 fw-bold text-primary">{{ $ticket->tracking_number ?? $ticket->ticket_number ?? '#' . $ticket->id }}</td>
+                                <td class="py-3">
+                                    <div class="text-truncate text-dark" style="max-width: 250px;" title="{{ $ticket->complaint }}">{{ Str::limit($ticket->complaint, 60) }}</div>
+                                </td>
+                                <td class="py-3">
+                                    <div class="fw-medium text-dark">{{ $ticket->reporter_name ?? 'Anonim' }}</div>
+                                    @if($ticket->reporter_link && strtolower($ticket->platform ?? '') !== 'whatsapp' && !str_contains($ticket->reporter_link, 'instagram.com/direct/'))
+                                        <a href="{{ $ticket->reporter_link }}" target="_blank" class="text-decoration-none small text-primary fw-medium"><i class="fas fa-link"></i> Lihat Postingan</a>
+                                    @endif
+                                </td>
+                                <td class="py-3">
+                                    @if($ticket->category)
+                                        <div class="mb-1">
+                                            <span class="badge-category">
+                                                {{ $ticket->category }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @if($ticket->sub_category)
+                                        <div>
+                                            <span class="badge-subcategory">
+                                                {{ $ticket->sub_category }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    @if(!$ticket->category && !$ticket->sub_category)
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td class="py-3 text-muted">
+                                    <div class="fw-medium text-dark">{{ $ticket->created_at?->format('d M Y') }}</div>
+                                    <div class="small">{{ $ticket->created_at?->format('H:i') }} WIB</div>
+                                </td>
+                                <td class="py-3 text-center">
+                                    @php
+                                        $badgeClass = 'bg-secondary text-white';
+                                        if($ticket->status == 'diteruskan' || $ticket->status == 'diterima') $badgeClass = 'bg-info bg-opacity-10 text-info border border-info';
+                                        elseif($ticket->status == 'proses_disposisi') $badgeClass = 'border border-warning text-dark';
+                                        elseif($ticket->status == 'diproses') $badgeClass = 'bg-warning bg-opacity-10 text-warning border border-warning';
+                                        elseif($ticket->status == 'dijawab') $badgeClass = 'bg-primary-subtle text-primary border border-primary';
+                                        elseif($ticket->status == 'selesai') $badgeClass = 'bg-success bg-opacity-10 text-success border border-success';
+                                        elseif($ticket->status == 'eskalasi') $badgeClass = 'bg-danger bg-opacity-10 text-danger border border-danger';
+                                    @endphp
+                                    <span class="badge rounded-pill px-3 py-2 fw-bold {{ $badgeClass }}" @if($ticket->status == 'proses_disposisi') style="background-color: rgba(245, 124, 0, 0.1); color: #F57C00 !important; border-color: #F57C00 !important;" @endif>{{ $ticket->status == 'proses_disposisi' ? 'Proses Disposisi' : ucfirst($ticket->status) }}</span>
+                                </td>
+                                <td class="px-4 py-3 text-center text-nowrap">
+                                    <a href="{{ route('opd.tickets.show', $ticket->id) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium me-1" title="Lihat Detail">
+                                        <i class="fas fa-eye me-1"></i> Detail
+                                    </a>
+                                    <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm shadow-sm rounded-pill px-3 fw-medium text-white" style="background-color: #F57C00; border-color: #F57C00;" title="Berikan Tanggapan">
+                                        <i class="fas fa-comment-dots me-1"></i> Berikan Tanggapan
+                                    </a>
+                                    <a href="{{ route('opd.chat.show', $ticket) }}" class="btn btn-sm btn-light border shadow-sm text-primary rounded-pill px-3 fw-medium ms-1" title="Live Chat dengan Admin KMC">
+                                        <i class="fas fa-comments me-1"></i> Live Chat
+                                    </a>
+                                </td>
+                            </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="text-center py-5 text-muted">
