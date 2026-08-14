@@ -199,15 +199,31 @@
     background: #f0f5ff;
 }
 
-/* Search bar & highlight */
-.chat-search-bar {
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+/* WhatsApp-style Search Panel */
+.chat-search-container {
+    z-index: 15;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.chat-search-pill {
+    transition: all 0.2s ease;
+    border: 2px solid #e2e8f0 !important;
+}
+.chat-search-pill:focus-within {
+    border-color: #059669 !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+    background: #ffffff !important;
+}
+.search-result-item:hover {
+    background-color: #f1f5f9 !important;
 }
 .chat-bubble-wrap.search-active {
-    box-shadow: 0 0 0 3px #f57c00, 0 8px 24px rgba(245, 124, 0, 0.25) !important;
+    box-shadow: 0 0 0 3px #f57c00, 0 8px 24px rgba(245, 124, 0, 0.35) !important;
     border-radius: 12px;
-    transition: box-shadow 0.2s ease;
+    animation: searchPulse 1.5s ease-in-out infinite alternate;
+}
+@keyframes searchPulse {
+    from { box-shadow: 0 0 0 3px #f57c00, 0 4px 12px rgba(245, 124, 0, 0.2); }
+    to { box-shadow: 0 0 0 4px #f57c00, 0 8px 24px rgba(245, 124, 0, 0.45); }
 }
 
 /* Composer */
@@ -417,24 +433,46 @@
                 </div>
             </header>
 
-            <div id="chat-search-bar" class="chat-search-bar d-none p-2 bg-light border-bottom d-flex align-items-center gap-2">
-                <div class="input-group input-group-sm flex-grow-1">
-                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" id="chat-search-input" class="form-control border-start-0" placeholder="Cari isi pesan..." oninput="performChatSearch()">
-                    <button class="btn btn-outline-secondary" type="button" onclick="clearChatSearch()" title="Bersihkan"><i class="fas fa-times"></i></button>
+            <!-- WhatsApp-style Search Panel -->
+            <div id="chat-search-container" class="chat-search-container d-none border-bottom bg-white">
+                <div class="d-flex align-items-center justify-content-between p-3 border-bottom bg-light">
+                    <div class="d-flex align-items-center gap-3">
+                        <button type="button" class="btn btn-sm btn-link text-dark p-0 text-decoration-none" onclick="toggleChatSearch()" title="Tutup pencarian">
+                            <i class="fas fa-times fs-5"></i>
+                        </button>
+                        <span class="fw-bold text-dark fs-6 mb-0">Cari Pesan</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="chat-search-date" class="btn btn-sm btn-light border rounded-circle p-0 d-flex align-items-center justify-content-center m-0" style="width: 34px; height: 34px; cursor: pointer;" title="Filter Berdasarkan Tanggal">
+                            <i class="far fa-calendar-alt text-secondary"></i>
+                        </label>
+                        <input type="date" id="chat-search-date" class="d-none" onchange="performChatSearch()">
+                        <button type="button" id="clear-date-btn" class="btn btn-sm btn-outline-danger d-none py-0 px-2" style="font-size: 0.75rem;" onclick="clearSearchDate()" title="Hapus Filter Tanggal"><i class="fas fa-calendar-times me-1"></i>Hapus Tanggal</button>
+                    </div>
                 </div>
-                <span id="chat-search-count" class="small text-muted text-nowrap px-1">0/0</span>
-                <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-outline-secondary" onclick="navChatSearch(-1)" title="Sebelumnya"><i class="fas fa-chevron-up"></i></button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="navChatSearch(1)" title="Berikutnya"><i class="fas fa-chevron-down"></i></button>
+
+                <div class="p-3 pb-2">
+                    <div class="chat-search-pill d-flex align-items-center px-3 py-1 bg-light rounded-pill border" id="chat-search-pill-box">
+                        <i class="fas fa-search text-muted me-2"></i>
+                        <input type="text" id="chat-search-input" class="form-control border-0 bg-transparent shadow-none p-1" placeholder="Cari kata atau frasa..." oninput="performChatSearch()">
+                        <button type="button" class="btn btn-sm text-muted p-0 border-0" onclick="clearChatSearch()" title="Hapus pencarian">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </div>
                 </div>
-                <button type="button" class="btn-close ms-1" onclick="toggleChatSearch()" aria-label="Tutup pencarian"></button>
+
+                <div id="chat-search-results-list" class="chat-search-results-list px-3 pb-3" style="max-height: 280px; overflow-y: auto;">
+                    <div class="text-center text-muted py-4 small">
+                        <i class="fas fa-search fs-3 opacity-50 mb-2 d-block"></i>
+                        Ketik kata kunci untuk mencari pesan dalam percakapan ini
+                    </div>
+                </div>
             </div>
 
             <div class="chat-canvas position-relative" id="admin-chat-messages">
                 @forelse($ticket->chatMessages as $message)
                     @php $mine = $message->sender_id === auth()->id(); @endphp
-                    <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}">
+                    <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}" data-created-date="{{ $message->created_at?->format('Y-m-d') }}">
                         <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
                             <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
                                 <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Admin KMC' : ($message->sender?->name ?? 'OPD') }}</div>
@@ -769,31 +807,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Search in Chat
-let chatSearchMatches = [];
-let currentSearchIdx = -1;
-
+// Search in Chat (WhatsApp Web Style)
 function toggleChatSearch() {
-    const bar = document.getElementById('chat-search-bar');
+    const container = document.getElementById('chat-search-container');
     const input = document.getElementById('chat-search-input');
-    if (!bar) return;
-    if (bar.classList.contains('d-none')) {
-        bar.classList.remove('d-none');
+    if (!container) return;
+    if (container.classList.contains('d-none')) {
+        container.classList.remove('d-none');
         if (input) { input.focus(); input.select(); }
         performChatSearch();
     } else {
-        bar.classList.add('d-none');
+        container.classList.add('d-none');
         clearChatSearch();
     }
 }
 
+function clearSearchDate() {
+    const dateInput = document.getElementById('chat-search-date');
+    if (dateInput) dateInput.value = '';
+    performChatSearch();
+}
+
 function clearChatSearch() {
     const input = document.getElementById('chat-search-input');
+    const dateInput = document.getElementById('chat-search-date');
     if (input) input.value = '';
-    chatSearchMatches = [];
-    currentSearchIdx = -1;
-    updateSearchCountUI();
+    if (dateInput) dateInput.value = '';
     clearChatSearchHighlights();
+    performChatSearch();
 }
 
 function clearChatSearchHighlights() {
@@ -801,54 +842,102 @@ function clearChatSearchHighlights() {
     chatCanvas.querySelectorAll('.chat-bubble-wrap.search-active').forEach(el => el.classList.remove('search-active'));
 }
 
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function performChatSearch() {
     clearChatSearchHighlights();
-    const query = (document.getElementById('chat-search-input')?.value || '').trim().toLowerCase();
-    chatSearchMatches = [];
-    currentSearchIdx = -1;
-    if (!query || !chatCanvas) {
-        updateSearchCountUI();
+    const query = (document.getElementById('chat-search-input')?.value || '').trim();
+    const dateFilter = (document.getElementById('chat-search-date')?.value || '');
+    const resultsContainer = document.getElementById('chat-search-results-list');
+    const clearDateBtn = document.getElementById('clear-date-btn');
+
+    if (clearDateBtn) {
+        clearDateBtn.classList.toggle('d-none', !dateFilter);
+    }
+
+    if (!resultsContainer) return;
+
+    if (!query && !dateFilter) {
+        resultsContainer.innerHTML = `<div class="text-center text-muted py-4 small"><i class="fas fa-search fs-3 opacity-50 mb-2 d-block"></i>Ketik kata kunci untuk mencari pesan dalam percakapan ini</div>`;
         return;
     }
 
-    const bubbles = chatCanvas.querySelectorAll('.chat-bubble-wrap');
-    bubbles.forEach(bubble => {
-        const textEl = bubble.querySelector('.chat-msg-text');
-        if (textEl && textEl.textContent.toLowerCase().includes(query)) {
-            chatSearchMatches.push(bubble);
+    const matches = [];
+    const messageRows = chatCanvas.querySelectorAll('[data-chat-message-id]');
+
+    messageRows.forEach(row => {
+        const msgId = row.getAttribute('data-chat-message-id');
+        const textEl = row.querySelector('.chat-msg-text');
+        const metaEl = row.querySelector('.chat-meta');
+        const senderEl = row.querySelector('.chat-message > div.small.fw-bold');
+        
+        const fullText = textEl ? textEl.textContent : '';
+        const senderName = senderEl ? senderEl.textContent : 'Pesan';
+        const timeText = metaEl ? metaEl.textContent.replace(/[✓\s]+/g, ' ').trim() : '';
+
+        // Text query check
+        const textMatches = !query || fullText.toLowerCase().includes(query.toLowerCase());
+        
+        // Date filter check
+        let dateMatches = true;
+        if (dateFilter) {
+            const rowDate = row.getAttribute('data-created-date');
+            if (rowDate) {
+                dateMatches = rowDate === dateFilter;
+            }
+        }
+
+        if (textMatches && dateMatches) {
+            matches.push({
+                id: msgId,
+                element: row,
+                sender: senderName,
+                text: fullText,
+                time: timeText
+            });
         }
     });
 
-    if (chatSearchMatches.length > 0) {
-        currentSearchIdx = 0;
-        highlightCurrentMatchUI();
+    if (matches.length === 0) {
+        resultsContainer.innerHTML = `<div class="text-center text-muted py-4 small"><i class="far fa-frown fs-3 opacity-50 mb-2 d-block"></i>Tidak ada pesan ditemukan</div>`;
+        return;
     }
-    updateSearchCountUI();
+
+    let html = '';
+    matches.forEach(m => {
+        let snippet = escapeChatText(m.text || '(Lampiran Media)');
+        if (query && m.text) {
+            const regex = new RegExp('(' + escapeRegExp(query) + ')', 'gi');
+            snippet = snippet.replace(regex, '<span class="fw-bold" style="color: #059669; background: #ecfdf5; padding: 0 2px; border-radius: 2px;">$1</span>');
+        }
+
+        html += `
+            <div class="search-result-item p-2 mb-1 rounded-3 border-bottom border-light cursor-pointer" onclick="jumpToMessage('${m.id}')" style="cursor: pointer; transition: background 0.15s ease;">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <span class="small fw-semibold text-primary" style="font-size: 0.78rem;"><i class="fas fa-check-double text-muted me-1" style="font-size: 0.72rem;"></i>${escapeChatText(m.sender)}</span>
+                    <span class="small text-muted" style="font-size: 0.75rem;">${escapeChatText(m.time)}</span>
+                </div>
+                <div class="small text-dark text-truncate" style="font-size: 0.82rem; line-height: 1.35;">
+                    ${snippet}
+                </div>
+            </div>
+        `;
+    });
+
+    resultsContainer.innerHTML = html;
 }
 
-function highlightCurrentMatchUI() {
+function jumpToMessage(msgId) {
     clearChatSearchHighlights();
-    if (currentSearchIdx >= 0 && currentSearchIdx < chatSearchMatches.length) {
-        const bubble = chatSearchMatches[currentSearchIdx];
-        bubble.classList.add('search-active');
-        bubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-function navChatSearch(direction) {
-    if (chatSearchMatches.length === 0) return;
-    currentSearchIdx = (currentSearchIdx + direction + chatSearchMatches.length) % chatSearchMatches.length;
-    highlightCurrentMatchUI();
-    updateSearchCountUI();
-}
-
-function updateSearchCountUI() {
-    const countEl = document.getElementById('chat-search-count');
-    if (!countEl) return;
-    if (chatSearchMatches.length === 0) {
-        countEl.textContent = '0/0';
-    } else {
-        countEl.textContent = (currentSearchIdx + 1) + '/' + chatSearchMatches.length;
+    const row = chatCanvas.querySelector('[data-chat-message-id="' + msgId + '"]');
+    if (row) {
+        const bubbleWrap = row.querySelector('.chat-bubble-wrap');
+        if (bubbleWrap) {
+            bubbleWrap.classList.add('search-active');
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 }
 
@@ -1170,7 +1259,8 @@ function adminMessageMarkup(message) {
     const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/tickets/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
+    const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr}><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 async function pollAdminChat() {
     if (adminPolling || document.hidden) return;
