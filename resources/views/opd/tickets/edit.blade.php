@@ -2,7 +2,7 @@
 
 @section('title', 'Perbarui Tiket ' . ($ticket->tracking_number ?? $ticket->ticket_number))
 @section('page-title')
-    <a href="{{ route('opd.tickets.show', $ticket->id) }}" class="btn-back me-2"><i class="fas fa-arrow-left"></i></a> 
+    <a href="{{ route('opd.tickets.index') }}" class="btn-back me-2" title="Kembali ke Daftar Tiket"><i class="fas fa-arrow-left"></i></a> 
     Perbarui Tiket: {{ $ticket->tracking_number ?? $ticket->ticket_number }}
 @endsection
 
