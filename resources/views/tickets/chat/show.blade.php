@@ -388,11 +388,23 @@
                                     @endphp
                                     <div class="chat-attach-preview mt-2">
                                         @if($isImage)
-                                            <button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
-                                                <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img lightbox-img">
-                                            </button>
+                                            <div class="position-relative d-inline-block">
+                                                <button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}')">
+                                                    <img src="{{ asset('storage/'.$message->attachment) }}" alt="Lampiran" class="chat-attach-img lightbox-img">
+                                                </button>
+                                                <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute top-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
                                         @elseif($isVideo)
-                                            <video controls class="chat-attach-video"><source src="{{ asset('storage/'.$message->attachment) }}" type="video/{{ $ext }}"></video>
+                                            <div class="position-relative d-inline-block">
+                                                <video controls class="chat-attach-video"><source src="{{ asset('storage/'.$message->attachment) }}" type="video/{{ $ext }}"></video>
+                                                <div class="mt-1 d-flex justify-content-end">
+                                                    <a href="{{ asset('storage/'.$message->attachment) }}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" title="Unduh video">
+                                                        <i class="fas fa-download me-1"></i>Unduh video
+                                                    </a>
+                                                </div>
+                                            </div>
                                         @elseif($isPdf)
                                             <div class="chat-attach-doc {{ $mine ? 'mine' : '' }} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75">
                                                 <div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('{{ asset('storage/'.$message->attachment) }}', 'pdf')">
@@ -869,9 +881,9 @@ function adminMessageMarkup(message) {
         const isVideo = ['mp4','mov','avi','3gp','webm'].includes(ext);
         const isPdf = ext === 'pdf';
         if (isImage) {
-            attachment = `<div class="chat-attach-preview mt-2"><button type="button" class="p-0 border-0 bg-transparent" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button></div>`;
+            attachment = `<div class="chat-attach-preview mt-2"><div class="position-relative d-inline-block"><button type="button" class="p-0 border-0 bg-transparent d-block" onclick="openLightbox('${message.attachment_url}')"><img src="${message.attachment_url}" alt="Lampiran" class="chat-attach-img lightbox-img"></button><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-dark bg-opacity-75 text-white border-0 position-absolute top-0 end-0 m-2 shadow-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width:32px; height:32px; backdrop-filter:blur(4px);" title="Unduh foto"><i class="fas fa-download"></i></a></div></div>`;
         } else if (isVideo) {
-            attachment = `<div class="chat-attach-preview mt-2"><video controls class="chat-attach-video"><source src="${message.attachment_url}" type="video/${ext}"></video></div>`;
+            attachment = `<div class="chat-attach-preview mt-2"><div class="position-relative d-inline-block"><video controls class="chat-attach-video"><source src="${message.attachment_url}" type="video/${ext}"></video><div class="mt-1 d-flex justify-content-end"><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2 small fw-semibold" title="Unduh video"><i class="fas fa-download me-1"></i>Unduh video</a></div></div></div>`;
         } else if (isPdf) {
             attachment = `<div class="chat-attach-preview mt-2"><div class="chat-attach-doc ${mineClass} d-flex align-items-center justify-content-between gap-2 p-2 rounded-3 border bg-white bg-opacity-75"><div class="d-flex align-items-center gap-2 overflow-hidden" style="cursor: pointer;" onclick="openLightbox('${message.attachment_url}', 'pdf')"><i class="fas fa-file-pdf text-danger fs-3 flex-shrink-0"></i><div class="chat-attach-doc-info text-truncate"><div class="chat-attach-doc-name fw-bold text-dark text-truncate small">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta text-muted" style="font-size: 0.75rem;"><i class="fas fa-eye me-1"></i>Klik untuk pratinjau PDF</div></div></div><div class="d-flex align-items-center gap-1 flex-shrink-0"><a href="${message.attachment_url}" target="_blank" download class="btn btn-sm btn-light border-0 text-secondary py-1 px-2" title="Unduh PDF"><i class="fas fa-download"></i></a></div></div></div>`;
         } else {

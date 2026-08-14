@@ -786,7 +786,10 @@
 
 <!-- Lightbox Preview Modal -->
 <div id="globalLightbox" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); cursor:zoom-out; align-items:center; justify-content:center;">
-    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; width:44px; height:44px; border-radius:50%; font-size:1.4rem; cursor:pointer; z-index:100000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:all 0.2s;">
+    <a id="lightboxDownloadBtn" href="#" download target="_blank" style="position:absolute; top:20px; right:76px; background:rgba(255,255,255,0.18); border:none; color:#fff; height:44px; padding:0 18px; border-radius:22px; font-size:0.88rem; font-weight:600; cursor:pointer; z-index:100000; display:flex; align-items:center; gap:8px; backdrop-filter:blur(4px); transition:all 0.2s; text-decoration:none;" title="Unduh file media ini">
+        <i class="fas fa-download"></i> <span>Unduh</span>
+    </a>
+    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; width:44px; height:44px; border-radius:50%; font-size:1.4rem; cursor:pointer; z-index:100000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:all 0.2s;" title="Tutup">
         <i class="fas fa-times"></i>
     </button>
     <img id="lightboxImg" src="" alt="Preview" style="display:none; max-width:92vw; max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
@@ -806,9 +809,9 @@
         transform: scale(1.02);
         box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     }
-    #globalLightbox button:hover {
-        background: rgba(255,255,255,0.3) !important;
-        transform: scale(1.1);
+    #globalLightbox button:hover, #globalLightbox a:hover {
+        background: rgba(255,255,255,0.32) !important;
+        transform: scale(1.05);
     }
 </style>
 <script>
@@ -817,6 +820,11 @@
         var img = document.getElementById('lightboxImg');
         var vid = document.getElementById('lightboxVideo');
         var pdf = document.getElementById('lightboxPdf');
+        var dlBtn = document.getElementById('lightboxDownloadBtn');
+
+        if (dlBtn && src) {
+            dlBtn.href = src;
+        }
 
         var isPdf = type === 'pdf' || (typeof src === 'string' && src.toLowerCase().split('?')[0].endsWith('.pdf'));
         var isVid = type === 'video' || type === true;
