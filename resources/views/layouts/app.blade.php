@@ -1108,7 +1108,14 @@
             }
         }
 
+        var shownToastMsgIds = new Set();
+
         function showGlobalChatToast(notif) {
+            if (!notif || !notif.id) return;
+            var msgId = String(notif.id);
+            if (shownToastMsgIds.has(msgId)) return;
+            shownToastMsgIds.add(msgId);
+
             var container = document.getElementById('global-chat-toast-container');
             if (!container) {
                 container = document.createElement('div');
