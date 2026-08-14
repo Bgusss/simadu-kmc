@@ -560,6 +560,51 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Global SweetAlert2 Confirmation Modal Helper
+        function confirmAction(event, options) {
+            if (event && event.preventDefault) event.preventDefault();
+            options = options || {};
+            var form = event ? (event.target.closest('form') || event.target) : null;
+            var title = options.title || 'Apakah Anda yakin?';
+            var text = options.text || 'Tindakan ini tidak dapat dibatalkan!';
+            var confirmText = options.confirmButtonText || 'Ya, Lanjutkan';
+            var icon = options.icon || 'warning';
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: confirmText,
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        popup: 'rounded-4 shadow-lg border-0',
+                        confirmButton: 'px-4 py-2 rounded-3 fw-bold',
+                        cancelButton: 'px-4 py-2 rounded-3'
+                    }
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        if (typeof options.onConfirm === 'function') {
+                            options.onConfirm();
+                        } else if (form && form.tagName === 'FORM') {
+                            form.submit();
+                        }
+                    }
+                });
+                return false;
+            } else {
+                if (confirm(text)) {
+                    if (form && form.tagName === 'FORM') form.submit();
+                    return true;
+                }
+                return false;
+            }
+        }
+    </script>
     @include('partials.flash-toast')
     <script>
         document.addEventListener("DOMContentLoaded", function() {

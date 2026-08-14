@@ -341,15 +341,15 @@
                                 dengan laporan dari <strong>{{ $notification->duplicateOf?->sender_name }}</strong>
                             @endif
                             <div class="mt-2 d-flex gap-2">
-                                <form method="POST" action="{{ route('notifications.not-duplicate', $notification->id) }}" class="d-inline">
+                                <form method="POST" action="{{ route('notifications.not-duplicate', $notification->id) }}" class="d-inline" onsubmit="return confirmAction(event, { title: 'Bukan Duplikat?', text: 'Tiket akan langsung dibuat dari laporan ini.', confirmButtonText: 'Ya, Buat Tiket!', icon: 'question' });">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3" onclick="return confirm('Yakin bukan duplikat?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3">
                                         <i class="fas fa-check me-1"></i> Bukan Duplikat
                                     </button>
                                 </form>
-                                <form method="POST" action="{{ route('notifications.is-duplicate', $notification->id) }}" class="d-inline">
+                                <form method="POST" action="{{ route('notifications.is-duplicate', $notification->id) }}" class="d-inline" onsubmit="return confirmAction(event, { title: 'Konfirmasi Duplikat?', text: 'Konfirmasi bahwa laporan ini memang duplikat.', confirmButtonText: 'Ya, Duplikat!', icon: 'warning' });">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="return confirm('Konfirmasi duplikat?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
                                         <i class="fas fa-times me-1"></i> Duplikat
                                     </button>
                                 </form>

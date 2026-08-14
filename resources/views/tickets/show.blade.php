@@ -158,7 +158,7 @@
                 <i class="fas fa-edit me-2"></i> Edit Tiket
             </a>
             
-            <form action="{{ route('tickets.destroy', $ticket->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tiket ini secara permanen?');">
+            <form action="{{ route('tickets.destroy', $ticket->id) }}" method="POST" onsubmit="return confirmAction(event, { title: 'Hapus Tiket Permanen?', text: 'Apakah Anda yakin ingin menghapus tiket ini secara permanen?', confirmButtonText: 'Ya, Hapus!' });">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn fw-bold rounded-pill py-3 shadow-sm card-premium text-white px-4" style="background-color: #dc3545; border: none; font-size: 1.1rem;">

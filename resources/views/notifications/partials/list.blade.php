@@ -89,15 +89,15 @@
                         <span class="text-muted"> — mirip dengan <strong>{{ $notif->duplicateOf?->sender_name }}</strong></span>
                     @endif
                     <div class="d-inline-flex gap-1 ms-2">
-                        <form method="POST" action="{{ route('notifications.not-duplicate', $notif->id) }}" class="d-inline">
+                        <form method="POST" action="{{ route('notifications.not-duplicate', $notif->id) }}" class="d-inline" onsubmit="return confirmAction(event, { title: 'Bukan Duplikat?', text: 'Tiket akan langsung dibuat dari laporan ini.', confirmButtonText: 'Ya, Buat Tiket!', icon: 'question' });">
                             @csrf
-                            <button type="submit" class="btn-dup-action btn-dup-ok" onclick="return confirm('Yakin bukan duplikat? Tiket akan langsung dibuat.')">
+                            <button type="submit" class="btn-dup-action btn-dup-ok">
                                 Bukan Duplikat
                             </button>
                         </form>
-                        <form method="POST" action="{{ route('notifications.is-duplicate', $notif->id) }}" class="d-inline">
+                        <form method="POST" action="{{ route('notifications.is-duplicate', $notif->id) }}" class="d-inline" onsubmit="return confirmAction(event, { title: 'Konfirmasi Duplikat?', text: 'Konfirmasi bahwa laporan ini memang duplikat.', confirmButtonText: 'Ya, Duplikat!', icon: 'warning' });">
                             @csrf
-                            <button type="submit" class="btn-dup-action btn-dup-no" onclick="return confirm('Konfirmasi bahwa ini memang duplikat?')">
+                            <button type="submit" class="btn-dup-action btn-dup-no">
                                 Duplikat
                             </button>
                         </form>

@@ -981,29 +981,59 @@ function copyMsg(el) {
 }
 
 // Delete message via AJAX
-async function deleteMsgAjax(event, form) {
+function deleteMsgAjax(event, form) {
     event.preventDefault();
-    if (!confirm('Hapus pesan ini?')) return;
-    try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-            credentials: 'same-origin',
-        });
-        if (!response.ok) throw new Error('Gagal menghapus pesan.');
-        const data = await response.json();
-        if (data.success && data.deleted_id) {
-            const msgEl = chatCanvas.querySelector('[data-chat-message-id="' + data.deleted_id + '"]');
-            if (msgEl) {
-                msgEl.style.transition = 'all 0.25s ease';
-                msgEl.style.opacity = '0';
-                msgEl.style.transform = 'scale(0.9)';
-                setTimeout(() => msgEl.remove(), 250);
+    if (typeof Swal === 'undefined') {
+        if (!confirm('Hapus pesan ini?')) return;
+        executeDelete();
+        return;
+    }
+    Swal.fire({
+        title: 'Hapus Pesan?',
+        text: 'Pesan yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> Ya, Hapus',
+        cancelButtonText: 'Batal',
+        customClass: {
+            popup: 'rounded-4 shadow-lg border-0',
+            confirmButton: 'px-4 py-2 rounded-3 fw-bold',
+            cancelButton: 'px-4 py-2 rounded-3'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            executeDelete();
+        }
+    });
+
+    async function executeDelete() {
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                credentials: 'same-origin',
+            });
+            if (!response.ok) throw new Error('Gagal menghapus pesan.');
+            const data = await response.json();
+            if (data.success && data.deleted_id) {
+                const msgEl = chatCanvas.querySelector('[data-chat-message-id="' + data.deleted_id + '"]');
+                if (msgEl) {
+                    msgEl.style.transition = 'all 0.25s ease';
+                    msgEl.style.opacity = '0';
+                    msgEl.style.transform = 'scale(0.9)';
+                    setTimeout(() => msgEl.remove(), 250);
+                }
+            }
+        } catch (error) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Gagal!', error.message || 'Gagal menghapus pesan.', 'error');
+            } else {
+                alert(error.message || 'Gagal menghapus pesan. Coba lagi.');
             }
         }
-    } catch (error) {
-        alert(error.message || 'Gagal menghapus pesan. Coba lagi.');
     }
 }
 

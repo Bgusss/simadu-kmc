@@ -325,7 +325,7 @@
                                                 <i class="fas fa-comments"></i>
                                             </a>
                                         @endif
-                                        <form action="{{ route('tickets.destroy', $ticket->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tiket ini?');">
+                                        <form action="{{ route('tickets.destroy', $ticket->id) }}" method="POST" class="d-inline" onsubmit="return confirmAction(event, { title: 'Hapus Tiket?', text: 'Apakah Anda yakin ingin menghapus tiket ini?', confirmButtonText: 'Ya, Hapus!' });">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-light border text-danger" title="Hapus Tiket">

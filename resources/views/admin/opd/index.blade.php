@@ -83,7 +83,7 @@
                                     <a href="{{ route('admin.opd.edit', $opd->id) }}" class="btn btn-sm btn-outline-warning rounded-pill px-3">
                                         <i class="fa-solid fa-pen-to-square"></i> Edit
                                     </a>
-                                    <form action="{{ route('admin.opd.destroy', $opd->id) }}" method="POST" class="m-0" onsubmit="return confirm('Yakin ingin menghapus OPD ini?');">
+                                    <form action="{{ route('admin.opd.destroy', $opd->id) }}" method="POST" class="m-0" onsubmit="return confirmAction(event, { title: 'Hapus Akun OPD?', text: 'Yakin ingin menghapus OPD ini?', confirmButtonText: 'Ya, Hapus!' });">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger rounded-pill px-3">
