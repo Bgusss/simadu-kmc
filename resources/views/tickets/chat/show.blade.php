@@ -427,6 +427,7 @@
                                             $readAtVal = $message->read_at ?? ($message->read_by_opd ? ($message->updated_at ?? $message->created_at) : null);
                                         @endphp
                                         <li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '{{ $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') }}', 'Admin KMC', '{{ $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}', '{{ $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
+                                    @endif
                                     @php
                                         $replySender = $mine ? 'Anda' : ($message->sender?->name ?? 'OPD');
                                         $replyText = $message->message ?? '';
@@ -862,6 +863,9 @@ function adminMessageMarkup(message) {
         }
     }
     const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
+    const infoDelivered = message.delivered_at || '-';
+    const infoRead = message.read_at || '-';
+    const infoMenuItem = message.mine ? `<li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '${escapeChatText(message.created_at)}', '${escapeChatText(message.sender_name)}', '${escapeChatText(infoDelivered)}', '${escapeChatText(infoRead)}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>` : '';
     const replySender = message.mine ? 'Anda' : message.sender_name;
     const replyText = message.message || '';
     const replyAttachment = message.attachment_url || message.attachment_name || '';
