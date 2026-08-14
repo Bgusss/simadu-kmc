@@ -531,10 +531,10 @@
             <button id="admin-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
 
             <footer class="chat-composer">
-                <div id="reply-preview" class="reply-preview d-none mb-2 p-2 rounded-3 border-start border-4 border-primary shadow-sm" style="background-color: rgba(13, 71, 161, 0.06) !important;">
+                <div id="reply-preview" class="reply-preview d-none mb-2 p-2 rounded-3 shadow-sm" style="border-left: 4px solid #f57c00; background-color: rgba(245, 124, 0, 0.08) !important;">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="overflow-hidden pe-2" style="min-width: 0;">
-                            <div class="fw-bold text-primary small text-truncate mb-0" id="reply-preview-sender" style="font-size: 0.78rem;"></div>
+                            <div class="fw-bold small text-truncate mb-0" id="reply-preview-sender" style="font-size: 0.78rem; color: #f57c00;"></div>
                             <div class="small text-dark text-truncate" id="reply-preview-text" style="font-size: 0.82rem;"></div>
                         </div>
                         <button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="cancelReply()" aria-label="Batal balas"></button>
@@ -808,6 +808,17 @@ function replyMsg(msgId, senderName, text, attachment) {
 
     if (senderEl) senderEl.textContent = senderName || 'Pesan';
     if (textEl) textEl.innerHTML = contentHtml;
+
+    const isOpponent = senderName !== 'Anda';
+    if (isOpponent) {
+        box.style.borderLeft = '4px solid #f57c00';
+        box.style.backgroundColor = 'rgba(245, 124, 0, 0.08)';
+        if (senderEl) senderEl.style.color = '#f57c00';
+    } else {
+        box.style.borderLeft = '4px solid #0d47a1';
+        box.style.backgroundColor = 'rgba(13, 71, 161, 0.06)';
+        if (senderEl) senderEl.style.color = '#0d47a1';
+    }
 
     box.classList.remove('d-none');
     const scrollBtn = document.getElementById('admin-scroll-latest');
