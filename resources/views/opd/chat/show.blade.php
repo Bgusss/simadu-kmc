@@ -501,6 +501,9 @@
                         </div>
                     </div>
                 @endif
+                <a href="{{ route('opd.tickets.show', $ticket) }}" class="btn btn-outline-primary btn-sm w-100 mt-3 fw-semibold">
+                    <i class="fas fa-external-link-alt me-1"></i>Selengkapnya
+                </a>
             </div>
         </aside>
 
