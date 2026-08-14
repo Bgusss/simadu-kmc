@@ -499,8 +499,15 @@
                 <div class="chat-main-column d-flex flex-column flex-grow-1 overflow-hidden position-relative" id="chat-main-column">
                     <div class="chat-canvas position-relative" id="opd-chat-messages">
                         @forelse($ticket->chatMessages as $message)
-                            @php $mine = $message->sender_id === auth()->id(); @endphp
-                            <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}" data-created-date="{{ $message->created_at?->format('Y-m-d') }}">
+                            @php 
+                                $mine = $message->sender_id === auth()->id(); 
+                                $deliveredAtVal = $message->delivered_at ?? $message->created_at;
+                                $readAtVal = $message->read_at ?? ($message->read_by_admin ? ($message->updated_at ?? $message->created_at) : null);
+                                $sentAtStr = $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') ?? '-';
+                                $deliveredAtStr = $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-';
+                                $readAtStr = $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-';
+                            @endphp
+                            <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}" data-chat-message-id="{{ $message->id }}" data-created-date="{{ $message->created_at?->format('Y-m-d') }}" data-sent-at="{{ $sentAtStr }}" data-delivered-at="{{ $deliveredAtStr }}" data-read-at="{{ $readAtStr }}">
                                 <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
                                     <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
                                         <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
@@ -579,11 +586,7 @@
                                         <button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
                                         <ul class="dropdown-menu dropdown-menu-{{ $mine ? 'end' : 'start' }} chat-ctx-menu shadow-lg">
                                             @if($mine)
-                                                @php
-                                                    $deliveredAtVal = $message->delivered_at ?? $message->created_at;
-                                                    $readAtVal = $message->read_at ?? ($message->read_by_admin ? ($message->updated_at ?? $message->created_at) : null);
-                                                @endphp
-                                                <li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '{{ $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') }}', 'Anda', '{{ $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}', '{{ $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
+                                                <li><a class="dropdown-item chat-info-btn" href="#" onclick="showMsgInfoFromEl(this); return false;" data-sent-at="{{ $sentAtStr }}" data-sender="Anda" data-delivered-at="{{ $deliveredAtStr }}" data-read-at="{{ $readAtStr }}"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
                                             @endif
                                             @php
                                                 $replySender = $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC');
@@ -1183,6 +1186,13 @@ function cancelReply() {
 // WhatsApp-style Message Info modal with chat bubble preview
 function showMsgInfoFromEl(el, time, sender, deliveredAt, readAt) {
     const bubbleWrap = el.closest('.chat-bubble-wrap');
+    const msgRow = el.closest('[data-chat-message-id]');
+
+    const sentVal = (el && el.getAttribute('data-sent-at')) || (msgRow && msgRow.getAttribute('data-sent-at')) || time || '-';
+    const senderVal = (el && el.getAttribute('data-sender')) || sender || 'Anda';
+    const deliveredVal = (el && el.getAttribute('data-delivered-at')) || (msgRow && msgRow.getAttribute('data-delivered-at')) || deliveredAt || '-';
+    const readVal = (el && el.getAttribute('data-read-at')) || (msgRow && msgRow.getAttribute('data-read-at')) || readAt || '-';
+
     let bubbleHtml = '';
     let isMine = true;
     if (bubbleWrap) {
@@ -1217,7 +1227,7 @@ function showMsgInfoFromEl(el, time, sender, deliveredAt, readAt) {
                         </div>
                         <div>
                             <div class="fw-bold text-dark" style="font-size: 0.95rem;">Dibaca</div>
-                            <div class="text-secondary mt-0.5" style="font-size: 0.84rem;">${readAt || '-'}</div>
+                            <div class="text-secondary mt-0.5" style="font-size: 0.84rem;">${readVal}</div>
                         </div>
                     </div>
 
@@ -1227,7 +1237,7 @@ function showMsgInfoFromEl(el, time, sender, deliveredAt, readAt) {
                         </div>
                         <div>
                             <div class="fw-bold text-dark" style="font-size: 0.95rem;">Tersampaikan</div>
-                            <div class="text-secondary mt-0.5" style="font-size: 0.84rem;">${deliveredAt || '-'}</div>
+                            <div class="text-secondary mt-0.5" style="font-size: 0.84rem;">${deliveredVal}</div>
                         </div>
                     </div>
                 </div>
@@ -1355,7 +1365,7 @@ function opdMessageMarkup(message) {
     const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
     const infoDelivered = message.delivered_at || '-';
     const infoRead = message.read_at || '-';
-    const infoMenuItem = message.mine ? `<li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '${escapeChatText(message.created_at)}', '${escapeChatText(message.sender_name)}', '${escapeChatText(infoDelivered)}', '${escapeChatText(infoRead)}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>` : '';
+    const infoMenuItem = message.mine ? `<li><a class="dropdown-item chat-info-btn" href="#" onclick="showMsgInfoFromEl(this); return false;" data-sent-at="${escapeChatText(message.created_at)}" data-sender="Anda" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>` : '';
     const replySender = message.mine ? 'Anda' : message.sender_name;
     const replyText = message.message || '';
     const replyAttachment = message.attachment_url || message.attachment_name || '';
@@ -1364,7 +1374,7 @@ function opdMessageMarkup(message) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
     const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr}><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 async function pollOpdChat() {
     if (opdPolling || document.hidden) return;
@@ -1390,12 +1400,25 @@ async function pollOpdChat() {
 
         data.messages.forEach(function(message) {
             const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
-            if (!existing) chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(message));
-            else if (message.mine) {
-                const receipt = existing.querySelector('.chat-receipt');
-                if (receipt && message.read) {
-                    receipt.className = 'chat-receipt read';
-                    receipt.innerHTML = '';
+            if (!existing) {
+                chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(message));
+            } else {
+                if (message.read_at) {
+                    existing.setAttribute('data-read-at', message.read_at);
+                    const infoBtn = existing.querySelector('.chat-info-btn');
+                    if (infoBtn) infoBtn.setAttribute('data-read-at', message.read_at);
+                }
+                if (message.delivered_at) {
+                    existing.setAttribute('data-delivered-at', message.delivered_at);
+                    const infoBtn = existing.querySelector('.chat-info-btn');
+                    if (infoBtn) infoBtn.setAttribute('data-delivered-at', message.delivered_at);
+                }
+                if (message.mine) {
+                    const receipt = existing.querySelector('.chat-receipt');
+                    if (receipt && message.read) {
+                        receipt.className = 'chat-receipt read';
+                        receipt.innerHTML = '';
+                    }
                 }
             }
         });
