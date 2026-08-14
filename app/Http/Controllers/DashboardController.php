@@ -194,4 +194,57 @@ class DashboardController extends Controller
             ]
         ]);
     }
+
+    public function chatUnreadNotifications()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([]);
+        }
+
+        $unreadMessages = collect();
+
+        if ($user->role === 'admin') {
+            $unreadMessages = \App\Models\TicketChatMessage::with(['ticket.assignedOpd', 'sender'])
+                ->where('sender_id', '!=', $user->id)
+                ->where('read_by_admin', false)
+                ->latest('id')
+                ->take(10)
+                ->get();
+        } elseif ($user->role === 'opd') {
+            $unreadMessages = \App\Models\TicketChatMessage::with(['ticket', 'sender'])
+                ->whereHas('ticket', function ($q) use ($user) {
+                    $q->where('assigned_opd_id', $user->opd_id);
+                })
+                ->where('sender_id', '!=', $user->id)
+                ->where('read_by_opd', false)
+                ->latest('id')
+                ->take(10)
+                ->get();
+        }
+
+        $data = $unreadMessages->map(function ($msg) use ($user) {
+            $senderName = $msg->sender?->name;
+            if (!$senderName) {
+                $senderName = $user->role === 'admin' ? ($msg->ticket?->assignedOpd?->name ?? 'OPD') : 'Admin KMC';
+            }
+            $trackingNumber = $msg->ticket?->tracking_number ?? $msg->ticket?->ticket_number ?? 'Aduan';
+            $chatUrl = $user->role === 'admin' 
+                ? route('tickets.chat.show', $msg->ticket_id)
+                : route('opd.chat.show', $msg->ticket_id);
+
+            return [
+                'id' => $msg->id,
+                'ticket_id' => $msg->ticket_id,
+                'tracking_number' => $trackingNumber,
+                'sender_name' => $senderName,
+                'sender_photo' => $msg->sender?->profile_photo ? asset('storage/' . $msg->sender->profile_photo) : null,
+                'message' => $msg->message ?: ($msg->attachment ? '📷 Lampiran Media' : 'Pesan Baru'),
+                'created_at' => $msg->created_at?->format('H:i'),
+                'chat_url' => $chatUrl,
+            ];
+        });
+
+        return response()->json($data);
+    }
 }

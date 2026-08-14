@@ -154,6 +154,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:admin|opd'])->group(function () {
 
+    Route::get('/chat/unread-notifications', [DashboardController::class, 'chatUnreadNotifications'])->name('chat.unread.notifications');
+
     Route::get(
         '/notifications-data',
         function () {
