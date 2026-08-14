@@ -443,7 +443,9 @@
                                         $replyAttachment = $message->attachment ?? '';
                                     @endphp
                                     <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode($replySender) }}, {{ json_encode($replyText) }}, {{ json_encode($replyAttachment) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
+                                    @if(filled($message->message))
+                                        <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
+                                    @endif
                                     @if($mine)
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
@@ -883,7 +885,8 @@ function adminMessageMarkup(message) {
     const replySender = message.mine ? 'Anda' : message.sender_name;
     const replyText = message.message || '';
     const replyAttachment = message.attachment_url || message.attachment_name || '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(replySender)}, ${JSON.stringify(replyText)}, ${JSON.stringify(replyAttachment)}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li><li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li></ul></div></div></div>`;
+    const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}<li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(replySender)}, ${JSON.stringify(replyText)}, ${JSON.stringify(replyAttachment)}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>${copyMenuItem}</ul></div></div></div>`;
 }
 async function pollAdminChat() {
     if (adminPolling || document.hidden) return;
