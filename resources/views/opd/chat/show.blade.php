@@ -253,41 +253,34 @@
 .search-result-item:hover {
     background-color: #f1f5f9 !important;
 }
-.chat-bubble-wrap.search-active .chat-message,
-.chat-message.search-active {
-    border: 2px solid #f57c00 !important;
-    background: #fff7ed !important;
-    color: #1e293b !important;
-    box-shadow: 0 4px 18px rgba(245, 124, 0, 0.35) !important;
+.chat-bubble-wrap.search-active {
+    filter: drop-shadow(0px 0px 1.8px #f57c00) drop-shadow(0px 0px 1.8px #f57c00) drop-shadow(0px 4px 12px rgba(245, 124, 0, 0.35)) !important;
     animation: searchPulse 1.4s ease-in-out infinite alternate !important;
 }
-.chat-bubble-wrap.search-active .chat-message.mine,
-.chat-message.search-active.mine {
+.chat-bubble-wrap.search-active .chat-message {
+    background: #fff7ed !important;
+    color: #1e293b !important;
+}
+.chat-bubble-wrap.search-active .chat-message.mine {
     background: #0d47a1 !important;
     color: #ffffff !important;
 }
-.chat-bubble-wrap.search-active .chat-message.theirs::after,
-.chat-message.search-active.theirs::after {
+.chat-bubble-wrap.search-active .chat-message.theirs::after {
     background: #fff7ed !important;
     top: 0 !important;
     left: -6px !important;
-    filter: drop-shadow(-2px 0 0 #f57c00);
 }
-.chat-bubble-wrap.search-active .chat-message.mine::after,
-.chat-message.search-active.mine::after {
+.chat-bubble-wrap.search-active .chat-message.mine::after {
     background: #0d47a1 !important;
     top: 0 !important;
     right: -6px !important;
-    filter: drop-shadow(2px 0 0 #f57c00);
 }
 @keyframes searchPulse {
     from {
-        border-color: #f57c00;
-        box-shadow: 0 2px 10px rgba(245, 124, 0, 0.3);
+        filter: drop-shadow(0px 0px 1.5px #f57c00) drop-shadow(0px 0px 1.5px #f57c00) drop-shadow(0px 2px 8px rgba(245, 124, 0, 0.25));
     }
     to {
-        border-color: #ff9800;
-        box-shadow: 0 6px 22px rgba(245, 124, 0, 0.6);
+        filter: drop-shadow(0px 0px 2.2px #ff9800) drop-shadow(0px 0px 2.2px #ff9800) drop-shadow(0px 6px 18px rgba(245, 124, 0, 0.55));
     }
 }
 
