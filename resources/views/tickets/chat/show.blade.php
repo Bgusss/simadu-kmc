@@ -748,11 +748,34 @@ function adminIsNearBottom() {
 function updateAdminLatestButton() {
     adminLatestButton.classList.toggle('d-none', adminIsNearBottom());
 }
+function scrollChatToBottom(instant = true) {
+    if (!chatCanvas) return;
+    if (instant) {
+        chatCanvas.scrollTop = chatCanvas.scrollHeight;
+    } else {
+        chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
+    }
+}
+
 if (chatCanvas) {
-    chatCanvas.scrollTop = chatCanvas.scrollHeight;
+    scrollChatToBottom(true);
     chatCanvas.addEventListener('scroll', updateAdminLatestButton);
     adminLatestButton.addEventListener('click', function() {
-        chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
+        scrollChatToBottom(false);
+    });
+
+    // Ensure scroll locks to bottom after images, fonts, and DOM layout finish loading
+    setTimeout(() => scrollChatToBottom(true), 50);
+    setTimeout(() => scrollChatToBottom(true), 250);
+    setTimeout(() => scrollChatToBottom(true), 500);
+
+    document.addEventListener('DOMContentLoaded', () => scrollChatToBottom(true));
+    window.addEventListener('load', () => scrollChatToBottom(true));
+
+    chatCanvas.querySelectorAll('img').forEach(img => {
+        if (!img.complete) {
+            img.addEventListener('load', () => scrollChatToBottom(true));
+        }
     });
 }
 function updateAdminSendState() {
