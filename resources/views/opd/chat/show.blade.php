@@ -386,7 +386,7 @@
                                         $deliveredAtVal = $message->delivered_at ?? $message->created_at;
                                         $readAtVal = $message->read_at ?? ($message->read_by_admin ? ($message->updated_at ?? $message->created_at) : null);
                                     @endphp
-                                    <li><a class="dropdown-item" href="#" onclick="showMsgInfo('{{ $message->created_at?->format('d M Y, H:i') }}', '{{ $mine ? 'Anda' : addslashes($message->sender?->name ?? 'Admin KMC') }}', '{{ $deliveredAtVal?->format('d M Y, H:i') ?? '-' }}', '{{ $readAtVal?->format('d M Y, H:i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '{{ $message->created_at?->format('j/n/Y \p\u\k\u\l H.i') }}', '{{ $mine ? 'Anda' : addslashes($message->sender?->name ?? 'Admin KMC') }}', '{{ $deliveredAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}', '{{ $readAtVal?->format('j/n/Y \p\u\k\u\l H.i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode(Str::limit($message->message, 60)) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
                                     @if($mine)
@@ -602,11 +602,61 @@ function cancelReply() {
     document.getElementById('reply-preview').classList.add('d-none');
 }
 
-// Message info modal
-function showMsgInfo(time, sender, deliveredAt, readAt) {
+// WhatsApp-style Message Info modal with chat bubble preview
+function showMsgInfoFromEl(el, time, sender, deliveredAt, readAt) {
+    const bubbleWrap = el.closest('.chat-bubble-wrap');
+    let bubbleHtml = '';
+    let isMine = true;
+    if (bubbleWrap) {
+        isMine = bubbleWrap.classList.contains('mine');
+        const article = bubbleWrap.querySelector('.chat-message');
+        if (article) bubbleHtml = article.outerHTML;
+    }
     const old = document.getElementById('msgInfoModal');
     if (old) old.remove();
-    const html = `<div class="modal fade msg-info-modal" id="msgInfoModal" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white py-2"><h6 class="modal-title fw-bold"><i class="fas fa-info-circle me-2"></i>Info Pesan</h6><button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Pengirim</span><div class="fw-semibold">${sender}</div></div><div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Waktu</span><div class="fw-semibold">${time}</div></div><div class="mb-2"><span class="text-muted small text-uppercase fw-bold">Tersampaikan</span><div class="fw-semibold">${deliveredAt || '-'}</div></div><div><span class="text-muted small text-uppercase fw-bold">Dibaca</span><div class="fw-semibold">${readAt || '-'}</div></div></div></div></div></div>`;
+
+    const html = `
+    <div class="modal fade msg-info-modal" id="msgInfoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+            <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg" style="background: #ffffff;">
+                <div class="modal-header border-0 text-white px-3 py-3" style="background: #0d47a1;">
+                    <div class="d-flex align-items-center gap-3">
+                        <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" style="font-size: 0.85rem;"></button>
+                        <h6 class="modal-title fw-bold mb-0" style="font-size: 1.1rem; letter-spacing: -0.2px;">Info pesan</h6>
+                    </div>
+                </div>
+                
+                <div class="p-3 py-4" style="background-color: #f4f7fb; background-image: radial-gradient(rgba(13,71,161,.08) 1px, transparent 1px); background-size: 18px 18px; display: flex; justify-content: ${isMine ? 'flex-end' : 'flex-start'}; border-bottom: 1px solid #edf2f7;">
+                    <div class="chat-bubble-wrap ${isMine ? 'mine' : 'theirs'}" style="max-width: 90%; pointer-events: none;">
+                        ${bubbleHtml}
+                    </div>
+                </div>
+
+                <div class="p-3 px-4 bg-white">
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div style="width: 24px; text-align: center; margin-top: 2px;">
+                            <span class="chat-receipt read" style="display: inline-block; width: 18px; height: 14px;"></span>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Dibaca</div>
+                            <div class="text-secondary mt-0.5" style="font-size: 0.84rem;">${readAt || '-'}</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start gap-3">
+                        <div style="width: 24px; text-align: center; margin-top: 2px;">
+                            <span class="chat-receipt sent" style="display: inline-block; width: 18px; height: 14px;"></span>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Tersampaikan</div>
+                            <div class="text-secondary mt-0.5" style="font-size: 0.84rem;">${deliveredAt || '-'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
     document.body.insertAdjacentHTML('beforeend', html);
     new bootstrap.Modal(document.getElementById('msgInfoModal')).show();
 }
@@ -714,7 +764,9 @@ function opdMessageMarkup(message) {
         else attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank" class="chat-attach-doc ${message.mine ? 'mine' : ''}"><i class="fas fa-file-alt chat-attach-doc-icon"></i><div class="chat-attach-doc-info"><div class="chat-attach-doc-name">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta">${escapeChatText(message.attachment_type || 'FILE').toUpperCase()}</div></div><i class="fas fa-download chat-attach-doc-dl"></i></a></div>`;
     }
     const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article></div></div>`;
+    const infoDelivered = message.delivered_at || '-';
+    const infoRead = message.read_at || '-';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg"><li><a class="dropdown-item" href="#" onclick="showMsgInfoFromEl(this, '${escapeChatText(message.created_at)}', '${escapeChatText(message.sender_name)}', '${escapeChatText(infoDelivered)}', '${escapeChatText(infoRead)}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li><li><a class="dropdown-item" href="#" onclick="replyMsg(${message.id}, ${JSON.stringify(message.message ? message.message.substring(0,60) : 'Lampiran')}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li><li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li></ul></div></div></div>`;
 }
 async function pollOpdChat() {
     if (opdPolling || document.hidden) return;

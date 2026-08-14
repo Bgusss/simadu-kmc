@@ -263,8 +263,8 @@ class TicketController extends Controller
             'attachment_type' => $extension,
             'created_at' => $message->created_at?->format('H:i'),
             'read' => $isRead,
-            'delivered_at' => $deliveredAt?->format('d M Y, H:i'),
-            'read_at' => $readAt?->format('d M Y, H:i'),
+            'delivered_at' => $deliveredAt?->format('j/n/Y \p\u\k\u\l H.i'),
+            'read_at' => $readAt?->format('j/n/Y \p\u\k\u\l H.i'),
         ];
     }
 
