@@ -162,9 +162,9 @@ class OpdController extends Controller
         $user = Auth::user();
         if ($ticket->assigned_opd_id !== $user->opd_id) abort(403, 'Unauthorized.');
 
-        $request->validate([
-            'message' => 'required|string|max:2000',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,3gp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv|max:20480',
+        $validated = $request->validate([
+            'message' => 'nullable|string|max:2000|required_without:attachment',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,3gp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv|max:20480|required_without:message',
         ]);
 
         $attachment = $request->hasFile('attachment')
@@ -173,7 +173,7 @@ class OpdController extends Controller
 
         TicketChatMessage::create([
             'ticket_id' => $ticket->id, 'sender_id' => $user->id,
-            'message' => $request->message, 'attachment' => $attachment,
+            'message' => $validated['message'] ?? '', 'attachment' => $attachment,
             'read_by_admin' => false, 'read_by_opd' => true,
         ]);
 

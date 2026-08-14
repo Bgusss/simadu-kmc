@@ -76,6 +76,19 @@
     margin-top: 3px;
     opacity: .72;
 }
+.chat-receipt { margin-left: 3px; font-size: .72rem; }
+.chat-receipt.sent { color: currentColor; }
+.chat-receipt.read { color: #ff8f00; opacity: 1; }
+.chat-scroll-latest {
+    position: absolute; right: 18px; bottom: 16px;
+    width: 42px; height: 42px; border: 0; border-radius: 50%;
+    display: grid; place-items: center;
+    background: #fff; color: #0d47a1;
+    box-shadow: 0 5px 18px rgba(15,23,42,.2); z-index: 3;
+    transition: transform .15s, opacity .15s;
+}
+.chat-scroll-latest:hover { transform: translateY(-2px); }
+.chat-scroll-latest.d-none { display: none; }
 
 /* Context menu trigger (chevron) — appears on hover */
 .chat-msg-actions {
@@ -314,14 +327,16 @@
                 <span class="badge rounded-pill" style="background:rgba(255,255,255,.14)"><i class="fas fa-comments me-1"></i>Chat OPD</span>
             </header>
 
-            <div class="chat-canvas" id="admin-chat-messages">
+            <div class="chat-canvas position-relative" id="admin-chat-messages">
                 @forelse($ticket->chatMessages as $message)
                     @php $mine = $message->sender_id === auth()->id(); @endphp
                     <div class="d-flex mb-3 {{ $mine ? 'justify-content-end' : 'justify-content-start' }}">
                         <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
                             <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
                                 <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Admin KMC' : ($message->sender?->name ?? 'OPD') }}</div>
-                                <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
+                                @if(filled($message->message))
+                                    <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
+                                @endif
                                 @if($message->attachment)
                                     @php $ext = strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)); $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']); $isVideo = in_array($ext, ['mp4','mov','avi','3gp','webm']); @endphp
                                     <div class="chat-attach-preview mt-2">
@@ -343,7 +358,11 @@
                                         @endif
                                     </div>
                                 @endif
-                                <div class="chat-meta">{{ $message->created_at?->format('H:i') }}</div>
+                                <div class="chat-meta">{{ $message->created_at?->format('H:i') }}
+                                    @if($mine)
+                                        <span class="chat-receipt {{ $message->read_by_opd ? 'read' : 'sent' }}" title="{{ $message->read_by_opd ? 'Dibaca OPD' : 'Terkirim' }}"><i class="fas {{ $message->read_by_opd ? 'fa-check-double' : 'fa-check' }}"></i></span>
+                                    @endif
+                                </div>
                             </article>
                             <!-- WhatsApp-style dropdown chevron -->
                             <div class="chat-msg-actions">
@@ -374,6 +393,7 @@
                         </div>
                     </div>
                 @endforelse
+                <button id="admin-scroll-latest" class="chat-scroll-latest d-none" type="button" title="Ke pesan terbaru" aria-label="Ke pesan terbaru"><i class="fas fa-chevron-down"></i></button>
             </div>
 
             <footer class="chat-composer">
@@ -406,8 +426,8 @@
                     <input id="admin-pick-media" type="file" class="d-none" accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.mov,.avi,.3gp">
                     <input id="admin-pick-camera" type="file" class="d-none" accept="image/*" capture="environment">
                     <span class="attach-name small text-muted text-truncate d-none" id="admin-attach-label" style="max-width:140px"></span>
-                    <textarea id="admin-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Tulis pesan untuk OPD..." required></textarea>
-                    <button class="btn btn-primary chat-send" type="submit" title="Kirim pesan"><i class="fas fa-paper-plane"></i></button>
+                    <textarea id="admin-chat-message" name="message" class="form-control chat-input" rows="1" maxlength="2000" placeholder="Tulis pesan untuk OPD..."></textarea>
+                    <button id="admin-chat-send" class="btn btn-primary chat-send" type="submit" title="Kirim pesan" disabled><i class="fas fa-paper-plane"></i></button>
                 </form>
             </footer>
         </div>
@@ -496,9 +516,32 @@
 
 @push('scripts')
 <script>
-// Auto-scroll to bottom
+// Auto-scroll to bottom and smart scroll-to-latest control
 const chatCanvas = document.getElementById('admin-chat-messages');
-if (chatCanvas) chatCanvas.scrollTop = chatCanvas.scrollHeight;
+const adminLatestButton = document.getElementById('admin-scroll-latest');
+function adminIsNearBottom() {
+    return chatCanvas.scrollHeight - chatCanvas.scrollTop - chatCanvas.clientHeight < 80;
+}
+function updateAdminLatestButton() {
+    adminLatestButton.classList.toggle('d-none', adminIsNearBottom());
+}
+if (chatCanvas) {
+    chatCanvas.scrollTop = chatCanvas.scrollHeight;
+    chatCanvas.addEventListener('scroll', updateAdminLatestButton);
+    adminLatestButton.addEventListener('click', function() {
+        chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
+    });
+}
+function updateAdminSendState() {
+    const message = document.getElementById('admin-chat-message');
+    const hasAttachment = ['admin-pick-doc','admin-pick-media','admin-pick-camera'].some(id => document.getElementById(id).files.length > 0);
+    document.getElementById('admin-chat-send').disabled = !message.value.trim() && !hasAttachment;
+}
+document.getElementById('admin-chat-message').addEventListener('input', updateAdminSendState);
+document.getElementById('admin-chat-form').addEventListener('submit', function(event) {
+    updateAdminSendState();
+    if (document.getElementById('admin-chat-send').disabled) event.preventDefault();
+});
 
 // Copy message
 function copyMsg(el) {
@@ -557,6 +600,7 @@ function showMsgInfo(id, time, sender) {
         });
         this.name = 'attachment';
         showAttachmentPreview('admin', this.files[0]);
+        updateAdminSendState();
     });
 });
 function showAttachmentPreview(role, file) {
@@ -582,6 +626,7 @@ function clearSelectedAttachment(role) {
     });
     document.getElementById(role + '-file-preview').classList.add('d-none');
     document.getElementById(role + '-attach-label').classList.add('d-none');
+    updateAdminSendState();
 }
 </script>
 @endpush

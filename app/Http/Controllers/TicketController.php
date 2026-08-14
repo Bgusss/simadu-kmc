@@ -274,8 +274,8 @@ class TicketController extends Controller
     public function sendChat(Request $request, Ticket $ticket)
     {
         $validated = $request->validate([
-            'message' => 'required|string|max:2000',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,3gp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv|max:20480',
+            'message' => 'nullable|string|max:2000|required_without:attachment',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,3gp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv|max:20480|required_without:message',
         ]);
 
         $attachment = $request->hasFile('attachment')
@@ -285,7 +285,7 @@ class TicketController extends Controller
         TicketChatMessage::create([
             'ticket_id' => $ticket->id,
             'sender_id' => auth()->id(),
-            'message' => $validated['message'],
+            'message' => $validated['message'] ?? '',
             'attachment' => $attachment,
             'read_by_admin' => true,
             'read_by_opd' => false,
