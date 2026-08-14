@@ -340,6 +340,7 @@
 
 <div class="row">
     <div class="col-xl-8 mb-4 mb-xl-0">
+        <div class="chat-card">
             @php
                 $adminUser = \App\Models\User::where('role', 'admin')->first();
                 $adminPhoto = $adminUser?->profile_photo ? asset('storage/' . $adminUser->profile_photo) : null;

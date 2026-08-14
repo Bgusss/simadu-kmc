@@ -340,6 +340,7 @@
 
 <div class="row">
     <div class="col-xl-8 mb-4">
+        <div class="chat-card">
             @php
                 $opdUser = $ticket->assignedOpd ? \App\Models\User::where('opd_id', $ticket->assigned_opd_id)->where('role', 'opd')->first() : null;
                 $opdPhoto = $opdUser?->profile_photo ? asset('storage/' . $opdUser->profile_photo) : null;
