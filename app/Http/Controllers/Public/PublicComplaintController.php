@@ -174,7 +174,7 @@ class PublicComplaintController extends Controller
                     'ticket_id'   => $ticket->id,
                     'from_status' => null,
                     'to_status'   => 'diterima',
-                    'note'        => 'Tiket dibuat dari form pengaduan publik web SIMADU',
+                    'note'        => 'Tiket dibuat dari Form Pengaduan WhatsApp',
                 ]);
 
                 if ($opdName) {
