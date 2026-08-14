@@ -83,7 +83,7 @@
     right: -6px;
     width: 8px;
     height: 12px;
-    background: inherit;
+    background: #0d47a1;
     clip-path: polygon(0 0, 0 100%, 100% 0);
 }
 .chat-message.theirs {
@@ -99,7 +99,7 @@
     left: -6px;
     width: 8px;
     height: 12px;
-    background: inherit;
+    background: #fff;
     clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 .chat-meta {
@@ -255,7 +255,7 @@
 }
 .chat-bubble-wrap.search-active .chat-message,
 .chat-message.search-active {
-    border: 2.5px solid #f57c00 !important;
+    border: 2px solid #f57c00 !important;
     background: #fff7ed !important;
     color: #1e293b !important;
     box-shadow: 0 4px 18px rgba(245, 124, 0, 0.35) !important;
@@ -269,18 +269,16 @@
 .chat-bubble-wrap.search-active .chat-message.theirs::after,
 .chat-message.search-active.theirs::after {
     background: #fff7ed !important;
-    top: -2.5px !important;
-    left: -8.5px !important;
-    border-top: 2.5px solid #f57c00 !important;
-    filter: drop-shadow(-2.5px 0 0 #f57c00);
+    top: 0 !important;
+    left: -6px !important;
+    filter: drop-shadow(-2px 0 0 #f57c00);
 }
 .chat-bubble-wrap.search-active .chat-message.mine::after,
 .chat-message.search-active.mine::after {
     background: #0d47a1 !important;
-    top: -2.5px !important;
-    right: -8.5px !important;
-    border-top: 2.5px solid #f57c00 !important;
-    filter: drop-shadow(2.5px 0 0 #f57c00);
+    top: 0 !important;
+    right: -6px !important;
+    filter: drop-shadow(2px 0 0 #f57c00);
 }
 @keyframes searchPulse {
     from {
