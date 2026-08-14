@@ -382,7 +382,11 @@
                             <div class="chat-msg-actions">
                                 <button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button>
                                 <ul class="dropdown-menu dropdown-menu-{{ $mine ? 'end' : 'start' }} chat-ctx-menu shadow-lg">
-                                    <li><a class="dropdown-item" href="#" onclick="showMsgInfo('{{ $message->created_at?->format('d M Y, H:i') }}', '{{ $mine ? 'Admin KMC' : addslashes($message->sender?->name ?? 'OPD') }}', '{{ $mine ? ($message->delivered_at?->format('d M Y, H:i') ?? '-') : '-' }}', '{{ $mine ? ($message->read_at?->format('d M Y, H:i') ?? '-') : '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
+                                    @php
+                                        $deliveredAtVal = $message->delivered_at ?? $message->created_at;
+                                        $readAtVal = $message->read_at ?? ($message->read_by_opd ? ($message->updated_at ?? $message->created_at) : null);
+                                    @endphp
+                                    <li><a class="dropdown-item" href="#" onclick="showMsgInfo('{{ $message->created_at?->format('d M Y, H:i') }}', '{{ $mine ? 'Admin KMC' : addslashes($message->sender?->name ?? 'OPD') }}', '{{ $deliveredAtVal?->format('d M Y, H:i') ?? '-' }}', '{{ $readAtVal?->format('d M Y, H:i') ?? '-' }}'); return false;"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="replyMsg({{ $message->id }}, {{ json_encode(Str::limit($message->message, 60)) }}); return false;"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
                                     @if($mine)

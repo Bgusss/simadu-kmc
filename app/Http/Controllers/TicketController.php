@@ -249,6 +249,9 @@ class TicketController extends Controller
     private function chatMessagePayload(TicketChatMessage $message): array
     {
         $extension = $message->attachment ? strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)) : null;
+        $isRead = (bool) $message->read_by_opd;
+        $deliveredAt = $message->delivered_at ?? $message->created_at;
+        $readAt = $message->read_at ?? ($isRead ? ($message->updated_at ?? $message->created_at) : null);
 
         return [
             'id' => $message->id,
@@ -259,9 +262,9 @@ class TicketController extends Controller
             'attachment_name' => $message->attachment ? basename($message->attachment) : null,
             'attachment_type' => $extension,
             'created_at' => $message->created_at?->format('H:i'),
-            'read' => (bool) $message->read_by_opd,
-            'delivered_at' => $message->delivered_at?->format('d M Y, H:i'),
-            'read_at' => $message->read_at?->format('d M Y, H:i'),
+            'read' => $isRead,
+            'delivered_at' => $deliveredAt?->format('d M Y, H:i'),
+            'read_at' => $readAt?->format('d M Y, H:i'),
         ];
     }
 
@@ -332,6 +335,7 @@ class TicketController extends Controller
             'attachment' => $attachment,
             'read_by_admin' => true,
             'read_by_opd' => false,
+            'delivered_at' => now(),
         ]);
 
         if ($request->expectsJson()) {

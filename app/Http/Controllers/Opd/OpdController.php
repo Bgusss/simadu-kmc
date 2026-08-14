@@ -185,6 +185,9 @@ class OpdController extends Controller
     private function chatMessagePayload(TicketChatMessage $message, int $currentUserId): array
     {
         $extension = $message->attachment ? strtolower(pathinfo($message->attachment, PATHINFO_EXTENSION)) : null;
+        $isRead = (bool) $message->read_by_admin;
+        $deliveredAt = $message->delivered_at ?? $message->created_at;
+        $readAt = $message->read_at ?? ($isRead ? ($message->updated_at ?? $message->created_at) : null);
 
         return [
             'id' => $message->id,
@@ -195,9 +198,9 @@ class OpdController extends Controller
             'attachment_name' => $message->attachment ? basename($message->attachment) : null,
             'attachment_type' => $extension,
             'created_at' => $message->created_at?->format('H:i'),
-            'read' => (bool) $message->read_by_admin,
-            'delivered_at' => $message->delivered_at?->format('d M Y, H:i'),
-            'read_at' => $message->read_at?->format('d M Y, H:i'),
+            'read' => $isRead,
+            'delivered_at' => $deliveredAt?->format('d M Y, H:i'),
+            'read_at' => $readAt?->format('d M Y, H:i'),
         ];
     }
 
@@ -219,6 +222,7 @@ class OpdController extends Controller
             'ticket_id' => $ticket->id, 'sender_id' => $user->id,
             'message' => $validated['message'] ?? '', 'attachment' => $attachment,
             'read_by_admin' => false, 'read_by_opd' => true,
+            'delivered_at' => now(),
         ]);
 
         if ($request->expectsJson()) {
