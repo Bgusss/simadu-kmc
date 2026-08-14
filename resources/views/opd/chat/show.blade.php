@@ -1376,6 +1376,12 @@ function opdMessageMarkup(message) {
     const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
     return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
+let opdKnownMessageIds = new Set();
+document.querySelectorAll('#opd-chat-messages [data-chat-message-id]').forEach(function(el) {
+    const id = parseInt(el.getAttribute('data-chat-message-id'));
+    if (id) opdKnownMessageIds.add(id);
+});
+
 async function pollOpdChat() {
     if (opdPolling || document.hidden) return;
     opdPolling = true;
@@ -1399,25 +1405,43 @@ async function pollOpdChat() {
         });
 
         data.messages.forEach(function(message) {
-            const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
-            if (!existing) {
-                chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(message));
+            if (!opdKnownMessageIds.has(message.id)) {
+                opdKnownMessageIds.add(message.id);
+                const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
+                if (!existing) {
+                    chatCanvas.insertAdjacentHTML('beforeend', opdMessageMarkup(message));
+                    if (!message.mine) {
+                        if (typeof window.showGlobalChatToast === 'function') {
+                            window.showGlobalChatToast({
+                                id: message.id,
+                                ticket_id: {{ $ticket->id }},
+                                sender_name: message.sender_name,
+                                sender_photo: message.sender_photo,
+                                message: message.message,
+                                created_at: message.created_at || 'baru saja'
+                            });
+                        }
+                    }
+                }
             } else {
-                if (message.read_at) {
-                    existing.setAttribute('data-read-at', message.read_at);
-                    const infoBtn = existing.querySelector('.chat-info-btn');
-                    if (infoBtn) infoBtn.setAttribute('data-read-at', message.read_at);
-                }
-                if (message.delivered_at) {
-                    existing.setAttribute('data-delivered-at', message.delivered_at);
-                    const infoBtn = existing.querySelector('.chat-info-btn');
-                    if (infoBtn) infoBtn.setAttribute('data-delivered-at', message.delivered_at);
-                }
-                if (message.mine) {
-                    const receipt = existing.querySelector('.chat-receipt');
-                    if (receipt && message.read) {
-                        receipt.className = 'chat-receipt read';
-                        receipt.innerHTML = '';
+                const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
+                if (existing) {
+                    if (message.read_at) {
+                        existing.setAttribute('data-read-at', message.read_at);
+                        const infoBtn = existing.querySelector('.chat-info-btn');
+                        if (infoBtn) infoBtn.setAttribute('data-read-at', message.read_at);
+                    }
+                    if (message.delivered_at) {
+                        existing.setAttribute('data-delivered-at', message.delivered_at);
+                        const infoBtn = existing.querySelector('.chat-info-btn');
+                        if (infoBtn) infoBtn.setAttribute('data-delivered-at', message.delivered_at);
+                    }
+                    if (message.mine) {
+                        const receipt = existing.querySelector('.chat-receipt');
+                        if (receipt && message.read) {
+                            receipt.className = 'chat-receipt read';
+                            receipt.innerHTML = '';
+                        }
                     }
                 }
             }

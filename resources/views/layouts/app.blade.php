@@ -1163,6 +1163,9 @@
             }, 4800);
         }
 
+        window.showGlobalChatToast = showGlobalChatToast;
+        window.playIncomingMessageChime = playIncomingMessageChime;
+
         @auth
             setInterval(checkGlobalUnreadChatNotifications, 4000);
             setTimeout(checkGlobalUnreadChatNotifications, 1000);
