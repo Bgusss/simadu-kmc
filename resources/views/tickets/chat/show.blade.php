@@ -79,8 +79,8 @@
 .chat-receipt {
     position: relative;
     display: inline-block;
-    width: 16px;
-    height: 11px;
+    width: 15px;
+    height: 10px;
     margin-left: 2px;
     vertical-align: -1px;
 }
@@ -90,12 +90,13 @@
     position: absolute;
     width: 7px;
     height: 4px;
-    border-left: 1.8px solid currentColor;
+    border-right: 1.8px solid currentColor;
     border-bottom: 1.8px solid currentColor;
-    transform: rotate(-45deg);
+    transform: rotate(45deg);
+    transform-origin: center;
 }
-.chat-receipt::before { left: 1px; top: 3px; }
-.chat-receipt::after { left: 6px; top: 3px; }
+.chat-receipt::before { left: 1px; top: 1px; }
+.chat-receipt::after { left: 6px; top: 1px; }
 .chat-receipt.sent::after { display: none; }
 .chat-receipt.sent { color: currentColor; }
 .chat-receipt.read { color: #f57c00; opacity: 1; }
