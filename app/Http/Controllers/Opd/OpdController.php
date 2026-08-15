@@ -202,6 +202,7 @@ class OpdController extends Controller
             'read' => $isRead,
             'delivered_at' => $deliveredAt?->format('j/n/Y \p\u\k\u\l H.i'),
             'read_at' => $readAt?->format('j/n/Y \p\u\k\u\l H.i'),
+            'is_edited' => (bool) ($message->updated_at && $message->created_at && $message->updated_at->gt($message->created_at)),
         ];
     }
 
@@ -270,6 +271,40 @@ class OpdController extends Controller
 
         return redirect()->route('opd.chat.show', $ticket)
             ->with('success', 'Pesan berhasil dihapus.');
+    }
+
+    public function chatUpdate(Request $request, TicketChatMessage $message)
+    {
+        $user = Auth::user();
+
+        if ($message->sender_id !== $user->id) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['message' => 'Anda hanya bisa mengubah pesan sendiri.'], 403);
+            }
+            abort(403, 'Anda hanya bisa mengubah pesan sendiri.');
+        }
+
+        $request->validate([
+            'message' => 'required|string|max:2000',
+        ]);
+
+        $message->update([
+            'message' => trim($request->input('message')),
+        ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesan berhasil diperbarui.',
+                'data' => [
+                    'id' => $message->id,
+                    'message' => $message->message,
+                    'is_edited' => true,
+                ],
+            ]);
+        }
+
+        return back()->with('success', 'Pesan berhasil diperbarui.');
     }
 
     public function profile()

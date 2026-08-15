@@ -650,6 +650,9 @@
                                                 $replyAttachment = $message->attachment ?? '';
                                             @endphp
                                             <li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="{{ $message->id }}" data-reply-sender="{{ $replySender }}" data-reply-text="{{ $replyText }}" data-reply-attachment="{{ $replyAttachment }}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>
+                                            @if($mine && filled($message->message))
+                                                <li><a class="dropdown-item" href="#" onclick="editMsgFromEl(this); return false;" data-edit-id="{{ $message->id }}" data-edit-text="{{ $message->message }}"><i class="fas fa-edit me-2 text-muted"></i>Edit Pesan</a></li>
+                                            @endif
                                             @if(filled($message->message))
                                                 <li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="{{ $message->message }}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>
                                             @endif
@@ -686,6 +689,15 @@
                                     <div class="small text-dark text-truncate" id="reply-preview-text" style="font-size: 0.82rem;"></div>
                                 </div>
                                 <button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="cancelReply()" aria-label="Batal balas"></button>
+                            </div>
+                        </div>
+                        <div id="edit-preview" class="reply-preview d-none mb-2 p-2 rounded-3 shadow-sm" style="border-left: 4px solid #0d47a1; background-color: rgba(13, 71, 161, 0.08) !important;">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="overflow-hidden pe-2" style="min-width: 0;">
+                                    <div class="fw-bold small text-truncate mb-0" style="font-size: 0.78rem; color: #0d47a1;"><i class="fas fa-edit me-1"></i>Edit Pesan</div>
+                                    <div class="small text-dark text-truncate" id="edit-preview-text" style="font-size: 0.82rem;"></div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-sm flex-shrink-0" onclick="cancelEdit()" aria-label="Batal edit"></button>
                             </div>
                         </div>
                         <div id="admin-file-preview" class="composer-file-preview d-none" aria-live="polite">
@@ -946,6 +958,41 @@
                     <div class="form-check form-switch fs-4 mb-0 ps-0">
                         <input class="form-check-input ms-0" type="checkbox" role="switch" id="enterToSendSwitch" checked onchange="toggleEnterToSend(this.checked)" style="cursor: pointer;">
                     </div>
+                </div>
+            </div>
+<!-- Mobile Chat Action Sheet Modal -->
+<div class="modal fade" id="mobileChatActionSheetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog m-0 w-100 position-fixed bottom-0 start-0 end-0" style="max-width: 100%;">
+        <div class="modal-content border-0 rounded-top-4 overflow-hidden shadow-lg">
+            <div class="modal-header border-bottom-0 pb-1 pt-3 px-3">
+                <div class="d-flex flex-column w-100 me-2 overflow-hidden">
+                    <div class="small fw-bold text-primary text-truncate" id="mobile-sheet-sender"></div>
+                    <div class="small text-secondary text-truncate" id="mobile-sheet-preview" style="font-size: 0.82rem;"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body p-3 bg-light">
+                <div class="list-group list-group-flush rounded-3 overflow-hidden border">
+                    <button type="button" class="list-group-item list-group-item-action d-flex align-items-center py-2.5 px-3 d-none" id="mobile-action-info" onclick="triggerSheetAction('info')">
+                        <i class="fas fa-info-circle text-primary me-3 fs-5"></i>
+                        <span class="fw-semibold text-dark">Info Pesan</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex align-items-center py-2.5 px-3" id="mobile-action-reply" onclick="triggerSheetAction('reply')">
+                        <i class="fas fa-reply text-success me-3 fs-5"></i>
+                        <span class="fw-semibold text-dark">Balas Pesan</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex align-items-center py-2.5 px-3 d-none" id="mobile-action-edit" onclick="triggerSheetAction('edit')">
+                        <i class="fas fa-edit text-warning me-3 fs-5"></i>
+                        <span class="fw-semibold text-dark">Edit Pesan</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex align-items-center py-2.5 px-3" id="mobile-action-copy" onclick="triggerSheetAction('copy')">
+                        <i class="fas fa-copy text-info me-3 fs-5"></i>
+                        <span class="fw-semibold text-dark">Salin Teks</span>
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action d-flex align-items-center py-2.5 px-3 text-danger d-none" id="mobile-action-delete" onclick="triggerSheetAction('delete')">
+                        <i class="fas fa-trash-alt me-3 fs-5"></i>
+                        <span class="fw-bold">Hapus Pesan</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1534,7 +1581,7 @@ function adminMessageMarkup(message) {
             attachment = `<div class="chat-attach-preview mt-2"><a href="${message.attachment_url}" target="_blank" class="chat-attach-doc ${mineClass}"><i class="fas fa-file-alt chat-attach-doc-icon"></i><div class="chat-attach-doc-info"><div class="chat-attach-doc-name">${escapeChatText(message.attachment_name)}</div><div class="chat-attach-doc-meta">${ext.toUpperCase()}</div></div><i class="fas fa-download chat-attach-doc-dl"></i></a></div>`;
         }
     }
-    const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"><i class="fas ${message.read ? 'fa-check-double' : 'fa-check'}"></i></span>` : '';
+    const receipt = message.mine ? `<span class="chat-receipt ${message.read ? 'read' : 'sent'}"></span>` : '';
     const infoDelivered = message.delivered_at || '-';
     const infoRead = message.read_at || '-';
     const infoMenuItem = message.mine ? `<li><a class="dropdown-item chat-info-btn" href="#" onclick="showMsgInfoFromEl(this); return false;" data-sent-at="${escapeChatText(message.created_at)}" data-sender="Admin KMC" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><i class="fas fa-info-circle me-2 text-muted"></i>Info</a></li>` : '';
@@ -1542,11 +1589,13 @@ function adminMessageMarkup(message) {
     const replyText = message.message || '';
     const replyAttachment = message.attachment_url || message.attachment_name || '';
     const replyMenuItem = `<li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="${message.id}" data-reply-sender="${escapeChatText(replySender)}" data-reply-text="${escapeChatText(replyText)}" data-reply-attachment="${escapeChatText(replyAttachment)}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>`;
+    const editMenuItem = (message.mine && message.message) ? `<li><a class="dropdown-item" href="#" onclick="editMsgFromEl(this); return false;" data-edit-id="${message.id}" data-edit-text="${escapeChatText(message.message)}"><i class="fas fa-edit me-2 text-muted"></i>Edit Pesan</a></li>` : '';
     const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/tickets/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
     const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
+    const editedBadge = message.is_edited ? `<span class="edited-tag text-white-50 ms-1" style="font-size:0.68rem;">(diedit)</span>` : '';
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${editedBadge}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${editMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 let adminKnownMessageIds = new Set();
 document.querySelectorAll('#admin-chat-messages [data-chat-message-id]').forEach(function(el) {
@@ -1621,6 +1670,7 @@ async function pollAdminChat() {
         });
         if (wasNearBottom) chatCanvas.scrollTop = chatCanvas.scrollHeight;
         updateAdminLatestButton();
+        attachAllTouchEvents();
     } catch (error) {
         console.warn('Chat polling failed.', error);
     } finally {
@@ -1629,5 +1679,227 @@ async function pollAdminChat() {
 }
 setInterval(pollAdminChat, 5000);
 document.addEventListener('visibilitychange', function() { if (!document.hidden) pollAdminChat(); });
+
+// --- Edit Message & Touch Gestures (Swipe to Reply / Long-Press Sheet) ---
+let editingMsgId = null;
+
+function editMsgFromEl(el) {
+    const id = el.getAttribute('data-edit-id');
+    const text = el.getAttribute('data-edit-text') || '';
+    if (!id || !text) return;
+
+    cancelReply();
+    editingMsgId = id;
+    const editPreview = document.getElementById('edit-preview');
+    const editPreviewText = document.getElementById('edit-preview-text');
+    const msgInput = document.getElementById('admin-chat-message');
+
+    if (editPreviewText) editPreviewText.textContent = text;
+    if (editPreview) editPreview.classList.remove('d-none');
+
+    if (msgInput) {
+        msgInput.value = text;
+        msgInput.focus();
+        if (typeof autoResizeChatInput === 'function') autoResizeChatInput(msgInput);
+    }
+}
+
+function cancelEdit() {
+    editingMsgId = null;
+    const editPreview = document.getElementById('edit-preview');
+    const msgInput = document.getElementById('admin-chat-message');
+    if (editPreview) editPreview.classList.add('d-none');
+    if (msgInput) {
+        msgInput.value = '';
+        if (typeof autoResizeChatInput === 'function') autoResizeChatInput(msgInput);
+    }
+}
+
+// Mobile Action Sheet
+let currentSheetData = null;
+
+function openMobileActionSheet(row) {
+    if (!row) return;
+    const msgId = row.getAttribute('data-chat-message-id');
+    const isMine = row.querySelector('.chat-bubble-wrap.mine') !== null;
+    const senderName = row.querySelector('.chat-message > div.small.fw-bold')?.textContent || 'Pesan';
+    const textEl = row.querySelector('.chat-msg-text');
+    const msgText = textEl ? textEl.textContent : '';
+
+    currentSheetData = { row, msgId, isMine, senderName, msgText };
+
+    document.getElementById('mobile-sheet-sender').textContent = senderName;
+    document.getElementById('mobile-sheet-preview').textContent = msgText || '(Lampiran Media)';
+
+    const btnInfo = document.getElementById('mobile-action-info');
+    const btnEdit = document.getElementById('mobile-action-edit');
+    const btnDelete = document.getElementById('mobile-action-delete');
+
+    if (btnInfo) btnInfo.classList.toggle('d-none', !isMine);
+    if (btnEdit) btnEdit.classList.toggle('d-none', !isMine || !msgText);
+    if (btnDelete) btnDelete.classList.toggle('d-none', !isMine);
+
+    const sheetModal = new bootstrap.Modal(document.getElementById('mobileChatActionSheetModal'));
+    sheetModal.show();
+}
+
+function triggerSheetAction(action) {
+    const modalEl = document.getElementById('mobileChatActionSheetModal');
+    const modalInst = bootstrap.Modal.getInstance(modalEl);
+    if (modalInst) modalInst.hide();
+
+    if (!currentSheetData) return;
+    const { row, msgText } = currentSheetData;
+
+    if (action === 'info') {
+        const btn = row.querySelector('.chat-ctx-menu a.chat-info-btn');
+        if (btn) showMsgInfoFromEl(btn);
+    } else if (action === 'reply') {
+        const btn = row.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
+        if (btn) replyMsgFromEl(btn);
+    } else if (action === 'edit') {
+        const btn = row.querySelector('.chat-ctx-menu a[onclick*="editMsgFromEl"]');
+        if (btn) editMsgFromEl(btn);
+    } else if (action === 'copy') {
+        if (msgText) {
+            navigator.clipboard.writeText(msgText).then(() => {
+                if (window.showGlobalChatToast) {
+                    window.showGlobalChatToast({ title: 'Disalin', body: 'Pesan berhasil disalin ke clipboard.', tracking_number: '' });
+                } else alert('Pesan berhasil disalin!');
+            });
+        }
+    } else if (action === 'delete') {
+        const form = row.querySelector('.chat-ctx-menu form');
+        if (form) {
+            if (confirm('Hapus pesan ini?')) {
+                const event = { preventDefault: () => {} };
+                deleteMsgAjax(event, form);
+            }
+        }
+    }
+}
+
+// Swipe to Reply & Long Press Gestures
+let activeTouchRow = null;
+let touchStartX = 0;
+let touchStartY = 0;
+let currentDeltaX = 0;
+let longPressTimer = null;
+
+function initTouchEventsForBubble(row) {
+    if (!row || row.dataset.touchInitialized) return;
+    row.dataset.touchInitialized = 'true';
+
+    const bubbleWrap = row.querySelector('.chat-bubble-wrap');
+    if (!bubbleWrap) return;
+
+    bubbleWrap.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        currentDeltaX = 0;
+        activeTouchRow = row;
+
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(function() {
+            if (Math.abs(currentDeltaX) < 10) {
+                if (navigator.vibrate) navigator.vibrate(35);
+                openMobileActionSheet(row);
+            }
+        }, 420);
+    }, { passive: true });
+
+    bubbleWrap.addEventListener('touchmove', function(e) {
+        if (!activeTouchRow || activeTouchRow !== row) return;
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        if (Math.abs(deltaY) > 12) {
+            clearTimeout(longPressTimer);
+        }
+
+        if (deltaX > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+            clearTimeout(longPressTimer);
+            currentDeltaX = Math.min(deltaX, 75);
+            bubbleWrap.style.transition = 'none';
+            bubbleWrap.style.transform = `translateX(${currentDeltaX}px)`;
+        }
+    }, { passive: true });
+
+    const resetTouch = function() {
+        clearTimeout(longPressTimer);
+        if (activeTouchRow === row) {
+            bubbleWrap.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            if (currentDeltaX >= 42) {
+                if (navigator.vibrate) navigator.vibrate(30);
+                const replyBtn = row.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
+                if (replyBtn) replyMsgFromEl(replyBtn);
+            }
+            bubbleWrap.style.transform = 'translateX(0)';
+            setTimeout(() => { bubbleWrap.style.transition = ''; }, 250);
+        }
+        activeTouchRow = null;
+        currentDeltaX = 0;
+    };
+
+    bubbleWrap.addEventListener('touchend', resetTouch, { passive: true });
+    bubbleWrap.addEventListener('touchcancel', resetTouch, { passive: true });
+}
+
+function attachAllTouchEvents() {
+    if (!chatCanvas) return;
+    chatCanvas.querySelectorAll('[data-chat-message-id]').forEach(initTouchEventsForBubble);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    attachAllTouchEvents();
+});
+
+// Intercept form submit when editing
+document.getElementById('admin-chat-form')?.addEventListener('submit', async function(e) {
+    if (editingMsgId) {
+        e.preventDefault();
+        const msgInput = document.getElementById('admin-chat-message');
+        const text = (msgInput ? msgInput.value : '').trim();
+        if (!text) return;
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        const updateUrl = '/tickets/chat/message/' + editingMsgId;
+        try {
+            const response = await fetch(updateUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ message: text }),
+                credentials: 'same-origin'
+            });
+            if (!response.ok) throw new Error('Gagal mengedit pesan.');
+            const resData = await response.json();
+
+            const targetRow = chatCanvas.querySelector('[data-chat-message-id="' + editingMsgId + '"]');
+            if (targetRow) {
+                const textEl = targetRow.querySelector('.chat-msg-text');
+                if (textEl) textEl.textContent = resData.data.message;
+                const metaEl = targetRow.querySelector('.chat-meta');
+                if (metaEl && !metaEl.querySelector('.edited-tag')) {
+                    const tag = document.createElement('span');
+                    tag.className = 'edited-tag text-white-50 ms-1';
+                    tag.style.fontSize = '0.68rem';
+                    tag.textContent = '(diedit)';
+                    metaEl.insertBefore(tag, metaEl.querySelector('.chat-receipt') || null);
+                }
+            }
+            cancelEdit();
+        } catch (err) {
+            alert('Gagal memperbarui pesan.');
+        }
+    }
+});
 </script>
 @endpush

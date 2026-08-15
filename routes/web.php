@@ -87,6 +87,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/tickets/chat/{ticket}/poll', [TicketController::class, 'chatPoll'])->name('tickets.chat.poll');
     Route::get('/tickets/chat/{ticket}', [TicketController::class, 'chatShow'])->name('tickets.chat.show');
     Route::post('/tickets/chat/{ticket}', [TicketController::class, 'sendChat'])->name('tickets.chat.send');
+    Route::put('/tickets/chat/message/{message}', [TicketController::class, 'updateChat'])->name('tickets.chat.update');
     Route::delete('/tickets/chat/message/{message}', [TicketController::class, 'deleteChat'])->name('tickets.chat.delete');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
@@ -110,6 +111,7 @@ Route::middleware(['auth', 'role:opd'])->prefix('opd')->name('opd.')->group(func
     Route::get('/chat/{ticket}/poll', [OpdController::class, 'chatPoll'])->name('chat.poll');
     Route::get('/chat/{ticket}', [OpdController::class, 'chatShow'])->name('chat.show');
     Route::post('/chat/{ticket}', [OpdController::class, 'chatSend'])->name('chat.send');
+    Route::put('/chat/message/{message}', [OpdController::class, 'chatUpdate'])->name('chat.update');
     Route::delete('/chat/message/{message}', [OpdController::class, 'chatDelete'])->name('chat.delete');
     Route::get('/profile', [OpdController::class, 'profile'])->name('profile');
     Route::post('/profile', [OpdController::class, 'updateProfile'])->name('profile.update');
