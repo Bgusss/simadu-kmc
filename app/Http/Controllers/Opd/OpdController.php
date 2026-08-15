@@ -141,7 +141,7 @@ class OpdController extends Controller
             $ticket->updateStatus('dijawab', $user->id, 'OPD memberikan tanggapan');
         }
 
-        return redirect()->route('opd.tickets.show', $ticket->id)->with('success', 'Tanggapan resmi OPD berhasil dikirim dan ditambahkan ke riwayat aduan.');
+        return redirect()->back()->with('success', 'Tanggapan resmi OPD berhasil dikirim dan ditambahkan ke riwayat aduan.');
     }
 
     public function chatShow(Ticket $ticket)
