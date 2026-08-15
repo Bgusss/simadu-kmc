@@ -495,6 +495,14 @@
     <a href="{{ route('opd.tickets.index') }}" class="text-decoration-none small fw-semibold">
         <i class="fas fa-arrow-left me-1"></i>Kembali ke Daftar Tiket
     </a>
+    <div class="d-flex align-items-center gap-2 d-xl-none">
+        <button type="button" class="btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal" style="width: 36px; height: 36px;" title="Informasi Aduan">
+            <i class="fas fa-info-circle"></i>
+        </button>
+        <button type="button" class="btn btn-warning text-dark rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="width: 36px; height: 36px;" title="Berikan Tanggapan">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+    </div>
 </div>
 
 <div class="row">
@@ -725,16 +733,6 @@
                 </div>
 
             </div>
-        </div>
-
-        <!-- Mobile Action Buttons (Placed BELOW Chat Box) -->
-        <div class="d-flex align-items-center gap-2 mt-3 d-xl-none">
-            <button type="button" class="btn btn-primary rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2.5 px-3" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal" style="border-radius: 12px !important;">
-                <i class="fas fa-info-circle me-1.5"></i>Informasi Aduan
-            </button>
-            <button type="button" class="btn btn-warning text-dark rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2.5 px-3" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="border-radius: 12px !important;">
-                <i class="fas fa-comment-dots me-1.5"></i>Berikan Tanggapan
-            </button>
         </div>
     </div>
 
