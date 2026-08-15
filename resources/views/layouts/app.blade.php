@@ -534,13 +534,17 @@
             body { font-size: 0.9rem; }
         }
 
-        /* Premium Image Upload Preview Card */
+        /* Premium Image Upload Preview Card (Full-width row layout) */
         .image-upload-preview-wrap {
+            width: 100% !important;
+            flex-basis: 100% !important;
+            clear: both !important;
             background: #ffffff !important;
             border: 1px solid #cbd5e1 !important;
             border-radius: 14px !important;
             box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important;
-            padding: 10px 12px !important;
+            padding: 10px 14px !important;
+            margin-top: 10px !important;
             transition: all 0.25s ease;
         }
         .image-upload-preview-wrap:hover {

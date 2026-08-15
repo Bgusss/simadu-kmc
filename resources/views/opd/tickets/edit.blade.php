@@ -166,19 +166,7 @@
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold">Lampiran Bukti (Opsional)</label>
-                        <div class="d-flex align-items-center gap-2">
-                            <label class="flex-grow-1 m-0">
-                                <div class="form-control form-premium shadow-none d-flex align-items-center" style="cursor: pointer; padding: 0.4rem;">
-                                    <div class="bg-secondary text-white px-3 py-2 rounded me-3 small fw-bold"><i class="fas fa-folder-open me-1"></i> Pilih File</div>
-                                    <span class="text-muted small text-truncate" style="flex: 1;" id="filename-respond">Belum ada file...</span>
-                                </div>
-                                <input type="file" id="opd-respond-file" name="attachment" class="d-none" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
-                            </label>
-                            <button type="button" id="opd-respond-file-btn-preview" class="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 flex-shrink-0 d-none" onclick="openCurrentPreviewModal()" title="Lihat Pratinjau Foto">
-                                <i class="fas fa-eye me-1"></i>Pratinjau
-                            </button>
-                        </div>
-
+                        <input type="file" id="opd-respond-file" name="attachment" class="form-control w-100" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
                         <div class="form-text mt-2 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> Hanya format <strong>JPG, JPEG, PNG</strong>. Maksimal <strong>5MB</strong>.</div>
                     </div>
                     <button type="submit" class="btn btn-primary fw-bold w-100 rounded-pill py-2" style="box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);">

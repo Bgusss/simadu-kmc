@@ -215,14 +215,8 @@
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.3px;">Lampiran Bukti (Opsional)</label>
-                        <div class="d-flex align-items-center gap-2">
-                            <input type="file" id="admin-status-file" name="attachment" class="form-control flex-grow-1" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
-                            <button type="button" id="admin-status-file-btn-preview" class="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 flex-shrink-0 d-none" onclick="openCurrentPreviewModal()" title="Lihat Pratinjau Foto">
-                                <i class="fas fa-eye me-1"></i>Pratinjau
-                            </button>
-                        </div>
-                        <div id="filename-admin-status" class="d-none"></div>
-                        <div class="form-text mt-1 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> JPG, JPEG, PNG — Maks 5MB</div>
+                        <input type="file" id="admin-status-file" name="attachment" class="form-control w-100" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
+                        <div class="form-text mt-1.5 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> JPG, JPEG, PNG — Maks 5MB</div>
                     </div>
                     <button type="submit" class="btn text-dark fw-bold w-100 rounded-pill py-2" style="background-color: #ffc107; border: none; box-shadow: 0 4px 6px rgba(255, 193, 7, 0.2);">
                         <i class="fas fa-save me-2"></i> Simpan Status
