@@ -602,35 +602,7 @@
                 });
                 return false;
             } else {
-                if (confirm(text)) {
-                    if (form && form.tagName === 'FORM') form.submit();
-                    return true;
-                }
                 return false;
-            }
-        // Global Live Image Preview Helper
-        function previewImageAttachment(input, previewBoxId, imgPreviewId, fileNameId) {
-            var box = document.getElementById(previewBoxId);
-            var img = document.getElementById(imgPreviewId);
-            var fileNameEl = fileNameId ? document.getElementById(fileNameId) : null;
-
-            if (input.files && input.files[0]) {
-                var file = input.files[0];
-                if (fileNameEl) fileNameEl.textContent = file.name;
-
-                if (file.type.indexOf('image/') === 0) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        if (img) img.src = e.target.result;
-                        if (box) box.classList.remove('d-none');
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    if (box) box.classList.add('d-none');
-                }
-            } else {
-                if (box) box.classList.add('d-none');
-                if (fileNameEl) fileNameEl.textContent = 'Belum ada file...';
             }
         }
 
@@ -649,7 +621,7 @@
             var container = parent.querySelector('.image-upload-preview-wrap');
             if (!container) {
                 container = document.createElement('div');
-                container.className = 'image-upload-preview-wrap mt-2 p-2 bg-light border rounded-3';
+                container.className = 'image-upload-preview-wrap mt-2.5 p-2 bg-light border rounded-3 shadow-sm';
                 if (input.nextSibling) {
                     parent.insertBefore(container, input.nextSibling);
                 } else {
@@ -684,16 +656,16 @@
             var reader = new FileReader();
             reader.onload = function(e) {
                 container.innerHTML = 
-                    '<div class="d-flex align-items-center justify-content-between gap-2 p-1">' +
+                    '<div class="d-flex align-items-center justify-content-between gap-2 p-1.5">' +
                         '<div class="d-flex align-items-center gap-2.5 overflow-hidden">' +
-                            '<img src="' + e.target.result + '" alt="Preview" class="rounded-2 shadow-sm border flex-shrink-0" style="width: 56px; height: 56px; object-fit: cover;">' +
+                            '<img src="' + e.target.result + '" alt="Preview" class="rounded-2 shadow-sm border flex-shrink-0" style="width: 60px; height: 60px; object-fit: cover;">' +
                             '<div class="overflow-hidden">' +
                                 '<div class="fw-bold text-dark small text-truncate" style="max-width: 200px;">' + safeEscape(file.name) + '</div>' +
                                 '<div class="text-muted mb-1" style="font-size: 0.75rem;">' + (file.size / 1024 / 1024).toFixed(2) + ' MB</div>' +
-                                '<span class="badge bg-success text-white px-2 py-0.5" style="font-size: 0.68rem;"><i class="fas fa-check-circle me-1"></i>Foto Siap Diunggah</span>' +
+                                '<span class="badge bg-success text-white px-2 py-0.5" style="font-size: 0.68rem;"><i class="fas fa-check-circle me-1"></i>Pratinjau foto siap</span>' +
                             '</div>' +
                         '</div>' +
-                        '<button type="button" class="btn btn-sm btn-light border text-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px;" onclick="clearUploadImage(this)" title="Hapus foto">' +
+                        '<button type="button" class="btn btn-sm btn-light border text-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;" onclick="clearUploadImage(this)" title="Hapus foto">' +
                             '<i class="fas fa-times"></i>' +
                         '</button>' +
                     '</div>';
@@ -715,6 +687,16 @@
 
         window.previewUploadImage = previewUploadImage;
         window.clearUploadImage = clearUploadImage;
+
+        // Auto attach change listener for file inputs named 'attachment'
+        document.addEventListener('change', function(e) {
+            var input = e.target;
+            if (input && input.tagName === 'INPUT' && input.type === 'file') {
+                if (input.name === 'attachment' || input.id === 'official-response-attachment' || input.id === 'admin-status-file' || input.id === 'opd-respond-file') {
+                    previewUploadImage(input);
+                }
+            }
+        });
 
         // Global Live Image Preview Modal Helper
         let currentPreviewInputId = null;
