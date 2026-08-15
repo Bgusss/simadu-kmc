@@ -903,7 +903,7 @@
                         <option value="ditolak" @selected($ticket->status==='ditolak')>Ditolak</option>
                     </select>
                     <textarea name="notes" class="form-control mb-3" rows="2" placeholder="Catatan status (opsional)"></textarea>
-                    <input name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png">
+                    <input name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
                     <button class="btn btn-warning w-100 fw-bold" type="submit"><i class="fas fa-save me-1"></i>Simpan Status</button>
                 </form>
             </div>
@@ -996,7 +996,7 @@
                     <label class="form-label fw-bold small text-secondary mb-1">Catatan Status</label>
                     <textarea name="notes" class="form-control mb-3" rows="3" placeholder="Tulis catatan perubahan status..." style="border-radius: 10px;"></textarea>
                     <label class="form-label fw-bold small text-secondary mb-1">Lampiran Pendukung (Foto)</label>
-                    <input name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png" style="border-radius: 10px;">
+                    <input name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png" style="border-radius: 10px;" onchange="previewUploadImage(this)">
                     <button class="btn btn-warning w-100 fw-bold py-2.5 shadow-sm" type="submit" style="border-radius: 10px;">
                         <i class="fas fa-save me-1.5"></i>Simpan Perubahan Status
                     </button>

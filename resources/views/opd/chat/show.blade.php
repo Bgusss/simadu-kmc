@@ -893,7 +893,7 @@
                 <form action="{{ route('opd.tickets.respond', $ticket) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <textarea id="official-response" name="response_text" class="form-control mb-3" rows="4" placeholder="Tulis tanggapan resmi untuk aduan ini..." required></textarea>
-                    <input id="official-response-attachment" name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png">
+                    <input id="official-response-attachment" name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
                     <div class="form-text small mb-3">Lampiran tanggapan: JPG, JPEG, PNG — maksimal 5 MB.</div>
                     <button class="btn btn-warning w-100 fw-bold" type="submit"><i class="fas fa-paper-plane me-1"></i>Kirim Tanggapan Resmi</button>
                 </form>
@@ -972,7 +972,7 @@
                     <label class="form-label fw-bold small text-secondary mb-1">Pesan Tanggapan Resmi</label>
                     <textarea name="response_text" class="form-control mb-3" rows="4" placeholder="Tulis tanggapan resmi untuk aduan ini..." required style="border-radius: 10px;"></textarea>
                     <label class="form-label fw-bold small text-secondary mb-1">Lampiran Tanggapan (Foto)</label>
-                    <input name="attachment" type="file" class="form-control mb-2" accept=".jpg,.jpeg,.png" style="border-radius: 10px;">
+                    <input name="attachment" type="file" class="form-control mb-2" accept=".jpg,.jpeg,.png" style="border-radius: 10px;" onchange="previewUploadImage(this)">
                     <div class="form-text small mb-3">Format: JPG, JPEG, PNG — maksimal 5 MB.</div>
                     <button class="btn btn-warning w-100 fw-bold py-2.5 shadow-sm" type="submit" style="border-radius: 10px;">
                         <i class="fas fa-paper-plane me-1.5"></i>Kirim Tanggapan Resmi

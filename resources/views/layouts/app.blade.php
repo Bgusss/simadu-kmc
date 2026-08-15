@@ -634,12 +634,82 @@
             }
         }
 
+        // Global Image Upload Inline Preview Helper
+        function previewUploadImage(input) {
+            if (!input) return;
+
+            var container = input.nextElementSibling;
+            if (!container || !container.classList.contains('image-upload-preview-wrap')) {
+                container = document.createElement('div');
+                container.className = 'image-upload-preview-wrap mt-2.5 p-2 bg-light border rounded-3 d-none';
+                input.parentNode.insertBefore(container, input.nextSibling);
+            }
+
+            var file = input.files && input.files[0];
+            if (!file) {
+                container.innerHTML = '';
+                container.classList.add('d-none');
+                return;
+            }
+
+            if (!file.type.match('image.*')) {
+                container.innerHTML = 
+                    '<div class="d-flex align-items-center justify-content-between p-1.5">' +
+                        '<div class="d-flex align-items-center gap-2 overflow-hidden">' +
+                            '<i class="fas fa-file-alt text-primary fs-4 flex-shrink-0"></i>' +
+                            '<div class="text-truncate small">' +
+                                '<div class="fw-bold text-dark text-truncate">' + escapeChatText(file.name) + '</div>' +
+                                '<div class="text-muted" style="font-size:0.75rem;">' + (file.size/1024/1024).toFixed(2) + ' MB</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<button type="button" class="btn-close btn-sm ms-2 flex-shrink-0" onclick="clearUploadImage(this)"></button>' +
+                    '</div>';
+                container.classList.remove('d-none');
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                container.innerHTML = 
+                    '<div class="d-flex align-items-center justify-content-between gap-2 p-1">' +
+                        '<div class="d-flex align-items-center gap-2.5 overflow-hidden">' +
+                            '<img src="' + e.target.result + '" alt="Preview" class="rounded-2 shadow-sm border flex-shrink-0" style="width: 58px; height: 58px; object-fit: cover;">' +
+                            '<div class="overflow-hidden">' +
+                                '<div class="fw-bold text-dark small text-truncate" style="max-width: 190px;">' + escapeChatText(file.name) + '</div>' +
+                                '<div class="text-muted mb-1" style="font-size: 0.75rem;">' + (file.size / 1024 / 1024).toFixed(2) + ' MB</div>' +
+                                '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5" style="font-size: 0.68rem;"><i class="fas fa-check-circle me-1"></i>Pratinjau foto siap</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<button type="button" class="btn btn-sm btn-light border text-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px;" onclick="clearUploadImage(this)" title="Hapus foto">' +
+                            '<i class="fas fa-times"></i>' +
+                        '</button>' +
+                    '</div>';
+                container.classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearUploadImage(btn) {
+            var wrap = btn.closest('.image-upload-preview-wrap');
+            if (!wrap) return;
+            var input = wrap.previousElementSibling;
+            if (input && input.type === 'file') {
+                input.value = '';
+            }
+            wrap.innerHTML = '';
+            wrap.classList.add('d-none');
+        }
+
+        window.previewUploadImage = previewUploadImage;
+        window.clearUploadImage = clearUploadImage;
+
         // Global Live Image Preview Modal Helper
         let currentPreviewInputId = null;
         let currentPreviewFileNameId = null;
 
         function previewImageInModal(input, fileNameId) {
             if (!input || !input.files || !input.files[0]) return;
+            previewUploadImage(input);
             var file = input.files[0];
             var fileNameEl = fileNameId ? document.getElementById(fileNameId) : null;
             if (fileNameEl) fileNameEl.textContent = file.name;
