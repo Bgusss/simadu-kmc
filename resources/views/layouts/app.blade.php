@@ -664,6 +664,11 @@
         function previewUploadImage(input) {
             if (!input) return;
 
+            // Exclude Live Chat input bar file uploads (they already have built-in composer file preview bar above)
+            if (input.closest('.chat-composer') || input.closest('.chat-card-footer') || input.closest('#chatForm') || input.closest('#opd-chat-form') || input.id === 'chat-file-input' || input.id.indexOf('pick-') !== -1) {
+                return;
+            }
+
             function safeEscape(str) {
                 if (!str) return '';
                 return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -755,6 +760,9 @@
         document.addEventListener('change', function(e) {
             var input = e.target;
             if (input && input.tagName === 'INPUT' && input.type === 'file') {
+                if (input.closest('.chat-composer') || input.closest('.chat-card-footer') || input.closest('#chatForm') || input.closest('#opd-chat-form') || input.id === 'chat-file-input' || input.id.indexOf('pick-') !== -1) {
+                    return;
+                }
                 if (input.name === 'attachment' || input.id === 'official-response-attachment' || input.id === 'admin-status-file' || input.id === 'opd-respond-file') {
                     previewUploadImage(input);
                 }
