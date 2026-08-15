@@ -567,6 +567,16 @@
                                 <div class="chat-bubble-wrap {{ $mine ? 'mine' : 'theirs' }}">
                                     <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
                                         <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Admin KMC' : ($message->sender?->name ?? 'OPD') }}</div>
+                                        @if($message->replyTo)
+                                            <div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" onclick="jumpToMessage('{{ $message->replyTo->id }}')" style="border-left: 3px solid {{ $mine ? '#ffa726' : '#0d47a1' }}; background: {{ $mine ? 'rgba(255,255,255,0.15)' : 'rgba(13,71,161,0.08)' }};">
+                                                <div class="fw-bold small text-truncate" style="font-size: 0.75rem; color: {{ $mine ? '#ffe0b2' : '#0d47a1' }};">
+                                                    {{ $message->replyTo->sender_id === auth()->id() ? 'Anda' : ($message->replyTo->sender?->name ?? 'Pesan') }}
+                                                </div>
+                                                <div class="small text-truncate" style="font-size: 0.78rem; opacity: 0.9;">
+                                                    {{ $message->replyTo->message ?: ($message->replyTo->attachment ? '(Lampiran Media)' : '') }}
+                                                </div>
+                                            </div>
+                                        @endif
                                         @if(filled($message->message))
                                             <div class="chat-msg-text" style="white-space:pre-line">{{ $message->message }}</div>
                                         @endif
@@ -713,6 +723,7 @@
                         <form action="{{ route('tickets.chat.send', $ticket) }}" method="POST" enctype="multipart/form-data" class="chat-composer-form" id="admin-chat-form">
                             @csrf
                             <input type="hidden" name="return_to_chat" value="1">
+                            <input type="hidden" name="reply_to_id" id="reply_to_id" value="">
                             <div class="chat-attach-dropdown dropup">
                                 <button class="btn btn-light border chat-attachment" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Lampiran"><i class="fas fa-paperclip"></i></button>
                                 <ul class="dropdown-menu shadow-lg">
@@ -1390,6 +1401,8 @@ function replyMsg(msgId, senderName, text, attachment) {
     }
 
     box.classList.remove('d-none');
+    const replyInput = document.getElementById('reply_to_id');
+    if (replyInput) replyInput.value = msgId;
     const scrollBtn = document.getElementById('admin-scroll-latest');
     if (scrollBtn) scrollBtn.style.bottom = '138px';
     const msgInput = document.getElementById('admin-chat-message');
@@ -1398,6 +1411,8 @@ function replyMsg(msgId, senderName, text, attachment) {
 function cancelReply() {
     const box = document.getElementById('reply-preview');
     if (box) box.classList.add('d-none');
+    const replyInput = document.getElementById('reply_to_id');
+    if (replyInput) replyInput.value = '';
     const scrollBtn = document.getElementById('admin-scroll-latest');
     if (scrollBtn) scrollBtn.style.bottom = '82px';
 }
@@ -1593,9 +1608,18 @@ function adminMessageMarkup(message) {
     const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/tickets/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
-    const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
-    const editedBadge = message.is_edited ? `<span class="edited-tag text-white-50 ms-1" style="font-size:0.68rem;">(diedit)</span>` : '';
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${editedBadge}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${editMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
+    let replyQuoteMarkup = '';
+    if (message.reply_to) {
+        const isMine = message.mine;
+        const accentColor = isMine ? '#ffe0b2' : '#0d47a1';
+        const borderColor = isMine ? '#ffa726' : '#0d47a1';
+        const bgColor = isMine ? 'rgba(255,255,255,0.15)' : 'rgba(13,71,161,0.08)';
+        const rSender = escapeChatText(message.reply_to.sender_name);
+        const rText = escapeChatText(message.reply_to.message || (message.reply_to.attachment ? '(Lampiran Media)' : ''));
+        replyQuoteMarkup = `<div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" onclick="jumpToMessage('${message.reply_to.id}')" style="border-left: 3px solid ${borderColor}; background: ${bgColor};"><div class="fw-bold small text-truncate" style="font-size: 0.75rem; color: ${accentColor};">${rSender}</div><div class="small text-truncate" style="font-size: 0.78rem; opacity: 0.9;">${rText}</div></div>`;
+    }
+
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${replyQuoteMarkup}${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${editedBadge}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${editMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 let adminKnownMessageIds = new Set();
 document.querySelectorAll('#admin-chat-messages [data-chat-message-id]').forEach(function(el) {
@@ -1779,6 +1803,17 @@ function triggerSheetAction(action) {
     }
 }
 
+// Context menu delegation (long-press on mobile / right-click on desktop)
+chatCanvas?.addEventListener('contextmenu', function(e) {
+    const row = e.target.closest('[data-chat-message-id]');
+    if (row) {
+        e.preventDefault();
+        if (navigator.vibrate) navigator.vibrate(35);
+        openMobileActionSheet(row);
+        return false;
+    }
+});
+
 // Swipe to Reply & Long Press Gestures
 let activeTouchRow = null;
 let touchStartX = 0;
@@ -1803,11 +1838,11 @@ function initTouchEventsForBubble(row) {
 
         clearTimeout(longPressTimer);
         longPressTimer = setTimeout(function() {
-            if (Math.abs(currentDeltaX) < 10) {
+            if (Math.abs(currentDeltaX) < 15) {
                 if (navigator.vibrate) navigator.vibrate(35);
                 openMobileActionSheet(row);
             }
-        }, 420);
+        }, 380);
     }, { passive: true });
 
     bubbleWrap.addEventListener('touchmove', function(e) {
@@ -1816,12 +1851,11 @@ function initTouchEventsForBubble(row) {
         const deltaX = touch.clientX - touchStartX;
         const deltaY = touch.clientY - touchStartY;
 
-        if (Math.abs(deltaY) > 12) {
+        if (Math.abs(deltaY) > 15 || Math.abs(deltaX) > 15) {
             clearTimeout(longPressTimer);
         }
 
         if (deltaX > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
-            clearTimeout(longPressTimer);
             currentDeltaX = Math.min(deltaX, 75);
             bubbleWrap.style.transition = 'none';
             bubbleWrap.style.transform = `translateX(${currentDeltaX}px)`;

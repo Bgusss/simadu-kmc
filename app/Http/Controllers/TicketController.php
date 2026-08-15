@@ -241,7 +241,7 @@ class TicketController extends Controller
             ]);
 
         return response()->json([
-            'messages' => TicketChatMessage::with('sender')->where('ticket_id', $ticket->id)->orderBy('id')->get()
+            'messages' => TicketChatMessage::with(['sender', 'replyTo.sender'])->where('ticket_id', $ticket->id)->orderBy('id')->get()
                 ->map(fn (TicketChatMessage $message) => $this->chatMessagePayload($message)),
         ]);
     }
@@ -267,6 +267,12 @@ class TicketController extends Controller
             'delivered_at' => $deliveredAt?->format('j/n/Y \p\u\k\u\l H.i'),
             'read_at' => $readAt?->format('j/n/Y \p\u\k\u\l H.i'),
             'is_edited' => (bool) ($message->updated_at && $message->created_at && $message->updated_at->gt($message->created_at)),
+            'reply_to' => $message->replyTo ? [
+                'id' => $message->replyTo->id,
+                'sender_name' => $message->replyTo->sender_id === auth()->id() ? 'Anda' : ($message->replyTo->sender?->name ?? 'OPD'),
+                'message' => $message->replyTo->message,
+                'attachment' => $message->replyTo->attachment ? basename($message->replyTo->attachment) : null,
+            ] : null,
         ];
     }
 
@@ -324,6 +330,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'message' => 'nullable|string|max:2000|required_without:attachment',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,3gp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,csv|max:20480|required_without:message',
+            'reply_to_id' => 'nullable|exists:ticket_chat_messages,id',
         ]);
 
         $attachment = $request->hasFile('attachment')
@@ -335,13 +342,14 @@ class TicketController extends Controller
             'sender_id' => auth()->id(),
             'message' => $validated['message'] ?? '',
             'attachment' => $attachment,
+            'reply_to_id' => $validated['reply_to_id'] ?? null,
             'read_by_admin' => true,
             'read_by_opd' => false,
             'delivered_at' => now(),
         ]);
 
         if ($request->expectsJson()) {
-            return response()->json(['message' => $this->chatMessagePayload($message->load('sender'))], 201);
+            return response()->json(['message' => $this->chatMessagePayload($message->load(['sender', 'replyTo.sender']))], 201);
         }
 
         return redirect()->route($request->boolean('return_to_chat') ? 'tickets.chat.show' : 'tickets.show', $ticket)

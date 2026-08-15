@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TicketChatMessage extends Model
 {
     protected $fillable = [
-        'ticket_id', 'sender_id', 'message', 'attachment', 'read_by_admin', 'read_by_opd',
+        'ticket_id', 'sender_id', 'message', 'attachment', 'read_by_admin', 'read_by_opd', 'reply_to_id',
     ];
 
     protected function casts(): array
@@ -27,5 +27,10 @@ class TicketChatMessage extends Model
     public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function replyTo(): BelongsTo
+    {
+        return $this->belongsTo(TicketChatMessage::class, 'reply_to_id');
     }
 }
