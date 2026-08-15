@@ -215,6 +215,14 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
     z-index: 1060 !important;
 }
+.chat-bubble-wrap.theirs .chat-ctx-menu {
+    left: 0 !important;
+    right: auto !important;
+}
+.chat-bubble-wrap.mine .chat-ctx-menu {
+    right: 0 !important;
+    left: auto !important;
+}
 .chat-msg-actions.dropup .chat-ctx-menu {
     top: auto !important;
     bottom: 100% !important;
