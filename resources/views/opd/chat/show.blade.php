@@ -1827,6 +1827,10 @@ let suppressNextClick = false;
 let isLongPressActive = false;
 
 document.addEventListener('click', function(e) {
+    if (e.target.closest('.chat-ctx-menu')) {
+        suppressNextClick = false;
+        return;
+    }
     if (suppressNextClick) {
         e.preventDefault();
         e.stopPropagation();
