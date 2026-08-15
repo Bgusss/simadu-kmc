@@ -691,20 +691,18 @@
 
             var reader = new FileReader();
             reader.onload = function(e) {
+                var imgSrc = e.target.result;
                 container.innerHTML = 
                     '<div class="d-flex align-items-center justify-content-between gap-2.5">' +
-                        '<div class="d-flex align-items-center gap-3 overflow-hidden">' +
+                        '<div class="d-flex align-items-center gap-3 overflow-hidden" style="cursor: pointer;" onclick="openLightbox(\'' + imgSrc.replace(/'/g, "\\'") + '\')" title="Klik untuk lihat ukuran penuh">' +
                             '<div class="position-relative flex-shrink-0">' +
-                                '<img src="' + e.target.result + '" alt="Preview" class="rounded-3 border" style="width: 58px; height: 58px; object-fit: cover; box-shadow: 0 4px 10px rgba(15,23,42,0.1);">' +
-                                '<div class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center border border-white" style="width: 18px; height: 18px; font-size: 0.55rem; transform: translate(3px, 3px);">' +
-                                    '<i class="fas fa-check"></i>' +
-                                '</div>' +
+                                '<img src="' + imgSrc + '" alt="Preview" class="rounded-3 border" style="width: 58px; height: 58px; object-fit: cover; box-shadow: 0 4px 10px rgba(15,23,42,0.1);">' +
                             '</div>' +
                             '<div class="overflow-hidden">' +
                                 '<div class="fw-bold text-dark small text-truncate mb-0.5" style="max-width: 210px; font-size: 0.85rem;">' + safeEscape(file.name) + '</div>' +
                                 '<div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.74rem;">' +
                                     '<span><i class="far fa-file-image me-1 text-primary"></i>' + (file.size / 1024 / 1024).toFixed(2) + ' MB</span>' +
-                                    '<span class="text-success fw-semibold"><i class="fas fa-circle me-1" style="font-size:0.42rem;"></i>Siap Diunggah</span>' +
+                                    '<span class="text-primary fw-semibold" style="font-size: 0.72rem;"><i class="fas fa-search-plus me-1"></i>Lihat Penuh</span>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
