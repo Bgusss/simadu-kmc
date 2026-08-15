@@ -1047,6 +1047,31 @@
             </div>
         </div>
     </div>
+<!-- WhatsApp-Style Edit Message Modal -->
+<div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageModalLabel" aria-hidden="true" style="z-index: 1080;">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background: #111b21; color: #e9edef;">
+            <div class="modal-header border-bottom border-secondary border-opacity-25 py-2.5 px-3" style="background: #202c33;">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Tutup" style="font-size: 0.8rem;"></button>
+                    <h6 class="modal-title fw-semibold text-white mb-0" id="editMessageModalLabel" style="font-size: 1.05rem;">Edit pesan</h6>
+                </div>
+            </div>
+            <div class="modal-body p-4 d-flex flex-column align-items-end justify-content-center" style="background: #0b141a; min-height: 180px;">
+                <div id="edit-modal-bubble-preview" class="w-100 d-flex flex-column align-items-end">
+                    <!-- Target message preview rendered here dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 p-3" style="background: #202c33;">
+                <form id="edit-message-modal-form" class="w-100 d-flex align-items-center gap-2 mb-0">
+                    <input type="text" class="form-control bg-transparent text-white border-0 border-bottom border-success rounded-0 shadow-none px-2 py-2 fs-6" id="modal-edit-message-input" placeholder="Edit pesan..." required autocomplete="off">
+                    <button type="submit" class="btn btn-success rounded-circle shadow flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background-color: #00a884; border: none;" title="Simpan Edit">
+                        <i class="fas fa-check text-white fs-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -1698,7 +1723,6 @@ function adminMessageMarkup(message) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/tickets/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
     const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
-    const editedBadge = message.is_edited ? `<span class="edited-tag text-white-50 ms-1" style="font-size:0.68rem;">(diedit)</span>` : '';
     let replyQuoteMarkup = '';
     if (message.reply_to) {
         const isMine = message.mine;
@@ -1710,7 +1734,7 @@ function adminMessageMarkup(message) {
         replyQuoteMarkup = `<div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" onclick="jumpToMessage('${message.reply_to.id}')" style="border-left: 3px solid ${borderColor}; background: ${bgColor};"><div class="fw-bold small text-truncate" style="font-size: 0.75rem; color: ${accentColor};">${rSender}</div><div class="small text-truncate" style="font-size: 0.78rem; opacity: 0.9;">${rText}</div></div>`;
     }
 
-    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${replyQuoteMarkup}${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${editedBadge}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${editMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
+    return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${replyQuoteMarkup}${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${editMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
 }
 let adminKnownMessageIds = new Set();
 document.querySelectorAll('#admin-chat-messages [data-chat-message-id]').forEach(function(el) {
@@ -1773,16 +1797,6 @@ async function pollAdminChat() {
                             if (replyBtn) replyBtn.setAttribute('data-reply-text', message.message);
                         }
                     }
-                    if (message.is_edited) {
-                        const metaEl = existing.querySelector('.chat-meta');
-                        if (metaEl && !metaEl.querySelector('.edited-tag')) {
-                            const tag = document.createElement('span');
-                            tag.className = 'edited-tag text-white-50 ms-1';
-                            tag.style.fontSize = '0.68rem';
-                            tag.textContent = '(diedit)';
-                            metaEl.insertBefore(tag, metaEl.querySelector('.chat-receipt') || null);
-                        }
-                    }
                     if (message.read_at) {
                         existing.setAttribute('data-read-at', message.read_at);
                         const infoBtn = existing.querySelector('.chat-info-btn');
@@ -1821,36 +1835,96 @@ let editingMsgId = null;
 function editMsgFromEl(el) {
     const id = el ? el.getAttribute('data-edit-id') : null;
     const row = el ? el.closest('[data-chat-message-id]') : null;
-    const currentTextEl = row ? row.querySelector('.chat-msg-text') : null;
-    const text = currentTextEl ? currentTextEl.textContent : (el ? el.getAttribute('data-edit-text') || '' : '');
+    const text = row ? (row.querySelector('.chat-msg-text')?.textContent || '') : (el ? el.getAttribute('data-edit-text') || '' : '');
     if (!id || !text) return;
 
     cancelReply();
     editingMsgId = id;
-    const editPreview = document.getElementById('edit-preview');
-    const editPreviewText = document.getElementById('edit-preview-text');
-    const msgInput = document.getElementById('admin-chat-message');
 
-    if (editPreviewText) editPreviewText.textContent = text;
-    if (editPreview) editPreview.classList.remove('d-none');
+    const modalEl = document.getElementById('editMessageModal');
+    const msgInput = document.getElementById('modal-edit-message-input');
+    const previewContainer = document.getElementById('edit-modal-bubble-preview');
 
     if (msgInput) {
         msgInput.value = text;
-        msgInput.focus();
-        if (typeof autoResizeChatInput === 'function') autoResizeChatInput(msgInput);
     }
+
+    if (previewContainer && row) {
+        const bubbleWrap = row.querySelector('.chat-bubble-wrap');
+        if (bubbleWrap) {
+            const clone = bubbleWrap.cloneNode(true);
+            clone.querySelectorAll('.chat-msg-actions, .show-menu-btn').forEach(n => n.remove());
+            clone.style.maxWidth = '85%';
+            clone.style.margin = '0';
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(clone);
+        }
+    }
+
+    const editModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    editModal.show();
+
+    setTimeout(() => {
+        if (msgInput) {
+            msgInput.focus();
+            msgInput.setSelectionRange(msgInput.value.length, msgInput.value.length);
+        }
+    }, 250);
 }
 
 function cancelEdit() {
     editingMsgId = null;
-    const editPreview = document.getElementById('edit-preview');
-    const msgInput = document.getElementById('admin-chat-message');
-    if (editPreview) editPreview.classList.add('d-none');
-    if (msgInput) {
-        msgInput.value = '';
-        if (typeof autoResizeChatInput === 'function') autoResizeChatInput(msgInput);
+    const modalEl = document.getElementById('editMessageModal');
+    if (modalEl) {
+        const modalInst = bootstrap.Modal.getInstance(modalEl);
+        if (modalInst) modalInst.hide();
     }
+    const msgInput = document.getElementById('modal-edit-message-input');
+    if (msgInput) msgInput.value = '';
 }
+
+document.getElementById('edit-message-modal-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!editingMsgId) return;
+
+    const msgInput = document.getElementById('modal-edit-message-input');
+    const text = (msgInput ? msgInput.value : '').trim();
+    if (!text) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    const updateUrl = '/tickets/chat/message/' + editingMsgId;
+    try {
+        const response = await fetch(updateUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ message: text }),
+            credentials: 'same-origin'
+        });
+        if (!response.ok) throw new Error('Gagal mengedit pesan.');
+        const resData = await response.json();
+
+        const targetRow = chatCanvas.querySelector('[data-chat-message-id="' + editingMsgId + '"]');
+        if (targetRow) {
+            const textEl = targetRow.querySelector('.chat-msg-text');
+            if (textEl) textEl.textContent = resData.data.message;
+
+            const editBtn = targetRow.querySelector('.chat-ctx-menu a[onclick*="editMsgFromEl"]');
+            if (editBtn) editBtn.setAttribute('data-edit-text', resData.data.message);
+            const replyBtn = targetRow.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
+            if (replyBtn) replyBtn.setAttribute('data-reply-text', resData.data.message);
+        }
+
+        cancelEdit();
+        setTimeout(pollAdminChat, 200);
+    } catch (err) {
+        alert('Gagal memperbarui pesan.');
+    }
+});
 
 // Global touch click suppression to prevent long-press release from closing dropdowns
 let suppressNextClick = false;
