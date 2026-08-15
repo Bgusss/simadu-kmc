@@ -1324,6 +1324,7 @@ document.getElementById('admin-chat-form').addEventListener('submit', async func
                 }
             }
             cancelEdit();
+            setTimeout(pollAdminChat, 200);
         } catch (err) {
             alert('Gagal memperbarui pesan.');
         }
@@ -1351,6 +1352,7 @@ document.getElementById('admin-chat-form').addEventListener('submit', async func
         clearSelectedAttachment('admin');
         cancelReply();
         chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
+        setTimeout(pollAdminChat, 200);
     } catch (error) {
         alert(error.message || 'Pesan tidak dapat dikirim. Coba lagi.');
     } finally {
@@ -1803,7 +1805,7 @@ async function pollAdminChat() {
         adminPolling = false;
     }
 }
-setInterval(pollAdminChat, 5000);
+setInterval(pollAdminChat, 3000);
 document.addEventListener('visibilitychange', function() { if (!document.hidden) pollAdminChat(); });
 
 // --- Edit Message & Touch Gestures (Swipe to Reply / Long-Press Sheet) ---

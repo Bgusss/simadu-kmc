@@ -1301,6 +1301,7 @@ document.getElementById('opd-chat-form').addEventListener('submit', async functi
                 }
             }
             cancelEdit();
+            setTimeout(pollOpdChat, 200);
         } catch (err) {
             alert('Gagal memperbarui pesan.');
         }
@@ -1328,6 +1329,7 @@ document.getElementById('opd-chat-form').addEventListener('submit', async functi
         clearSelectedAttachment('opd');
         cancelReply();
         chatCanvas.scrollTo({ top: chatCanvas.scrollHeight, behavior: 'smooth' });
+        setTimeout(pollOpdChat, 200);
     } catch (error) {
         alert(error.message || 'Pesan tidak dapat dikirim. Coba lagi.');
     } finally {
@@ -1780,7 +1782,7 @@ async function pollOpdChat() {
         opdPolling = false;
     }
 }
-setInterval(pollOpdChat, 5000);
+setInterval(pollOpdChat, 3000);
 document.addEventListener('visibilitychange', function() { if (!document.hidden) pollOpdChat(); });
 
 // --- Edit Message & Touch Gestures (Swipe to Reply / Long-Press Sheet) ---
