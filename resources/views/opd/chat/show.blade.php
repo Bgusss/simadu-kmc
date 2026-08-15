@@ -1024,9 +1024,11 @@
             </div>
         </div>
     </div>
+</div>
+
 <!-- WhatsApp-Style Edit Message Modal -->
 <div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageModalLabel" aria-hidden="true" style="z-index: 1080;">
-    <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-md" style="z-index: 1090;">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background: #111b21; color: #e9edef;">
             <div class="modal-header border-bottom border-secondary border-opacity-25 py-2.5 px-3" style="background: #202c33;">
                 <div class="d-flex align-items-center gap-3">
@@ -1819,6 +1821,10 @@ function editMsgFromEl(el) {
     editingMsgId = id;
 
     const modalEl = document.getElementById('editMessageModal');
+    if (!modalEl) return;
+    if (modalEl.parentElement !== document.body) {
+        document.body.appendChild(modalEl);
+    }
     const msgInput = document.getElementById('modal-edit-message-input');
     const previewContainer = document.getElementById('edit-modal-bubble-preview');
 
