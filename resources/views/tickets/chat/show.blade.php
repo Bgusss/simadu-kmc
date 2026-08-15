@@ -212,7 +212,17 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
     padding: 6px 0;
     font-size: .88rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+    z-index: 1060 !important;
+}
+.chat-msg-actions.dropup .chat-ctx-menu {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 6px !important;
+}
+.chat-scroll-latest {
+    z-index: 1000 !important;
 }
 .chat-ctx-menu .dropdown-item {
     padding: 9px 16px;
@@ -1898,6 +1908,50 @@ document.getElementById('edit-message-modal-form')?.addEventListener('submit', a
         setTimeout(pollAdminChat, 200);
     } catch (err) {
         alert('Gagal memperbarui pesan.');
+    }
+});
+
+// Global dropdown auto-flip positioning (Dropup near bottom) & z-index elevation
+document.addEventListener('show.bs.dropdown', function(e) {
+    const btn = e.target;
+    if (!btn || !btn.classList.contains('chat-msg-menu-btn')) return;
+
+    const row = btn.closest('[data-chat-message-id]');
+    const actions = btn.closest('.chat-msg-actions');
+    const canvas = document.getElementById('admin-chat-messages') || document.getElementById('opd-chat-messages');
+
+    if (row) {
+        row.style.zIndex = '1050';
+        row.style.position = 'relative';
+    }
+
+    if (actions && canvas) {
+        const btnRect = btn.getBoundingClientRect();
+        const canvasRect = canvas.getBoundingClientRect();
+        const spaceBelow = canvasRect.bottom - btnRect.bottom;
+
+        // If space below button is less than 220px, flip menu UPWARDS (dropup)!
+        if (spaceBelow < 220) {
+            actions.classList.add('dropup');
+        } else {
+            actions.classList.remove('dropup');
+        }
+    }
+});
+
+document.addEventListener('hide.bs.dropdown', function(e) {
+    const btn = e.target;
+    if (!btn || !btn.classList.contains('chat-msg-menu-btn')) return;
+
+    const row = btn.closest('[data-chat-message-id]');
+    const actions = btn.closest('.chat-msg-actions');
+
+    if (row) {
+        row.style.zIndex = '';
+        row.style.position = '';
+    }
+    if (actions) {
+        actions.classList.remove('dropup');
     }
 });
 
