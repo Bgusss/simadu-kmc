@@ -1257,6 +1257,12 @@ document.getElementById('opd-chat-form').addEventListener('submit', async functi
             if (targetRow) {
                 const textEl = targetRow.querySelector('.chat-msg-text');
                 if (textEl) textEl.textContent = resData.data.message;
+
+                const editBtn = targetRow.querySelector('.chat-ctx-menu a[onclick*="editMsgFromEl"]');
+                if (editBtn) editBtn.setAttribute('data-edit-text', resData.data.message);
+                const replyBtn = targetRow.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
+                if (replyBtn) replyBtn.setAttribute('data-reply-text', resData.data.message);
+
                 const metaEl = targetRow.querySelector('.chat-meta');
                 if (metaEl && !metaEl.querySelector('.edited-tag')) {
                     const tag = document.createElement('span');
@@ -1697,6 +1703,26 @@ async function pollOpdChat() {
             } else {
                 const existing = chatCanvas.querySelector('[data-chat-message-id="' + message.id + '"]');
                 if (existing) {
+                    if (message.message) {
+                        const textEl = existing.querySelector('.chat-msg-text');
+                        if (textEl && textEl.textContent !== message.message) {
+                            textEl.textContent = message.message;
+                            const editBtn = existing.querySelector('.chat-ctx-menu a[onclick*="editMsgFromEl"]');
+                            if (editBtn) editBtn.setAttribute('data-edit-text', message.message);
+                            const replyBtn = existing.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
+                            if (replyBtn) replyBtn.setAttribute('data-reply-text', message.message);
+                        }
+                    }
+                    if (message.is_edited) {
+                        const metaEl = existing.querySelector('.chat-meta');
+                        if (metaEl && !metaEl.querySelector('.edited-tag')) {
+                            const tag = document.createElement('span');
+                            tag.className = 'edited-tag text-white-50 ms-1';
+                            tag.style.fontSize = '0.68rem';
+                            tag.textContent = '(diedit)';
+                            metaEl.insertBefore(tag, metaEl.querySelector('.chat-receipt') || null);
+                        }
+                    }
                     if (message.read_at) {
                         existing.setAttribute('data-read-at', message.read_at);
                         const infoBtn = existing.querySelector('.chat-info-btn');
@@ -1733,8 +1759,10 @@ document.addEventListener('visibilitychange', function() { if (!document.hidden)
 let editingMsgId = null;
 
 function editMsgFromEl(el) {
-    const id = el.getAttribute('data-edit-id');
-    const text = el.getAttribute('data-edit-text') || '';
+    const id = el ? el.getAttribute('data-edit-id') : null;
+    const row = el ? el.closest('[data-chat-message-id]') : null;
+    const currentTextEl = row ? row.querySelector('.chat-msg-text') : null;
+    const text = currentTextEl ? currentTextEl.textContent : (el ? el.getAttribute('data-edit-text') || '' : '');
     if (!id || !text) return;
 
     cancelReply();
