@@ -567,7 +567,7 @@
         <button type="button" class="btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal" style="width: 36px; height: 36px;" title="Informasi Aduan">
             <i class="fas fa-info-circle"></i>
         </button>
-        <button type="button" class="btn btn-warning text-dark rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="width: 36px; height: 36px;" title="Berikan Tanggapan">
+        <button type="button" class="btn btn-kmc-orange text-white rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="width: 36px; height: 36px;" title="Berikan Tanggapan">
             <i class="fas fa-comment-dots"></i>
         </button>
     </div>
@@ -861,7 +861,7 @@
         </aside>
 
         <aside class="chat-side-card">
-            <div class="card-header fw-bold"><i class="fas fa-comment-dots text-warning me-2"></i>Berikan Tanggapan</div>
+            <div class="card-header fw-bold"><i class="fas fa-comment-dots text-kmc-orange me-2"></i>Berikan Tanggapan</div>
             <div class="card-body">
                 <div class="small text-muted mb-3">Tanggapan resmi akan dicatat pada Riwayat Perjalanan Aduan dan memperbarui status tiket menjadi Dijawab.</div>
                 <form action="{{ route('opd.tickets.respond', $ticket) }}" method="POST" enctype="multipart/form-data">
@@ -869,7 +869,7 @@
                     <textarea id="official-response" name="response_text" class="form-control mb-3" rows="4" placeholder="Tulis tanggapan resmi untuk aduan ini..." required></textarea>
                     <input id="official-response-attachment" name="attachment" type="file" class="form-control mb-3" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
                     <div class="form-text small mb-3">Lampiran tanggapan: JPG, JPEG, PNG — maksimal 5 MB.</div>
-                    <button class="btn btn-warning w-100 fw-bold" type="submit"><i class="fas fa-paper-plane me-1"></i>Kirim Tanggapan Resmi</button>
+                    <button class="btn btn-kmc-orange text-white w-100 fw-bold py-2.5 shadow-sm" type="submit"><i class="fas fa-paper-plane me-1"></i>Kirim Tanggapan Resmi</button>
                 </form>
             </div>
         </aside>
@@ -933,11 +933,11 @@
 <div class="modal fade" id="mobileUpdateStatusModal" tabindex="-1" aria-labelledby="mobileUpdateStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
-            <div class="modal-header bg-warning text-dark py-3">
+            <div class="modal-header bg-kmc-orange text-white py-3">
                 <h5 class="modal-title fs-6 fw-bold mb-0" id="mobileUpdateStatusModalLabel">
                     <i class="fas fa-comment-dots me-2"></i>Berikan Tanggapan Resmi
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
             </div>
             <div class="modal-body p-4 bg-white">
                 <div class="small text-muted mb-3">Tanggapan resmi akan dicatat pada Riwayat Perjalanan Aduan dan memperbarui status tiket menjadi Dijawab.</div>
@@ -948,7 +948,7 @@
                     <label class="form-label fw-bold small text-secondary mb-1">Lampiran Tanggapan (Foto)</label>
                     <input name="attachment" type="file" class="form-control mb-2" accept=".jpg,.jpeg,.png" style="border-radius: 10px;" onchange="previewUploadImage(this)">
                     <div class="form-text small mb-3">Format: JPG, JPEG, PNG — maksimal 5 MB.</div>
-                    <button class="btn btn-warning w-100 fw-bold py-2.5 shadow-sm" type="submit" style="border-radius: 10px;">
+                    <button class="btn btn-kmc-orange text-white w-100 fw-bold py-2.5 shadow-sm" type="submit" style="border-radius: 10px;">
                         <i class="fas fa-paper-plane me-1.5"></i>Kirim Tanggapan Resmi
                     </button>
                 </form>

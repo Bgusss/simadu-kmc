@@ -565,6 +565,28 @@
             color: #991b1b !important;
             transform: scale(1.08) !important;
         }
+
+        /* KMC Color Tokens: Orange for Response, Yellow for Edit/Status */
+        .btn-kmc-orange {
+            background-color: #F57C00 !important;
+            border-color: #F57C00 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            transition: all 0.25s ease !important;
+        }
+        .btn-kmc-orange:hover, .btn-kmc-orange:focus, .btn-kmc-orange:active {
+            background-color: #E65100 !important;
+            border-color: #E65100 !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 16px rgba(245, 124, 0, 0.35) !important;
+        }
+        .text-kmc-orange {
+            color: #F57C00 !important;
+        }
+        .bg-kmc-orange {
+            background-color: #F57C00 !important;
+            color: #ffffff !important;
+        }
     </style>
 
     @stack('styles')
