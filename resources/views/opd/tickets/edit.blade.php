@@ -155,7 +155,7 @@
     <div class="col-lg-5 mb-4">
         <div class="card card-premium overflow-hidden h-100">
             <div class="card-header bg-white border-bottom-0 pt-4 pb-2 px-4 fw-bold">
-                <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-comments me-2 text-primary"></i> Berikan Tanggapan</h5>
+                <h5 class="mb-0 fw-bold text-dark"><i class="fas fa-comment-dots me-2 text-warning"></i> Berikan Tanggapan</h5>
             </div>
             <div class="card-body px-4 pb-4">
                 <form action="{{ route('opd.tickets.respond', $ticket->id) }}" method="POST" enctype="multipart/form-data">
@@ -167,10 +167,10 @@
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold">Lampiran Bukti (Opsional)</label>
                         <input type="file" id="opd-respond-file" name="attachment" class="form-control w-100" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
-                        <div class="form-text mt-2 small text-muted"><i class="fas fa-info-circle me-1 text-primary"></i> Hanya format <strong>JPG, JPEG, PNG</strong>. Maksimal <strong>5MB</strong>.</div>
+                        <div class="form-text mt-2 small text-muted"><i class="fas fa-info-circle me-1 text-warning"></i> Hanya format <strong>JPG, JPEG, PNG</strong>. Maksimal <strong>5MB</strong>.</div>
                     </div>
-                    <button type="submit" class="btn btn-primary fw-bold w-100 rounded-pill py-2" style="box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);">
-                        <i class="fas fa-paper-plane me-2"></i> Kirim Tanggapan
+                    <button type="submit" class="btn btn-warning text-dark fw-bold w-100 rounded-pill py-2.5" style="background-color: #ffc107; border: none; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.28);">
+                        <i class="fas fa-paper-plane me-2"></i> Kirim Tanggapan Resmi
                     </button>
                     <div class="text-center mt-3"><span class="badge bg-light text-muted border px-3 py-1"><i class="fas fa-info-circle me-1"></i> Mengirim tanggapan akan mengubah status tiket menjadi "Dijawab".</span></div>
                 </form>

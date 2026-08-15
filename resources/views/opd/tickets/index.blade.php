@@ -315,7 +315,7 @@
                                         <a href="{{ route('opd.tickets.show', $ticket->id) }}" class="btn btn-sm btn-light border text-primary" title="Lihat Detail Tiket" data-bs-toggle="tooltip">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm text-white" style="background-color: #F57C00; border-color: #F57C00;" title="Berikan Tanggapan" data-bs-toggle="tooltip">
+                                        <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-sm btn-warning text-dark fw-bold" title="Berikan Tanggapan" data-bs-toggle="tooltip">
                                             <i class="fas fa-comment-dots"></i>
                                         </a>
                                         <a href="{{ route('opd.chat.show', $ticket) }}" class="btn btn-sm btn-light border text-primary" title="Live Chat dengan Admin KMC" data-bs-toggle="tooltip">

@@ -141,7 +141,7 @@
 
         <div class="row g-3 mb-4">
             <div class="col-sm-6">
-                <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn w-100 fw-bold rounded-pill py-3 shadow-sm d-flex align-items-center justify-content-center text-white" style="background-color: #F57C00; border: none; font-size: 1rem; box-shadow: 0 4px 6px rgba(245, 124, 0, 0.2) !important;">
+                <a href="{{ route('opd.tickets.edit', $ticket->id) }}" class="btn btn-warning text-dark w-100 fw-bold rounded-pill py-3 shadow-sm d-flex align-items-center justify-content-center" style="background-color: #ffc107; border: none; font-size: 1rem; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.28) !important;">
                     <i class="fas fa-comment-dots me-2 fa-lg"></i> Berikan Tanggapan
                 </a>
             </div>
