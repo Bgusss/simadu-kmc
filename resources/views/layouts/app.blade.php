@@ -941,16 +941,27 @@
 </body>
 
 <!-- Lightbox Preview Modal -->
-<div id="globalLightbox" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); cursor:zoom-out; align-items:center; justify-content:center;">
-    <a id="lightboxDownloadBtn" href="#" download target="_blank" style="position:absolute; top:20px; right:76px; background:rgba(255,255,255,0.18); border:none; color:#fff; height:44px; padding:0 18px; border-radius:22px; font-size:0.88rem; font-weight:600; cursor:pointer; z-index:100000; display:flex; align-items:center; gap:8px; backdrop-filter:blur(4px); transition:all 0.2s; text-decoration:none;" title="Unduh file media ini">
+<div id="globalLightbox" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; height:100dvh; z-index:999999; background:rgba(15,23,42,0.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); cursor:zoom-out; align-items:center; justify-content:center;">
+    <a id="lightboxDownloadBtn" href="#" download target="_blank" style="position:absolute; top:20px; right:76px; background:rgba(255,255,255,0.18); border:none; color:#fff; height:44px; padding:0 18px; border-radius:22px; font-size:0.88rem; font-weight:600; cursor:pointer; z-index:1000000; display:flex; align-items:center; gap:8px; backdrop-filter:blur(4px); transition:all 0.2s; text-decoration:none;" title="Unduh file media ini">
         <i class="fas fa-download"></i> <span>Unduh</span>
     </a>
-    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; width:44px; height:44px; border-radius:50%; font-size:1.4rem; cursor:pointer; z-index:100000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:all 0.2s;" title="Tutup">
+    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.15); border:none; color:#fff; width:44px; height:44px; border-radius:50%; font-size:1.4rem; cursor:pointer; z-index:1000000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:all 0.2s;" title="Tutup">
         <i class="fas fa-times"></i>
     </button>
-    <img id="lightboxImg" src="" alt="Preview" style="display:none; max-width:92vw; max-height:88vh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
-    <video id="lightboxVideo" controls style="display:none; max-width:92vw; max-height:88vh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; outline:none; animation:lightboxIn 0.25s ease;"></video>
-    <iframe id="lightboxPdf" src="" style="display:none; width:88vw; height:88vh; border:none; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); background:#fff; animation:lightboxIn 0.25s ease;"></iframe>
+    <div id="lightboxSpinner" class="spinner-border text-light" role="status" style="display:none; width: 3rem; height: 3rem; position:absolute; z-index:999999;">
+        <span class="visually-hidden">Memuat...</span>
+    </div>
+    <div id="lightboxError" class="text-center text-white p-4" style="display:none; position:absolute; max-width: 90vw; z-index:999999;">
+        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+        <h5 class="fw-bold mb-2">Gagal Memuat Lampiran</h5>
+        <p class="text-white-50 small mb-3">Pratinjau lampiran ini tidak dapat ditampilkan secara langsung di perangkat Anda.</p>
+        <a id="lightboxErrorDlBtn" href="#" target="_blank" download class="btn btn-light rounded-pill px-4 fw-bold shadow">
+            <i class="fas fa-external-link-alt me-2"></i>Buka / Unduh File
+        </a>
+    </div>
+    <img id="lightboxImg" src="" alt="Preview" style="display:none; max-width:94vw; max-height:86vh; max-height:86dvh; object-fit:contain; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; animation:lightboxIn 0.25s ease;">
+    <video id="lightboxVideo" controls style="display:none; max-width:94vw; max-height:86vh; max-height:86dvh; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default; outline:none; animation:lightboxIn 0.25s ease;"></video>
+    <iframe id="lightboxPdf" src="" style="display:none; width:92vw; height:86vh; height:86dvh; border:none; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.5); background:#fff; animation:lightboxIn 0.25s ease;"></iframe>
 </div>
 <style>
     @keyframes lightboxIn {
@@ -973,13 +984,26 @@
 <script>
     function openLightbox(src, type) {
         var lb = document.getElementById('globalLightbox');
+        if (!lb) return;
+
+        // Ensure lightbox is attached directly to document.body to avoid parent transform pinning
+        if (lb.parentElement !== document.body) {
+            document.body.appendChild(lb);
+        }
+
         var img = document.getElementById('lightboxImg');
         var vid = document.getElementById('lightboxVideo');
         var pdf = document.getElementById('lightboxPdf');
         var dlBtn = document.getElementById('lightboxDownloadBtn');
+        var spinner = document.getElementById('lightboxSpinner');
+        var errorBox = document.getElementById('lightboxError');
+        var errorDlBtn = document.getElementById('lightboxErrorDlBtn');
 
         if (dlBtn && src) {
             dlBtn.href = src;
+        }
+        if (errorDlBtn && src) {
+            errorDlBtn.href = src;
         }
 
         var cleanSrc = typeof src === 'string' ? src.toLowerCase().split('?')[0] : '';
@@ -989,9 +1013,18 @@
         if (vid) { vid.pause(); vid.style.display = 'none'; vid.src = ''; }
         if (img) { img.style.display = 'none'; img.src = ''; }
         if (pdf) { pdf.style.display = 'none'; pdf.src = ''; }
+        if (errorBox) { errorBox.style.display = 'none'; }
+        if (spinner) { spinner.style.display = 'block'; }
+
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         if (isPdf) {
-            if (pdf) {
+            if (spinner) spinner.style.display = 'none';
+            if (isMobile) {
+                // Mobile PDF: open directly in new tab or display clean action card to avoid blank iframe on mobile
+                window.open(src, '_blank');
+                return;
+            } else if (pdf) {
                 pdf.src = src;
                 pdf.style.display = 'block';
             }
@@ -999,10 +1032,26 @@
             if (vid) {
                 vid.src = src;
                 vid.style.display = 'block';
+                vid.onloadeddata = function() {
+                    if (spinner) spinner.style.display = 'none';
+                };
+                vid.onerror = function() {
+                    if (spinner) spinner.style.display = 'none';
+                    if (vid) vid.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'block';
+                };
                 vid.play().catch(function(){});
             }
         } else {
             if (img) {
+                img.onload = function() {
+                    if (spinner) spinner.style.display = 'none';
+                };
+                img.onerror = function() {
+                    if (spinner) spinner.style.display = 'none';
+                    if (img) img.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'block';
+                };
                 img.src = src;
                 img.style.display = 'block';
             }
@@ -1010,10 +1059,15 @@
         lb.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
+
     function closeLightbox() {
         var lb = document.getElementById('globalLightbox');
+        if (!lb) return;
         var vid = document.getElementById('lightboxVideo');
         var pdf = document.getElementById('lightboxPdf');
+        var spinner = document.getElementById('lightboxSpinner');
+        var errorBox = document.getElementById('lightboxError');
+
         if (vid) {
             vid.pause();
             vid.src = '';
@@ -1021,10 +1075,14 @@
         if (pdf) {
             pdf.src = '';
         }
+        if (spinner) spinner.style.display = 'none';
+        if (errorBox) errorBox.style.display = 'none';
+
         lb.style.display = 'none';
         document.body.style.overflow = '';
     }
-    document.getElementById('globalLightbox').addEventListener('click', function(e) {
+
+    document.getElementById('globalLightbox')?.addEventListener('click', function(e) {
         if (e.target === this) closeLightbox();
     });
     document.addEventListener('keydown', function(e) {
