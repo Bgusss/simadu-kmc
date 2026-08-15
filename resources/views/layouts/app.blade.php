@@ -1156,7 +1156,65 @@
             '</div>' +
             '<div class="toast-progress-bar" style="height: 4px; background: linear-gradient(90deg, #0d47a1, #f57c00); width: 100%; animation: toastProgress 4.8s linear forwards;"></div>';
 
+            // Touch Swipe to Dismiss (Left / Right) for Mobile
+            var startX = 0;
+            var startY = 0;
+            var deltaX = 0;
+            var isSwiping = false;
+
+            toast.addEventListener('touchstart', function(e) {
+                if (e.touches.length !== 1) return;
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                deltaX = 0;
+                isSwiping = false;
+                toast.style.transition = 'none';
+            }, { passive: true });
+
+            toast.addEventListener('touchmove', function(e) {
+                if (e.touches.length !== 1) return;
+                var currentX = e.touches[0].clientX;
+                var currentY = e.touches[0].clientY;
+                var diffX = currentX - startX;
+                var diffY = currentY - startY;
+
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 8) {
+                    isSwiping = true;
+                    deltaX = diffX;
+                    toast.style.transform = 'translateX(' + deltaX + 'px)';
+                    toast.style.opacity = Math.max(0, 1 - Math.abs(deltaX) / 240);
+                }
+            }, { passive: true });
+
+            var handleTouchEnd = function(e) {
+                if (!isSwiping) {
+                    toast.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+                    toast.style.transform = 'translateX(0)';
+                    toast.style.opacity = '1';
+                    return;
+                }
+
+                toast.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+                if (Math.abs(deltaX) > 75) {
+                    var targetX = deltaX > 0 ? '120%' : '-120%';
+                    toast.style.transform = 'translateX(' + targetX + ')';
+                    toast.style.opacity = '0';
+                    setTimeout(function() {
+                        if (toast && toast.parentNode) toast.remove();
+                    }, 250);
+                } else {
+                    toast.style.transform = 'translateX(0)';
+                    toast.style.opacity = '1';
+                }
+            };
+
+            toast.addEventListener('touchend', handleTouchEnd, { passive: true });
+            toast.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+
             toast.onclick = function(e) {
+                if (isSwiping || Math.abs(deltaX) > 10) {
+                    return;
+                }
                 if (!isCurrentChatPage && notif.chat_url) {
                     window.location.href = notif.chat_url;
                 }
@@ -1167,9 +1225,9 @@
             container.appendChild(toast);
 
             setTimeout(function() {
-                if (toast && toast.parentNode) {
+                if (toast && toast.parentNode && !isSwiping) {
                     toast.classList.remove('show');
-                    setTimeout(function() { toast.remove(); }, 250);
+                    setTimeout(function() { if (toast && toast.parentNode) toast.remove(); }, 250);
                 }
             }, 4800);
         }
