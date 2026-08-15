@@ -1136,30 +1136,53 @@
             }
         } else if (isVid) {
             if (vid) {
-                vid.src = src;
                 vid.style.display = 'block';
                 vid.onloadeddata = function() {
                     if (spinner) spinner.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'none';
+                };
+                vid.oncanplay = function() {
+                    if (spinner) spinner.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'none';
                 };
                 vid.onerror = function() {
-                    if (spinner) spinner.style.display = 'none';
-                    if (vid) vid.style.display = 'none';
-                    if (errorBox) errorBox.style.display = 'block';
+                    if (vid.readyState === 0 && (!vid.duration || isNaN(vid.duration))) {
+                        if (spinner) spinner.style.display = 'none';
+                        if (vid) vid.style.display = 'none';
+                        if (errorBox) errorBox.style.display = 'block';
+                    } else {
+                        if (spinner) spinner.style.display = 'none';
+                        if (errorBox) errorBox.style.display = 'none';
+                    }
                 };
-                vid.play().catch(function(){});
+                vid.src = src;
+                vid.play().catch(function() {
+                    if (spinner) spinner.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'none';
+                });
             }
         } else {
             if (img) {
                 img.onload = function() {
                     if (spinner) spinner.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'none';
                 };
                 img.onerror = function() {
-                    if (spinner) spinner.style.display = 'none';
-                    if (img) img.style.display = 'none';
-                    if (errorBox) errorBox.style.display = 'block';
+                    if (!img.complete || img.naturalWidth === 0) {
+                        if (spinner) spinner.style.display = 'none';
+                        if (img) img.style.display = 'none';
+                        if (errorBox) errorBox.style.display = 'block';
+                    } else {
+                        if (spinner) spinner.style.display = 'none';
+                        if (errorBox) errorBox.style.display = 'none';
+                    }
                 };
                 img.src = src;
                 img.style.display = 'block';
+                if (img.complete && img.naturalWidth > 0) {
+                    if (spinner) spinner.style.display = 'none';
+                    if (errorBox) errorBox.style.display = 'none';
+                }
             }
         }
         lb.style.display = 'flex';
