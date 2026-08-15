@@ -1049,25 +1049,26 @@
     </div>
 </div>
 
-<!-- WhatsApp-Style Edit Message Modal -->
+<!-- KMC-Themed Edit Message Modal -->
 <div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageModalLabel" aria-hidden="true" style="z-index: 1080;">
     <div class="modal-dialog modal-dialog-centered modal-md" style="z-index: 1090;">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background: #111b21; color: #e9edef;">
-            <div class="modal-header border-bottom border-secondary border-opacity-25 py-2.5 px-3" style="background: #202c33;">
-                <div class="d-flex align-items-center gap-3">
-                    <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="modal" aria-label="Tutup" style="font-size: 0.8rem;"></button>
-                    <h6 class="modal-title fw-semibold text-white mb-0" id="editMessageModalLabel" style="font-size: 1.05rem;">Edit pesan</h6>
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background: #ffffff;">
+            <div class="modal-header border-bottom-0 py-3 px-4 text-white" style="background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-edit fs-5 text-white-50 me-1"></i>
+                    <h6 class="modal-title fw-bold text-white mb-0" id="editMessageModalLabel" style="font-size: 1.05rem;">Edit Pesan</h6>
                 </div>
+                <button type="button" class="btn-close btn-close-white opacity-100" data-bs-dismiss="modal" aria-label="Tutup"></button>
             </div>
-            <div class="modal-body p-4 d-flex flex-column align-items-end justify-content-center" style="background: #0b141a; min-height: 180px;">
+            <div class="modal-body p-4 d-flex flex-column align-items-end justify-content-center" style="background: #f8fafc; min-height: 160px;">
                 <div id="edit-modal-bubble-preview" class="w-100 d-flex flex-column align-items-end">
                     <!-- Target message preview rendered here dynamically -->
                 </div>
             </div>
-            <div class="modal-footer border-top-0 p-3" style="background: #202c33;">
+            <div class="modal-footer border-top p-3 bg-white">
                 <form id="edit-message-modal-form" class="w-100 d-flex align-items-center gap-2 mb-0">
-                    <input type="text" class="form-control bg-transparent text-white border-0 border-bottom border-success rounded-0 shadow-none px-2 py-2 fs-6" id="modal-edit-message-input" placeholder="Edit pesan..." required autocomplete="off">
-                    <button type="submit" class="btn btn-success rounded-circle shadow flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background-color: #00a884; border: none;" title="Simpan Edit">
+                    <input type="text" class="form-control bg-light text-dark border rounded-3 shadow-none px-3 py-2 fs-6" id="modal-edit-message-input" placeholder="Tulis perubahan pesan..." required autocomplete="off" style="border-color: #cbd5e1 !important;">
+                    <button type="submit" class="btn btn-primary rounded-circle shadow-sm flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: linear-gradient(135deg, #0d47a1, #1565c0); border: none;" title="Simpan Perubahan">
                         <i class="fas fa-check text-white fs-5"></i>
                     </button>
                 </form>
