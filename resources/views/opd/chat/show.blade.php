@@ -288,14 +288,15 @@
 .search-result-item:hover {
     background-color: #f1f5f9 !important;
 }
-.chat-bubble-wrap.search-active {
+.chat-bubble-wrap.search-active .chat-message {
     filter: drop-shadow(1px 0 0 #f57c00) drop-shadow(-1px 0 0 #f57c00) drop-shadow(0 1px 0 #f57c00) drop-shadow(0 -1px 0 #f57c00) drop-shadow(0 4px 14px rgba(245, 124, 0, 0.35)) !important;
     animation: searchPulse 1.4s ease-in-out infinite alternate !important;
-}
-.chat-bubble-wrap.search-active .chat-message {
     background: #fff7ed !important;
     color: #1e293b !important;
     border: none !important;
+}
+.chat-ctx-menu, .chat-msg-actions {
+    filter: none !important;
 }
 .chat-bubble-wrap.search-active .chat-message.mine {
     background: #0d47a1 !important;
@@ -1837,6 +1838,8 @@ function editMsgFromEl(el) {
         const bubbleWrap = row.querySelector('.chat-bubble-wrap');
         if (bubbleWrap) {
             const clone = bubbleWrap.cloneNode(true);
+            clone.classList.remove('search-active');
+            clone.querySelectorAll('.search-active').forEach(n => n.classList.remove('search-active'));
             clone.querySelectorAll('.chat-msg-actions, .show-menu-btn').forEach(n => n.remove());
             clone.style.maxWidth = '85%';
             clone.style.margin = '0';
