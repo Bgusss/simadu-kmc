@@ -404,13 +404,47 @@
     width: 20px;
     text-align: center;
 }
+.chat-side-card {
+    background: #ffffff;
+    border-radius: 16px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05) !important;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.chat-side-card:hover {
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08) !important;
+}
 .chat-side-card .card-header {
-    padding: 16px 18px;
-    background: #fff;
-    border-bottom: 1px solid #edf1f5;
+    padding: 14px 18px;
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
 }
 .chat-side-card .card-body {
     padding: 18px;
+}
+.chat-side-card .form-select,
+.chat-side-card .form-control {
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 9px 13px !important;
+    font-size: 0.88rem !important;
+    box-shadow: none !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.chat-side-card .form-select:focus,
+.chat-side-card .form-control:focus {
+    border-color: #0d47a1 !important;
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.12) !important;
+}
+.chat-side-card .btn {
+    border-radius: 10px !important;
+    padding: 9px 16px !important;
+    font-size: 0.88rem !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.chat-side-card .btn:hover {
+    transform: translateY(-1px);
 }
 .ticket-label {
     color: #64748b;
@@ -422,16 +456,16 @@
 }
 .ticket-info-tile {
     height: 100%;
-    padding: 10px;
-    border: 1px solid #edf1f5;
-    border-radius: 12px;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     background: #f8fafc;
 }
 .complaint-preview {
-    padding: 13px;
+    padding: 14px 16px;
     border-left: 4px solid #0d47a1;
-    border-radius: 0 12px 12px 0;
-    background: #eef4ff;
+    border-radius: 4px 12px 12px 4px;
+    background: #f0f7ff;
 }
 
 /* Info modal */
