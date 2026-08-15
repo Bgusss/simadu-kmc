@@ -457,10 +457,20 @@
 }
 </style>
 
-<div class="mb-3">
+<div class="d-flex align-items-center justify-content-between mb-3">
     <a href="{{ route('tickets.index') }}" class="text-decoration-none small fw-semibold">
         <i class="fas fa-arrow-left me-1"></i>Kembali ke Daftar Tiket
     </a>
+</div>
+
+<!-- Mobile Top Action Buttons (Above Chat Box) -->
+<div class="d-flex align-items-center gap-2 mb-3 d-xl-none">
+    <button type="button" class="btn btn-primary rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal" style="border-radius: 12px !important;">
+        <i class="fas fa-info-circle me-1.5"></i>Informasi Aduan
+    </button>
+    <button type="button" class="btn btn-warning text-dark rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="border-radius: 12px !important;">
+        <i class="fas fa-edit me-1.5"></i>Perbarui Status
+    </button>
 </div>
 
 <div class="row">
@@ -491,16 +501,6 @@
                     </button>
                 </div>
             </header>
-
-            <!-- Top Action Bar for Mobile View -->
-            <div class="d-flex align-items-center gap-2 p-2 px-3 bg-light border-bottom d-xl-none">
-                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill flex-fill text-nowrap fw-semibold shadow-sm py-1.5" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal">
-                    <i class="fas fa-info-circle me-1.5"></i>Informasi Aduan
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-pill flex-fill text-nowrap fw-semibold shadow-sm py-1.5" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal">
-                    <i class="fas fa-edit me-1.5"></i>Perbarui Status
-                </button>
-            </div>
 
             <!-- Main Flex Row Container -->
             <div class="d-flex flex-grow-1 overflow-hidden position-relative" style="min-height: 0;">
@@ -705,7 +705,7 @@
         </div>
     </div>
 
-    <div class="col-xl-4 mb-4">
+    <div class="col-xl-4 d-none d-xl-block mb-4">
         <aside class="chat-side-card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <span class="fw-bold"><i class="fas fa-info-circle text-primary me-2"></i>Informasi Aduan</span>
