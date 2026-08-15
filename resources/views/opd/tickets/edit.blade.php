@@ -172,7 +172,7 @@
                                     <div class="bg-secondary text-white px-3 py-2 rounded me-3 small fw-bold"><i class="fas fa-folder-open me-1"></i> Pilih File</div>
                                     <span class="text-muted small text-truncate" style="flex: 1;" id="filename-respond">Belum ada file...</span>
                                 </div>
-                                <input type="file" id="opd-respond-file" name="attachment" class="d-none" accept=".jpg,.jpeg,.png" onchange="previewImageInModal(this, 'filename-respond')">
+                                <input type="file" id="opd-respond-file" name="attachment" class="d-none" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
                             </label>
                             <button type="button" id="opd-respond-file-btn-preview" class="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 flex-shrink-0 d-none" onclick="openCurrentPreviewModal()" title="Lihat Pratinjau Foto">
                                 <i class="fas fa-eye me-1"></i>Pratinjau

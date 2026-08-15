@@ -216,7 +216,7 @@
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.3px;">Lampiran Bukti (Opsional)</label>
                         <div class="d-flex align-items-center gap-2">
-                            <input type="file" id="admin-status-file" name="attachment" class="form-control flex-grow-1" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewImageInModal(this, 'filename-admin-status')">
+                            <input type="file" id="admin-status-file" name="attachment" class="form-control flex-grow-1" style="border-radius: 12px; border: 1px solid #e2e8f0;" accept=".jpg,.jpeg,.png" onchange="previewUploadImage(this)">
                             <button type="button" id="admin-status-file-btn-preview" class="btn btn-outline-primary btn-sm rounded-3 py-2 px-3 flex-shrink-0 d-none" onclick="openCurrentPreviewModal()" title="Lihat Pratinjau Foto">
                                 <i class="fas fa-eye me-1"></i>Pratinjau
                             </button>

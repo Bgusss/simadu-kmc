@@ -638,19 +638,33 @@
         function previewUploadImage(input) {
             if (!input) return;
 
-            var container = input.nextElementSibling;
-            if (!container || !container.classList.contains('image-upload-preview-wrap')) {
+            function safeEscape(str) {
+                if (!str) return '';
+                return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            }
+
+            var parent = input.parentElement || input.parentNode;
+            if (!parent) return;
+
+            var container = parent.querySelector('.image-upload-preview-wrap');
+            if (!container) {
                 container = document.createElement('div');
-                container.className = 'image-upload-preview-wrap mt-2.5 p-2 bg-light border rounded-3 d-none';
-                input.parentNode.insertBefore(container, input.nextSibling);
+                container.className = 'image-upload-preview-wrap mt-2 p-2 bg-light border rounded-3';
+                if (input.nextSibling) {
+                    parent.insertBefore(container, input.nextSibling);
+                } else {
+                    parent.appendChild(container);
+                }
             }
 
             var file = input.files && input.files[0];
             if (!file) {
                 container.innerHTML = '';
-                container.classList.add('d-none');
+                container.style.display = 'none';
                 return;
             }
+
+            container.style.display = 'block';
 
             if (!file.type.match('image.*')) {
                 container.innerHTML = 
@@ -658,13 +672,12 @@
                         '<div class="d-flex align-items-center gap-2 overflow-hidden">' +
                             '<i class="fas fa-file-alt text-primary fs-4 flex-shrink-0"></i>' +
                             '<div class="text-truncate small">' +
-                                '<div class="fw-bold text-dark text-truncate">' + escapeChatText(file.name) + '</div>' +
+                                '<div class="fw-bold text-dark text-truncate">' + safeEscape(file.name) + '</div>' +
                                 '<div class="text-muted" style="font-size:0.75rem;">' + (file.size/1024/1024).toFixed(2) + ' MB</div>' +
                             '</div>' +
                         '</div>' +
                         '<button type="button" class="btn-close btn-sm ms-2 flex-shrink-0" onclick="clearUploadImage(this)"></button>' +
                     '</div>';
-                container.classList.remove('d-none');
                 return;
             }
 
@@ -673,18 +686,17 @@
                 container.innerHTML = 
                     '<div class="d-flex align-items-center justify-content-between gap-2 p-1">' +
                         '<div class="d-flex align-items-center gap-2.5 overflow-hidden">' +
-                            '<img src="' + e.target.result + '" alt="Preview" class="rounded-2 shadow-sm border flex-shrink-0" style="width: 58px; height: 58px; object-fit: cover;">' +
+                            '<img src="' + e.target.result + '" alt="Preview" class="rounded-2 shadow-sm border flex-shrink-0" style="width: 56px; height: 56px; object-fit: cover;">' +
                             '<div class="overflow-hidden">' +
-                                '<div class="fw-bold text-dark small text-truncate" style="max-width: 190px;">' + escapeChatText(file.name) + '</div>' +
+                                '<div class="fw-bold text-dark small text-truncate" style="max-width: 200px;">' + safeEscape(file.name) + '</div>' +
                                 '<div class="text-muted mb-1" style="font-size: 0.75rem;">' + (file.size / 1024 / 1024).toFixed(2) + ' MB</div>' +
-                                '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5" style="font-size: 0.68rem;"><i class="fas fa-check-circle me-1"></i>Pratinjau foto siap</span>' +
+                                '<span class="badge bg-success text-white px-2 py-0.5" style="font-size: 0.68rem;"><i class="fas fa-check-circle me-1"></i>Foto Siap Diunggah</span>' +
                             '</div>' +
                         '</div>' +
                         '<button type="button" class="btn btn-sm btn-light border text-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 30px; height: 30px;" onclick="clearUploadImage(this)" title="Hapus foto">' +
                             '<i class="fas fa-times"></i>' +
                         '</button>' +
                     '</div>';
-                container.classList.remove('d-none');
             };
             reader.readAsDataURL(file);
         }
@@ -692,12 +704,13 @@
         function clearUploadImage(btn) {
             var wrap = btn.closest('.image-upload-preview-wrap');
             if (!wrap) return;
-            var input = wrap.previousElementSibling;
-            if (input && input.type === 'file') {
-                input.value = '';
+            var parent = wrap.parentElement;
+            if (parent) {
+                var input = parent.querySelector('input[type="file"]');
+                if (input) input.value = '';
             }
             wrap.innerHTML = '';
-            wrap.classList.add('d-none');
+            wrap.style.display = 'none';
         }
 
         window.previewUploadImage = previewUploadImage;
