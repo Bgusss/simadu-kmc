@@ -463,16 +463,6 @@
     </a>
 </div>
 
-<!-- Mobile Top Action Buttons (Above Chat Box) -->
-<div class="d-flex align-items-center gap-2 mb-3 d-xl-none">
-    <button type="button" class="btn btn-primary rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal" style="border-radius: 12px !important;">
-        <i class="fas fa-info-circle me-1.5"></i>Informasi Aduan
-    </button>
-    <button type="button" class="btn btn-warning text-dark rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="border-radius: 12px !important;">
-        <i class="fas fa-edit me-1.5"></i>Perbarui Status
-    </button>
-</div>
-
 <div class="row">
     <div class="col-xl-8 mb-4">
         <div class="chat-card">
@@ -702,6 +692,16 @@
                 </div>
 
             </div>
+        </div>
+
+        <!-- Mobile Action Buttons (Placed BELOW Chat Box) -->
+        <div class="d-flex align-items-center gap-2 mt-3 d-xl-none">
+            <button type="button" class="btn btn-primary rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2.5 px-3" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal" style="border-radius: 12px !important;">
+                <i class="fas fa-info-circle me-1.5"></i>Informasi Aduan
+            </button>
+            <button type="button" class="btn btn-warning text-dark rounded-3 flex-fill text-nowrap fw-bold shadow-sm py-2.5 px-3" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal" style="border-radius: 12px !important;">
+                <i class="fas fa-edit me-1.5"></i>Perbarui Status
+            </button>
         </div>
     </div>
 
