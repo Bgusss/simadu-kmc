@@ -1227,6 +1227,48 @@ function jumpToMessage(msgId) {
 
 document.getElementById('opd-chat-form').addEventListener('submit', async function(event) {
     event.preventDefault();
+    if (editingMsgId) {
+        const msgInput = document.getElementById('opd-chat-message');
+        const text = (msgInput ? msgInput.value : '').trim();
+        if (!text) return;
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        const updateUrl = '/chat/message/' + editingMsgId;
+        try {
+            const response = await fetch(updateUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ message: text }),
+                credentials: 'same-origin'
+            });
+            if (!response.ok) throw new Error('Gagal mengedit pesan.');
+            const resData = await response.json();
+
+            const targetRow = chatCanvas.querySelector('[data-chat-message-id="' + editingMsgId + '"]');
+            if (targetRow) {
+                const textEl = targetRow.querySelector('.chat-msg-text');
+                if (textEl) textEl.textContent = resData.data.message;
+                const metaEl = targetRow.querySelector('.chat-meta');
+                if (metaEl && !metaEl.querySelector('.edited-tag')) {
+                    const tag = document.createElement('span');
+                    tag.className = 'edited-tag text-white-50 ms-1';
+                    tag.style.fontSize = '0.68rem';
+                    tag.textContent = '(diedit)';
+                    metaEl.insertBefore(tag, metaEl.querySelector('.chat-receipt') || null);
+                }
+            }
+            cancelEdit();
+        } catch (err) {
+            alert('Gagal memperbarui pesan.');
+        }
+        return;
+    }
+
     updateOpdSendState();
     const sendButton = document.getElementById('opd-chat-send');
     if (sendButton.disabled) return;
@@ -1868,51 +1910,6 @@ function attachAllTouchEvents() {
 
 document.addEventListener('DOMContentLoaded', function() {
     attachAllTouchEvents();
-});
-
-// Intercept form submit when editing
-document.getElementById('opd-chat-form')?.addEventListener('submit', async function(e) {
-    if (editingMsgId) {
-        e.preventDefault();
-        const msgInput = document.getElementById('opd-chat-message');
-        const text = (msgInput ? msgInput.value : '').trim();
-        if (!text) return;
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-        const updateUrl = '/chat/message/' + editingMsgId;
-        try {
-            const response = await fetch(updateUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ message: text }),
-                credentials: 'same-origin'
-            });
-            if (!response.ok) throw new Error('Gagal mengedit pesan.');
-            const resData = await response.json();
-
-            const targetRow = chatCanvas.querySelector('[data-chat-message-id="' + editingMsgId + '"]');
-            if (targetRow) {
-                const textEl = targetRow.querySelector('.chat-msg-text');
-                if (textEl) textEl.textContent = resData.data.message;
-                const metaEl = targetRow.querySelector('.chat-meta');
-                if (metaEl && !metaEl.querySelector('.edited-tag')) {
-                    const tag = document.createElement('span');
-                    tag.className = 'edited-tag text-white-50 ms-1';
-                    tag.style.fontSize = '0.68rem';
-                    tag.textContent = '(diedit)';
-                    metaEl.insertBefore(tag, metaEl.querySelector('.chat-receipt') || null);
-                }
-            }
-            cancelEdit();
-        } catch (err) {
-            alert('Gagal memperbarui pesan.');
-        }
-    }
 });
 </script>
 @endpush
