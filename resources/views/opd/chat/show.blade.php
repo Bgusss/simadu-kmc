@@ -207,18 +207,46 @@
 
 /* Context dropdown */
 .chat-ctx-menu {
-    min-width: 160px;
-    border-radius: 12px;
-    border: 1px solid #e7edf4;
+    min-width: 170px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     padding: 6px 0;
-    font-size: .85rem;
+    font-size: .88rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
 }
 .chat-ctx-menu .dropdown-item {
-    padding: 8px 14px;
-    border-radius: 0;
+    padding: 9px 16px;
+    font-weight: 500;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
-.chat-ctx-menu .dropdown-item:hover {
-    background: #f0f5ff;
+.chat-ctx-menu .dropdown-item i {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+    color: #64748b;
+}
+.chat-ctx-menu .dropdown-item:hover, .chat-ctx-menu .dropdown-item:focus {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+.chat-ctx-menu .dropdown-item.text-danger i {
+    color: #ef4444 !important;
+}
+
+@media (max-width: 767.98px) {
+    .chat-msg-menu-btn {
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+    }
 }
 
 /* WhatsApp-style Contracting Side Panel Layout */
@@ -1797,36 +1825,12 @@ let currentSheetData = null;
 
 function openMobileActionSheet(row) {
     if (!row) return;
-    const modalEl = document.getElementById('mobileChatActionSheetModal');
-    if (!modalEl) return;
-    if (modalEl.parentElement !== document.body) {
-        document.body.appendChild(modalEl);
+    const btn = row.querySelector('.chat-msg-menu-btn');
+    if (btn) {
+        if (navigator.vibrate) navigator.vibrate(35);
+        const dropdown = bootstrap.Dropdown.getOrCreateInstance(btn);
+        dropdown.toggle();
     }
-
-    const msgId = row.getAttribute('data-chat-message-id');
-    const isMine = row.querySelector('.chat-bubble-wrap.mine') !== null;
-    const senderName = row.querySelector('.chat-message > div.small.fw-bold')?.textContent || 'Pesan';
-    const textEl = row.querySelector('.chat-msg-text');
-    const msgText = textEl ? textEl.textContent : '';
-
-    currentSheetData = { row, msgId, isMine, senderName, msgText };
-
-    document.getElementById('mobile-sheet-sender').textContent = senderName;
-    document.getElementById('mobile-sheet-preview').textContent = msgText || '(Lampiran Media)';
-
-    const btnInfo = document.getElementById('mobile-action-info');
-    const btnEdit = document.getElementById('mobile-action-edit');
-    const btnDelete = document.getElementById('mobile-action-delete');
-
-    if (btnInfo) btnInfo.classList.toggle('d-none', !isMine);
-    if (btnEdit) btnEdit.classList.toggle('d-none', !isMine || !msgText);
-    if (btnDelete) btnDelete.classList.toggle('d-none', !isMine);
-
-    let sheetModal = bootstrap.Modal.getInstance(modalEl);
-    if (!sheetModal) {
-        sheetModal = new bootstrap.Modal(modalEl);
-    }
-    sheetModal.show();
 }
 
 function triggerSheetAction(action) {
