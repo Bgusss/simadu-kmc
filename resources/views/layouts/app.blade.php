@@ -533,6 +533,34 @@
             .content > div:last-child { margin-left: -12px !important; margin-right: -12px !important; }
             body { font-size: 0.9rem; }
         }
+
+        /* Premium Image Upload Preview Card */
+        .image-upload-preview-wrap {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 14px !important;
+            box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.08) !important;
+            padding: 10px 12px !important;
+            transition: all 0.25s ease;
+        }
+        .image-upload-preview-wrap:hover {
+            border-color: #94a3b8 !important;
+            box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.12) !important;
+        }
+        .image-upload-preview-wrap .btn-clear-preview {
+            background: #fee2e2 !important;
+            color: #dc2626 !important;
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            transition: transform 0.2s ease, background 0.2s ease !important;
+        }
+        .image-upload-preview-wrap .btn-clear-preview:hover {
+            background: #fca5a5 !important;
+            color: #991b1b !important;
+            transform: scale(1.08) !important;
+        }
     </style>
 
     @stack('styles')
@@ -621,7 +649,7 @@
             var container = parent.querySelector('.image-upload-preview-wrap');
             if (!container) {
                 container = document.createElement('div');
-                container.className = 'image-upload-preview-wrap mt-2.5 p-2 bg-light border rounded-3 shadow-sm';
+                container.className = 'image-upload-preview-wrap mt-2.5 position-relative';
                 if (input.nextSibling) {
                     parent.insertBefore(container, input.nextSibling);
                 } else {
@@ -641,14 +669,18 @@
             if (!file.type.match('image.*')) {
                 container.innerHTML = 
                     '<div class="d-flex align-items-center justify-content-between p-1.5">' +
-                        '<div class="d-flex align-items-center gap-2 overflow-hidden">' +
-                            '<i class="fas fa-file-alt text-primary fs-4 flex-shrink-0"></i>' +
+                        '<div class="d-flex align-items-center gap-2.5 overflow-hidden">' +
+                            '<div class="rounded-3 bg-primary bg-opacity-10 p-2.5 text-primary flex-shrink-0 d-flex align-items-center justify-content-center" style="width:48px; height:48px;">' +
+                                '<i class="fas fa-file-alt fs-4"></i>' +
+                            '</div>' +
                             '<div class="text-truncate small">' +
-                                '<div class="fw-bold text-dark text-truncate">' + safeEscape(file.name) + '</div>' +
-                                '<div class="text-muted" style="font-size:0.75rem;">' + (file.size/1024/1024).toFixed(2) + ' MB</div>' +
+                                '<div class="fw-bold text-dark text-truncate mb-0.5" style="font-size:0.85rem;">' + safeEscape(file.name) + '</div>' +
+                                '<div class="text-muted" style="font-size:0.75rem;"><i class="far fa-hdd me-1"></i>' + (file.size/1024/1024).toFixed(2) + ' MB</div>' +
                             '</div>' +
                         '</div>' +
-                        '<button type="button" class="btn-close btn-sm ms-2 flex-shrink-0" onclick="clearUploadImage(this)"></button>' +
+                        '<button type="button" class="btn btn-sm btn-clear-preview p-0 d-flex align-items-center justify-content-center flex-shrink-0" onclick="clearUploadImage(this)" title="Hapus File">' +
+                            '<i class="fas fa-trash-alt" style="font-size: 0.82rem;"></i>' +
+                        '</button>' +
                     '</div>';
                 return;
             }
@@ -656,17 +688,24 @@
             var reader = new FileReader();
             reader.onload = function(e) {
                 container.innerHTML = 
-                    '<div class="d-flex align-items-center justify-content-between gap-2 p-1.5">' +
-                        '<div class="d-flex align-items-center gap-2.5 overflow-hidden">' +
-                            '<img src="' + e.target.result + '" alt="Preview" class="rounded-2 shadow-sm border flex-shrink-0" style="width: 60px; height: 60px; object-fit: cover;">' +
+                    '<div class="d-flex align-items-center justify-content-between gap-2.5">' +
+                        '<div class="d-flex align-items-center gap-3 overflow-hidden">' +
+                            '<div class="position-relative flex-shrink-0">' +
+                                '<img src="' + e.target.result + '" alt="Preview" class="rounded-3 border" style="width: 58px; height: 58px; object-fit: cover; box-shadow: 0 4px 10px rgba(15,23,42,0.1);">' +
+                                '<div class="position-absolute bottom-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center border border-white" style="width: 18px; height: 18px; font-size: 0.55rem; transform: translate(3px, 3px);">' +
+                                    '<i class="fas fa-check"></i>' +
+                                '</div>' +
+                            '</div>' +
                             '<div class="overflow-hidden">' +
-                                '<div class="fw-bold text-dark small text-truncate" style="max-width: 200px;">' + safeEscape(file.name) + '</div>' +
-                                '<div class="text-muted mb-1" style="font-size: 0.75rem;">' + (file.size / 1024 / 1024).toFixed(2) + ' MB</div>' +
-                                '<span class="badge bg-success text-white px-2 py-0.5" style="font-size: 0.68rem;"><i class="fas fa-check-circle me-1"></i>Pratinjau foto siap</span>' +
+                                '<div class="fw-bold text-dark small text-truncate mb-0.5" style="max-width: 210px; font-size: 0.85rem;">' + safeEscape(file.name) + '</div>' +
+                                '<div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.74rem;">' +
+                                    '<span><i class="far fa-file-image me-1 text-primary"></i>' + (file.size / 1024 / 1024).toFixed(2) + ' MB</span>' +
+                                    '<span class="text-success fw-semibold"><i class="fas fa-circle me-1" style="font-size:0.42rem;"></i>Siap Diunggah</span>' +
+                                '</div>' +
                             '</div>' +
                         '</div>' +
-                        '<button type="button" class="btn btn-sm btn-light border text-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;" onclick="clearUploadImage(this)" title="Hapus foto">' +
-                            '<i class="fas fa-times"></i>' +
+                        '<button type="button" class="btn btn-sm btn-clear-preview p-0 d-flex align-items-center justify-content-center flex-shrink-0" onclick="clearUploadImage(this)" title="Hapus Foto">' +
+                            '<i class="fas fa-trash-alt" style="font-size: 0.82rem;"></i>' +
                         '</button>' +
                     '</div>';
             };
