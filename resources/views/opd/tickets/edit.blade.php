@@ -238,12 +238,34 @@
                                     @if($event->type == 'response')
                                         <div class="text-dark small" style="white-space: pre-line;">{{ $event->content }}</div>
                                     @else
+                                        @php
+                                            $stLabel = fn($s) => match($s) {
+                                                'proses_disposisi' => 'Proses Disposisi',
+                                                'baru' => 'Baru',
+                                                'diterima' => 'Diterima',
+                                                'diteruskan' => 'Diteruskan',
+                                                'diproses' => 'Diproses',
+                                                'dijawab' => 'Dijawab',
+                                                'selesai' => 'Selesai',
+                                                'eskalasi' => 'Eskalasi',
+                                                'ditolak' => 'Ditolak',
+                                                default => ucfirst(str_replace('_', ' ', $s ?? ''))
+                                            };
+                                            $stClass = fn($s) => match($s) {
+                                                'selesai' => 'bg-success text-white',
+                                                'eskalasi', 'ditolak' => 'bg-danger text-white',
+                                                'diproses', 'proses_disposisi' => 'bg-warning text-dark',
+                                                'dijawab' => 'bg-info text-dark',
+                                                'diterima' => 'bg-primary text-white',
+                                                default => 'bg-secondary text-white'
+                                            };
+                                        @endphp
                                         <div class="d-flex align-items-center small mb-1">
                                             @if($event->old && $event->old !== $event->new)
-                                                <span class="badge bg-secondary opacity-75">{{ $event->old }}</span> 
+                                                <span class="badge {{ $stClass($event->old) }} opacity-75 px-2 py-1">{{ $stLabel($event->old) }}</span> 
                                                 <i class="fas fa-arrow-right mx-2 text-muted"></i> 
                                             @endif
-                                            <span class="badge bg-primary">{{ $event->new }}</span>
+                                            <span class="badge {{ $stClass($event->new) }} px-2 py-1">{{ $stLabel($event->new) }}</span>
                                         </div>
                                         @if($event->notes)
                                             <div class="small text-muted fst-italic border-top pt-2 mt-2">"{{ $event->notes }}"</div>
