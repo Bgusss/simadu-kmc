@@ -238,14 +238,21 @@
 
 @media (max-width: 767.98px) {
     .chat-msg-menu-btn {
-        opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        border: none !important;
-        pointer-events: none !important;
-        visibility: hidden !important;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .chat-bubble-wrap.show-menu-btn .chat-msg-menu-btn {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        width: 26px !important;
+        height: 26px !important;
+        margin-left: 4px;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -1917,12 +1924,19 @@ chatCanvas?.addEventListener('contextmenu', function(e) {
     }
 });
 
-// Swipe to Reply & Long Press Gestures
+// Swipe to Reply & Long Press Gestures & Tap to Toggle Chevron
 let activeTouchRow = null;
 let touchStartX = 0;
 let touchStartY = 0;
 let currentDeltaX = 0;
+let touchWasMoved = false;
 let longPressTimer = null;
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.chat-bubble-wrap')) {
+        document.querySelectorAll('.chat-bubble-wrap.show-menu-btn').forEach(b => b.classList.remove('show-menu-btn'));
+    }
+});
 
 function initTouchEventsForBubble(row) {
     if (!row || row.dataset.touchInitialized) return;
@@ -1937,6 +1951,7 @@ function initTouchEventsForBubble(row) {
         touchStartX = touch.clientX;
         touchStartY = touch.clientY;
         currentDeltaX = 0;
+        touchWasMoved = false;
         activeTouchRow = row;
 
         clearTimeout(longPressTimer);
@@ -1956,7 +1971,8 @@ function initTouchEventsForBubble(row) {
         const deltaX = touch.clientX - touchStartX;
         const deltaY = touch.clientY - touchStartY;
 
-        if (Math.abs(deltaY) > 15 || Math.abs(deltaX) > 15) {
+        if (Math.abs(deltaY) > 10 || Math.abs(deltaX) > 10) {
+            touchWasMoved = true;
             clearTimeout(longPressTimer);
         }
 
@@ -1967,7 +1983,7 @@ function initTouchEventsForBubble(row) {
         }
     }, { passive: true });
 
-    const resetTouch = function() {
+    const resetTouch = function(e) {
         clearTimeout(longPressTimer);
         if (activeTouchRow === row) {
             bubbleWrap.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
@@ -1975,6 +1991,14 @@ function initTouchEventsForBubble(row) {
                 if (navigator.vibrate) navigator.vibrate(30);
                 const replyBtn = row.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
                 if (replyBtn) replyMsgFromEl(replyBtn);
+            } else if (!isLongPressActive && !touchWasMoved && Math.abs(currentDeltaX) < 10) {
+                if (e.target && !e.target.closest('.chat-msg-actions') && !e.target.closest('.chat-reply-quote')) {
+                    const isShown = bubbleWrap.classList.contains('show-menu-btn');
+                    document.querySelectorAll('.chat-bubble-wrap.show-menu-btn').forEach(b => b.classList.remove('show-menu-btn'));
+                    if (!isShown) {
+                        bubbleWrap.classList.add('show-menu-btn');
+                    }
+                }
             }
             bubbleWrap.style.transform = 'translateX(0)';
             setTimeout(() => { bubbleWrap.style.transition = ''; }, 250);
