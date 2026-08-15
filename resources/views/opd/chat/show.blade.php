@@ -1653,7 +1653,7 @@ function opdMessageMarkup(message) {
     const editMenuItem = (message.mine && message.message) ? `<li><a class="dropdown-item" href="#" onclick="editMsgFromEl(this); return false;" data-edit-id="${message.id}" data-edit-text="${escapeChatText(message.message)}"><i class="fas fa-edit me-2 text-muted"></i>Edit Pesan</a></li>` : '';
     const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
+    const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/opd/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
     const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
     let replyQuoteMarkup = '';
     if (message.reply_to) {
@@ -1830,7 +1830,7 @@ document.getElementById('edit-message-modal-form')?.addEventListener('submit', a
     if (!text) return;
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    const updateUrl = '/chat/message/' + editingMsgId;
+    const updateUrl = '/opd/chat/message/' + editingMsgId;
     try {
         const response = await fetch(updateUrl, {
             method: 'PUT',
