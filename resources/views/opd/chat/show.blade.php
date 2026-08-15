@@ -1822,6 +1822,19 @@ function cancelEdit() {
     }
 }
 
+// Global touch click suppression to prevent long-press release from closing dropdowns
+let suppressNextClick = false;
+let isLongPressActive = false;
+
+document.addEventListener('click', function(e) {
+    if (suppressNextClick) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        suppressNextClick = false;
+    }
+}, true);
+
 // Mobile Action Sheet
 let currentSheetData = null;
 
@@ -1831,15 +1844,11 @@ function openMobileActionSheet(row) {
     if (btn) {
         if (navigator.vibrate) navigator.vibrate(35);
         const dropdown = bootstrap.Dropdown.getOrCreateInstance(btn);
-        dropdown.toggle();
+        dropdown.show();
     }
 }
 
 function triggerSheetAction(action) {
-    const modalEl = document.getElementById('mobileChatActionSheetModal');
-    const modalInst = bootstrap.Modal.getInstance(modalEl);
-    if (modalInst) modalInst.hide();
-
     if (!currentSheetData) return;
     const { row, msgText } = currentSheetData;
 
@@ -1855,18 +1864,14 @@ function triggerSheetAction(action) {
     } else if (action === 'copy') {
         if (msgText) {
             navigator.clipboard.writeText(msgText).then(() => {
-                if (window.showGlobalChatToast) {
-                    window.showGlobalChatToast({ title: 'Disalin', body: 'Pesan berhasil disalin ke clipboard.', tracking_number: '' });
-                } else alert('Pesan berhasil disalin!');
+                alert('Teks pesan tersalin!');
             });
         }
     } else if (action === 'delete') {
         const form = row.querySelector('.chat-ctx-menu form');
         if (form) {
-            if (confirm('Hapus pesan ini?')) {
-                const event = { preventDefault: () => {} };
-                deleteMsgAjax(event, form);
-            }
+            const event = { preventDefault: () => {} };
+            deleteMsgAjax(event, form);
         }
     }
 }
@@ -1876,8 +1881,11 @@ chatCanvas?.addEventListener('contextmenu', function(e) {
     const row = e.target.closest('[data-chat-message-id]');
     if (row) {
         e.preventDefault();
-        if (navigator.vibrate) navigator.vibrate(35);
+        e.stopPropagation();
+        suppressNextClick = true;
+        isLongPressActive = true;
         openMobileActionSheet(row);
+        setTimeout(() => { isLongPressActive = false; }, 300);
         return false;
     }
 });
@@ -1907,8 +1915,10 @@ function initTouchEventsForBubble(row) {
         clearTimeout(longPressTimer);
         longPressTimer = setTimeout(function() {
             if (Math.abs(currentDeltaX) < 15) {
-                if (navigator.vibrate) navigator.vibrate(35);
+                suppressNextClick = true;
+                isLongPressActive = true;
                 openMobileActionSheet(row);
+                setTimeout(() => { isLongPressActive = false; }, 400);
             }
         }, 380);
     }, { passive: true });
@@ -1923,7 +1933,7 @@ function initTouchEventsForBubble(row) {
             clearTimeout(longPressTimer);
         }
 
-        if (deltaX > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (!isLongPressActive && deltaX > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
             currentDeltaX = Math.min(deltaX, 75);
             bubbleWrap.style.transition = 'none';
             bubbleWrap.style.transform = `translateX(${currentDeltaX}px)`;
@@ -1934,7 +1944,7 @@ function initTouchEventsForBubble(row) {
         clearTimeout(longPressTimer);
         if (activeTouchRow === row) {
             bubbleWrap.style.transition = 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            if (currentDeltaX >= 42) {
+            if (!isLongPressActive && currentDeltaX >= 42) {
                 if (navigator.vibrate) navigator.vibrate(30);
                 const replyBtn = row.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
                 if (replyBtn) replyMsgFromEl(replyBtn);
