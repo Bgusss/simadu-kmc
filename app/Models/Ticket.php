@@ -37,6 +37,33 @@ class Ticket extends Model
         'ai_confidence' => 'float',
     ];
 
+    /**
+     * Booted model listener: Hapus seluruh berkas fisik lampiran dari Storage saat tiket dihapus.
+     */
+    protected static function booted()
+    {
+        static::deleting(function (Ticket $ticket) {
+            // 1. Hapus file lampiran pesan live chat dari disk
+            foreach ($ticket->chatMessages as $msg) {
+                if ($msg->attachment) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($msg->attachment);
+                }
+            }
+            // 2. Hapus file lampiran tanggapan resmi dari disk
+            foreach ($ticket->responses as $resp) {
+                if ($resp->attachment) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($resp->attachment);
+                }
+            }
+            // 3. Hapus file lampiran riwayat status dari disk
+            foreach ($ticket->statusLogs as $log) {
+                if ($log->attachment) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($log->attachment);
+                }
+            }
+        });
+    }
+
 
     // ──────────────────────────────────────────────
     //  Accessors
