@@ -855,32 +855,6 @@
                     <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#ticketAttachmentsModal">
                         <i class="fas fa-paperclip me-1"></i>Lihat Lampiran ({{ count($reportAttachments) }})
                     </button>
-                    <div class="modal fade" id="ticketAttachmentsModal" tabindex="-1" aria-labelledby="ticketAttachmentsModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                            <div class="modal-content border-0 rounded-4 overflow-hidden">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title fs-6 fw-bold" id="ticketAttachmentsModalLabel"><i class="fas fa-paperclip me-2"></i>Lampiran Aduan</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                </div>
-                                <div class="modal-body bg-light">
-                                    <div class="row g-3">
-                                        @foreach($reportAttachments as $index => $path)
-                                            @php $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION)); $isVideo = in_array($extension, ['mp4', 'mov', 'avi', '3gp', 'webm']); @endphp
-                                            <div class="col-12">
-                                                <div class="border rounded-3 overflow-hidden bg-white p-2">
-                                                    @if($isVideo)
-                                                        <video controls class="w-100 rounded-2" style="max-height:420px"><source src="{{ asset('storage/' . $path) }}" type="video/{{ $extension }}">Browser Anda tidak mendukung video.</video>
-                                                    @else
-                                                        <img src="{{ asset('storage/' . $path) }}" alt="Lampiran aduan {{ $index + 1 }}" class="w-100 rounded-2" style="max-height:420px;object-fit:contain">
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endif
                 <a href="{{ route('tickets.show', $ticket) }}" class="btn btn-outline-primary btn-sm w-100 mt-3 fw-semibold">
                     <i class="fas fa-external-link-alt me-1"></i>Selengkapnya
@@ -1005,6 +979,37 @@
         </div>
     </div>
 </div>
+
+@php $reportAttachments = $ticket->notification?->attachments ?? []; @endphp
+@if(is_array($reportAttachments) && count($reportAttachments))
+    <!-- Ticket Attachments Modal -->
+    <div class="modal fade" id="ticketAttachmentsModal" tabindex="-1" aria-labelledby="ticketAttachmentsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title fs-6 fw-bold mb-0" id="ticketAttachmentsModalLabel"><i class="fas fa-paperclip me-2"></i>Lampiran Aduan ({{ count($reportAttachments) }})</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body bg-light p-3">
+                    <div class="row g-3">
+                        @foreach($reportAttachments as $index => $path)
+                            @php $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION)); $isVideo = in_array($extension, ['mp4', 'mov', 'avi', '3gp', 'webm']); $assetUrl = asset('storage/' . $path); @endphp
+                            <div class="col-12">
+                                <div class="border rounded-3 overflow-hidden bg-white p-2 text-center shadow-sm">
+                                    @if($isVideo)
+                                        <video controls class="w-100 rounded-2" style="max-height:420px"><source src="{{ $assetUrl }}" type="video/{{ $extension }}">Browser Anda tidak mendukung video.</video>
+                                    @else
+                                        <img src="{{ $assetUrl }}" alt="Lampiran aduan {{ $index + 1 }}" class="w-100 rounded-2 lightbox-img" style="max-height:420px; object-fit:contain; cursor:pointer;" onclick="openLightbox('{{ $assetUrl }}')">
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 
 <!-- Chat Settings Modal -->
 <div class="modal fade" id="chatSettingsModal" tabindex="-1" aria-labelledby="chatSettingsModalLabel" aria-hidden="true">
@@ -1810,6 +1815,20 @@ async function pollAdminChat() {
 }
 setInterval(pollAdminChat, 3000);
 document.addEventListener('visibilitychange', function() { if (!document.hidden) pollAdminChat(); });
+
+// Ensure ticketAttachmentsModal floats cleanly above mobileTicketInfoModal without dark backdrop overlay
+document.getElementById('ticketAttachmentsModal')?.addEventListener('show.bs.modal', function () {
+    if (this.parentElement !== document.body) {
+        document.body.appendChild(this);
+    }
+    this.style.zIndex = '1085';
+    setTimeout(() => {
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        if (backdrops.length > 0) {
+            backdrops[backdrops.length - 1].style.zIndex = '1080';
+        }
+    }, 10);
+});
 
 // --- Edit Message & Touch Gestures (Swipe to Reply / Long-Press Sheet) ---
 let editingMsgId = null;
