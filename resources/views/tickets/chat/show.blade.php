@@ -485,16 +485,17 @@
 }
 @media (max-width: 767px) {
     .chat-card {
-        height: calc(100dvh - 142px) !important;
-        height: calc(100vh - 142px) !important;
-        min-height: 320px !important;
-        margin-bottom: 12px !important;
+        height: calc(100dvh - 215px) !important;
+        height: calc(100vh - 215px) !important;
+        max-height: calc(100dvh - 215px) !important;
+        min-height: 280px !important;
+        margin-bottom: 0 !important;
     }
     .chat-canvas { padding: 12px; }
     .chat-bubble-wrap { max-width: 90%; }
     .chat-head { padding: 10px 12px; }
     .chat-composer {
-        padding: 8px 10px 12px 10px !important;
+        padding: 8px 10px 10px 10px !important;
         background: #ffffff !important;
         border-top: 1px solid #e2e8f0 !important;
     }
