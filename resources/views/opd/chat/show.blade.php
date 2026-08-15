@@ -948,9 +948,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
 <!-- Mobile Chat Action Sheet Modal -->
-<div class="modal fade" id="mobileChatActionSheetModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog m-0 w-100 position-fixed bottom-0 start-0 end-0" style="max-width: 100%;">
+<div class="modal fade" id="mobileChatActionSheetModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog m-0 w-100 position-fixed bottom-0 start-0 end-0" style="max-width: 100%; z-index: 1070;">
         <div class="modal-content border-0 rounded-top-4 overflow-hidden shadow-lg">
             <div class="modal-header border-bottom-0 pb-1 pt-3 px-3">
                 <div class="d-flex flex-column w-100 me-2 overflow-hidden">
@@ -1765,6 +1769,12 @@ let currentSheetData = null;
 
 function openMobileActionSheet(row) {
     if (!row) return;
+    const modalEl = document.getElementById('mobileChatActionSheetModal');
+    if (!modalEl) return;
+    if (modalEl.parentElement !== document.body) {
+        document.body.appendChild(modalEl);
+    }
+
     const msgId = row.getAttribute('data-chat-message-id');
     const isMine = row.querySelector('.chat-bubble-wrap.mine') !== null;
     const senderName = row.querySelector('.chat-message > div.small.fw-bold')?.textContent || 'Pesan';
@@ -1784,7 +1794,10 @@ function openMobileActionSheet(row) {
     if (btnEdit) btnEdit.classList.toggle('d-none', !isMine || !msgText);
     if (btnDelete) btnDelete.classList.toggle('d-none', !isMine);
 
-    const sheetModal = new bootstrap.Modal(document.getElementById('mobileChatActionSheetModal'));
+    let sheetModal = bootstrap.Modal.getInstance(modalEl);
+    if (!sheetModal) {
+        sheetModal = new bootstrap.Modal(modalEl);
+    }
     sheetModal.show();
 }
 
