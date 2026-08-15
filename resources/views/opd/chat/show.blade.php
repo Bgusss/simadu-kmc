@@ -604,11 +604,11 @@
                                     <article class="chat-message {{ $mine ? 'mine' : 'theirs' }}">
                                         <div class="small fw-bold mb-1 {{ $mine ? 'text-white-50' : 'text-primary' }}">{{ $mine ? 'Anda' : ($message->sender?->name ?? 'Admin KMC') }}</div>
                                         @if($message->replyTo)
-                                            <div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" onclick="jumpToMessage('{{ $message->replyTo->id }}')" style="border-left: 3px solid {{ $mine ? '#ffa726' : '#0d47a1' }}; background: {{ $mine ? 'rgba(255,255,255,0.15)' : 'rgba(13,71,161,0.08)' }};">
+                                            <div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" data-reply-to-id="{{ $message->replyTo->id }}" onclick="jumpToMessage('{{ $message->replyTo->id }}')" style="border-left: 3px solid {{ $mine ? '#ffa726' : '#0d47a1' }}; background: {{ $mine ? 'rgba(255,255,255,0.15)' : 'rgba(13,71,161,0.08)' }};">
                                                 <div class="fw-bold small text-truncate" style="font-size: 0.75rem; color: {{ $mine ? '#ffe0b2' : '#0d47a1' }};">
                                                     {{ $message->replyTo->sender_id === auth()->id() ? 'Anda' : ($message->replyTo->sender?->name ?? 'Pesan') }}
                                                 </div>
-                                                <div class="small text-truncate" style="font-size: 0.78rem; opacity: 0.9;">
+                                                <div class="small text-truncate chat-reply-quote-text" style="font-size: 0.78rem; opacity: 0.9;">
                                                     {{ $message->replyTo->message ?: ($message->replyTo->attachment ? '(Lampiran Media)' : '') }}
                                                 </div>
                                             </div>
@@ -1663,7 +1663,7 @@ function opdMessageMarkup(message) {
         const bgColor = isMine ? 'rgba(255,255,255,0.15)' : 'rgba(13,71,161,0.08)';
         const rSender = escapeChatText(message.reply_to.sender_name);
         const rText = escapeChatText(message.reply_to.message || (message.reply_to.attachment ? '(Lampiran Media)' : ''));
-        replyQuoteMarkup = `<div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" onclick="jumpToMessage('${message.reply_to.id}')" style="border-left: 3px solid ${borderColor}; background: ${bgColor};"><div class="fw-bold small text-truncate" style="font-size: 0.75rem; color: ${accentColor};">${rSender}</div><div class="small text-truncate" style="font-size: 0.78rem; opacity: 0.9;">${rText}</div></div>`;
+        replyQuoteMarkup = `<div class="chat-reply-quote mb-2 p-2 rounded-2 cursor-pointer" data-reply-to-id="${message.reply_to.id}" onclick="jumpToMessage('${message.reply_to.id}')" style="border-left: 3px solid ${borderColor}; background: ${bgColor};"><div class="fw-bold small text-truncate" style="font-size: 0.75rem; color: ${accentColor};">${rSender}</div><div class="small text-truncate chat-reply-quote-text" style="font-size: 0.78rem; opacity: 0.9;">${rText}</div></div>`;
     }
 
     return `<div class="d-flex mb-3 ${alignment}" data-chat-message-id="${message.id}" ${createdDateAttr} data-sent-at="${escapeChatText(message.created_at)}" data-delivered-at="${escapeChatText(infoDelivered)}" data-read-at="${escapeChatText(infoRead)}"><div class="chat-bubble-wrap ${mineClass}"><article class="chat-message ${mineClass}"><div class="small fw-bold mb-1 ${message.mine ? 'text-white-50' : 'text-primary'}">${escapeChatText(message.sender_name)}</div>${replyQuoteMarkup}${message.message ? `<div class="chat-msg-text" style="white-space:pre-line">${escapeChatText(message.message)}</div>` : ''}${attachment}<div class="chat-meta">${escapeChatText(message.created_at)}${receipt}</div></article><div class="chat-msg-actions"><button class="chat-msg-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-chevron-down"></i></button><ul class="dropdown-menu dropdown-menu-${message.mine ? 'end' : 'start'} chat-ctx-menu shadow-lg">${infoMenuItem}${replyMenuItem}${editMenuItem}${copyMenuItem}${deleteMenuItem}</ul></div></div></div>`;
@@ -1747,6 +1747,15 @@ async function pollOpdChat() {
                         }
                     }
                 }
+            }
+
+            // Real-time sync for any reply quote bubbles in DOM referencing message.id
+            if (message.message) {
+                document.querySelectorAll('.chat-reply-quote[data-reply-to-id="' + message.id + '"] .chat-reply-quote-text').forEach(el => {
+                    if (el.textContent !== message.message) {
+                        el.textContent = message.message;
+                    }
+                });
             }
         });
         if (wasNearBottom) chatCanvas.scrollTop = chatCanvas.scrollHeight;
@@ -1856,6 +1865,11 @@ document.getElementById('edit-message-modal-form')?.addEventListener('submit', a
             const replyBtn = targetRow.querySelector('.chat-ctx-menu a[onclick*="replyMsgFromEl"]');
             if (replyBtn) replyBtn.setAttribute('data-reply-text', resData.data.message);
         }
+
+        // Instant local update for all reply quotes referencing editingMsgId
+        document.querySelectorAll('.chat-reply-quote[data-reply-to-id="' + editingMsgId + '"] .chat-reply-quote-text').forEach(el => {
+            el.textContent = resData.data.message;
+        });
 
         cancelEdit();
         setTimeout(pollOpdChat, 200);
