@@ -492,6 +492,16 @@
                 </div>
             </header>
 
+            <!-- Top Action Bar for Mobile View -->
+            <div class="d-flex align-items-center gap-2 p-2 px-3 bg-light border-bottom d-xl-none">
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill flex-fill text-nowrap fw-semibold shadow-sm py-1.5" data-bs-toggle="modal" data-bs-target="#mobileTicketInfoModal">
+                    <i class="fas fa-info-circle me-1.5"></i>Informasi Aduan
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-pill flex-fill text-nowrap fw-semibold shadow-sm py-1.5" data-bs-toggle="modal" data-bs-target="#mobileUpdateStatusModal">
+                    <i class="fas fa-comment-dots me-1.5"></i>Berikan Tanggapan
+                </button>
+            </div>
+
             <!-- Main Flex Row Container -->
             <div class="d-flex flex-grow-1 overflow-hidden position-relative" style="min-height: 0;">
                 
@@ -766,6 +776,87 @@
                 </form>
             </div>
         </aside>
+    </div>
+</div>
+
+<!-- Mobile Ticket Info Modal -->
+<div class="modal fade" id="mobileTicketInfoModal" tabindex="-1" aria-labelledby="mobileTicketInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+            <div class="modal-header bg-primary text-white py-3">
+                <div class="d-flex align-items-center justify-content-between w-100 me-2">
+                    <h5 class="modal-title fs-6 fw-bold mb-0" id="mobileTicketInfoModalLabel">
+                        <i class="fas fa-info-circle me-2"></i>Informasi Aduan
+                    </h5>
+                    @php $chatStatusClass = match($ticket->status) { 'selesai' => 'bg-success', 'eskalasi' => 'bg-danger', 'diproses' => 'bg-warning text-dark', 'dijawab' => 'bg-light text-primary', default => 'bg-info text-dark' }; @endphp
+                    <span class="badge {{ $chatStatusClass }} rounded-pill px-2.5 py-1">{{ $ticket->status === 'proses_disposisi' ? 'Disposisi' : ucfirst($ticket->status) }}</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+                <div class="mb-3 pb-3 border-bottom">
+                    <div class="ticket-label text-muted small">Laporan</div>
+                    <div class="fw-bold text-dark fs-6">#{{ $ticket->tracking_number ?? $ticket->ticket_number }}</div>
+                    <div class="small text-muted mt-1"><i class="far fa-clock me-1"></i>{{ $ticket->created_at?->format('d M Y, H:i') }} WIB</div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-12">
+                        <div class="ticket-info-tile p-2.5 bg-light rounded-3 border">
+                            <div class="ticket-label text-muted small"><i class="fas fa-user me-1"></i>Pelapor</div>
+                            <div class="fw-semibold small text-dark text-truncate">{{ $ticket->reporter_name ?? 'Anonim' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="ticket-info-tile p-2.5 bg-light rounded-3 border">
+                            <div class="ticket-label text-muted small"><i class="fas fa-tag me-1"></i>Kategori Masalah</div>
+                            <div class="fw-semibold small text-dark">{{ $ticket->category }}</div>
+                            @if($ticket->sub_category)<div class="small text-muted">{{ $ticket->sub_category }}</div>@endif
+                        </div>
+                    </div>
+                </div>
+                <div class="complaint-preview p-3 bg-light rounded-3 border">
+                    <div class="ticket-label mb-2 fw-semibold text-primary"><i class="fas fa-quote-left me-1"></i>Isi Aduan</div>
+                    <div class="small text-dark" style="white-space:pre-line">{{ $ticket->complaint }}</div>
+                </div>
+                @php $reportAttachments = $ticket->notification?->attachments ?? []; @endphp
+                @if(is_array($reportAttachments) && count($reportAttachments))
+                    <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-3 fw-semibold py-2" data-bs-toggle="modal" data-bs-target="#ticketAttachmentsModal">
+                        <i class="fas fa-paperclip me-1"></i>Lihat Lampiran ({{ count($reportAttachments) }})
+                    </button>
+                @endif
+                <a href="{{ route('opd.tickets.show', $ticket) }}" class="btn btn-outline-primary w-100 mt-3 fw-semibold py-2">
+                    <i class="fas fa-external-link-alt me-1.5"></i>Selengkapnya
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Update Status / Respond Modal -->
+<div class="modal fade" id="mobileUpdateStatusModal" tabindex="-1" aria-labelledby="mobileUpdateStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+            <div class="modal-header bg-warning text-dark py-3">
+                <h5 class="modal-title fs-6 fw-bold mb-0" id="mobileUpdateStatusModalLabel">
+                    <i class="fas fa-comment-dots me-2"></i>Berikan Tanggapan Resmi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+                <div class="small text-muted mb-3">Tanggapan resmi akan dicatat pada Riwayat Perjalanan Aduan dan memperbarui status tiket menjadi Dijawab.</div>
+                <form action="{{ route('opd.tickets.respond', $ticket) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <label class="form-label fw-bold small text-secondary mb-1">Pesan Tanggapan Resmi</label>
+                    <textarea name="response_text" class="form-control mb-3" rows="4" placeholder="Tulis tanggapan resmi untuk aduan ini..." required style="border-radius: 10px;"></textarea>
+                    <label class="form-label fw-bold small text-secondary mb-1">Lampiran Tanggapan (Foto)</label>
+                    <input name="attachment" type="file" class="form-control mb-2" accept=".jpg,.jpeg,.png" style="border-radius: 10px;">
+                    <div class="form-text small mb-3">Format: JPG, JPEG, PNG — maksimal 5 MB.</div>
+                    <button class="btn btn-warning w-100 fw-bold py-2.5 shadow-sm" type="submit" style="border-radius: 10px;">
+                        <i class="fas fa-paper-plane me-1.5"></i>Kirim Tanggapan Resmi
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
