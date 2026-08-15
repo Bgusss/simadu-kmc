@@ -1086,10 +1086,13 @@ function performChatSearch() {
         const textEl = row.querySelector('.chat-msg-text');
         const metaEl = row.querySelector('.chat-meta');
         const senderEl = row.querySelector('.chat-message > div.small.fw-bold');
+        const receiptEl = row.querySelector('.chat-receipt');
+        const isMine = row.querySelector('.chat-bubble-wrap.mine') !== null;
         
         const fullText = textEl ? textEl.textContent : '';
         const senderName = senderEl ? senderEl.textContent : 'Pesan';
         const timeText = metaEl ? metaEl.textContent.replace(/[✓\s]+/g, ' ').trim() : '';
+        const isRead = receiptEl ? receiptEl.classList.contains('read') : false;
 
         // Text query check
         const textMatches = !query || fullText.toLowerCase().includes(query.toLowerCase());
@@ -1109,7 +1112,9 @@ function performChatSearch() {
                 element: row,
                 sender: senderName,
                 text: fullText,
-                time: timeText
+                time: timeText,
+                isMine: isMine,
+                isRead: isRead
             });
         }
     });
@@ -1127,10 +1132,17 @@ function performChatSearch() {
             snippet = snippet.replace(regex, '<span class="fw-bold" style="color: #059669; background: #ecfdf5; padding: 0 2px; border-radius: 2px;">$1</span>');
         }
 
+        let receiptIcon = '';
+        if (m.isMine) {
+            receiptIcon = `<span class="chat-receipt ${m.isRead ? 'read' : 'sent'} me-1" style="display:inline-block; width:14px; height:11px; vertical-align:-1px;"></span>`;
+        } else {
+            receiptIcon = `<i class="fas fa-comment-dots text-muted me-1" style="font-size:0.75rem;"></i>`;
+        }
+
         html += `
             <div class="search-result-item p-2 mb-1 rounded-3 border-bottom border-light cursor-pointer" onclick="jumpToMessage('${m.id}')" style="cursor: pointer; transition: background 0.15s ease;">
                 <div class="d-flex align-items-center justify-content-between mb-1">
-                    <span class="small fw-semibold text-primary" style="font-size: 0.78rem;"><i class="fas fa-check-double text-muted me-1" style="font-size: 0.72rem;"></i>${escapeChatText(m.sender)}</span>
+                    <span class="small fw-semibold text-primary" style="font-size: 0.78rem;">${receiptIcon}${escapeChatText(m.sender)}</span>
                     <span class="small text-muted" style="font-size: 0.75rem;">${escapeChatText(m.time)}</span>
                 </div>
                 <div class="small text-dark text-truncate" style="font-size: 0.82rem; line-height: 1.35;">
