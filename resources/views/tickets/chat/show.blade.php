@@ -1605,8 +1605,8 @@ function adminMessageMarkup(message) {
     const replyAttachment = message.attachment_url || message.attachment_name || '';
     const replyMenuItem = `<li><a class="dropdown-item" href="#" onclick="replyMsgFromEl(this); return false;" data-reply-id="${message.id}" data-reply-sender="${escapeChatText(replySender)}" data-reply-text="${escapeChatText(replyText)}" data-reply-attachment="${escapeChatText(replyAttachment)}"><i class="fas fa-reply me-2 text-muted"></i>Balas</a></li>`;
     const editMenuItem = (message.mine && message.message) ? `<li><a class="dropdown-item" href="#" onclick="editMsgFromEl(this); return false;" data-edit-id="${message.id}" data-edit-text="${escapeChatText(message.message)}"><i class="fas fa-edit me-2 text-muted"></i>Edit Pesan</a></li>` : '';
-    const copyMenuItem = (message.message && message.message.trim() !== '') ? `<li><a class="dropdown-item" href="#" onclick="copyMsg(this); return false;" data-msg="${escapeChatText(message.message)}"><i class="fas fa-copy me-2 text-muted"></i>Salin</a></li>` : '';
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    const deleteMenuItem = message.mine ? `<li><hr class="dropdown-divider"></li><li><form action="/tickets/chat/message/${message.id}" method="POST" onsubmit="deleteMsgAjax(event, this)"><input type="hidden" name="_token" value="${csrfToken}"><input type="hidden" name="_method" value="DELETE"><button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash-alt me-2"></i>Hapus</button></form></li>` : '';
     const createdDateAttr = message.created_at_date ? `data-created-date="${escapeChatText(message.created_at_date)}"` : '';
     const editedBadge = message.is_edited ? `<span class="edited-tag text-white-50 ms-1" style="font-size:0.68rem;">(diedit)</span>` : '';
     let replyQuoteMarkup = '';
