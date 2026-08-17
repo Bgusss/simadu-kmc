@@ -248,12 +248,12 @@ Jika menemukan security vulnerability, silakan baca [SECURITY.md](SECURITY.md) u
 - Google Gemini AI
 - Playwright Browser Automation
 - Politeknik Negeri Ketapang
-- Kabupaten Kayong Utara (KMC)
+- Ketapang Media Center (KMC)
 
 ## 📞 Contact
 
 Untuk pertanyaan atau feedback, silakan hubungi:
-- Email: bagusaprianto@example.com
+- Email: bgzaprian@gmail.com
 - GitHub: [@Bgusss](https://github.com/Bgusss)
 
 ## 🚀 Deployment
@@ -275,4 +275,4 @@ Project ini bisa di-deploy gratis ke Railway dengan auto-deploy dari GitHub.
 
 ---
 
-<p align="center">Made with ❤️ for Kabupaten Kayong Utara</p>
+<p align="center">Made with ❤️ for Ketapang Media Center</p>
